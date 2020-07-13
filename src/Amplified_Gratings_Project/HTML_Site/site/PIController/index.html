@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>PIController - AmplifyGratings</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "PIController";
+    var mkdocs_page_input_path = "PIController.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="icon icon-home"> AmplifyGratings</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../index.html">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../Tkinter/index.html">Tkinter</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./index.html">PIController</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#communicating-with-pi-nano-stage-controller-e-873">Communicating with PI nano stage controller e-873</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#part-1">Part 1</a></li>
+        
+            <li><a class="toctree-l3" href="#part-2">Part 2</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../Diagrams/index.html">Diagrams</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">AmplifyGratings</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>PIController</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="communicating-with-pi-nano-stage-controller-e-873">Communicating with PI nano stage controller e-873</h1>
+<p>In order to communitcate to PI nano stage controller e-873 I used the PIPython package sent to me by PI. This Package contains python resouces for connecting to PI devices, and controlling them. This package provides commands that are supported by devices which support General Command Set (GCS).</p>
+<p>Being able to communitcate to the controller means programs can be developed to controller multiple stages or PIDevices at once.</p>
+<p>I will breifly go over the essetial information needed to move a stage, which includes the information used to produce the Amplified Gratings.</p>
+<h2 id="part-1">Part 1</h2>
+<p>When learning to communicate with the stage controller, looking at the samples included in the package was very helpful. </p>
+<p>The first step to connect to the controller is to create a GCSDevice object using the context manager "with". A context manager essetially manages computer resouces propperly, and it is the recommended way to begin a connection with a PI device.</p>
+<p>We will create a GCSDevice object and pass it the controllername in our case the controller name is "E-873", and this object pudevice.</p>
+<pre><code>CONTROLLERNAME = 'E-873'
+
+with GCSDevice(CONTROLLERNAME) as pidevice:
+</code></pre>
+
+<p>Next we will used the built in GCSDevice function "ConnectRS232()". This function on a low level is written using a library named "Serial" which is better known as PySerial.</p>
+<p>At this point additional debugging information can be found such as the devices identification string, version, etc. All these commands and descriptions can be found in the gcscommands.py file in the PIPython Package. </p>
+<p>Now that the computer is connect and can communicate with the controller we need to call the startup() function which connects and initilizes the stage(s) to the controller.</p>
+<p>(This step is inside of the "with" statment, the indentation is important)</p>
+<pre><code>CONTROLLERNAME = 'E-873'
+STAGES = ['Q-545.240']
+REFMODES = ['FNL', 'FRF']
+
+with GCSDevice(CONTROLLERNAME) as pidevice:
+    pitools.startup(pidevice, stages=STAGES, refmodes=REFMODES)
+</code></pre>
+
+<h3 id="the-stages-are-now-connected-and-also-have-gcs-commands">The stages are now connected and also have GCS commands.</h3>
+<p>Some commands are query commands which do not require parameters and will return information for all stages, such as:</p>
+<pre><code>rangemin = pidevice.qTMN() # array of miniums where the index is the axis(stage) number. 
+rangemax = pidevice.qTMX() # array of maximums where the index is the axis(stage) number.
+curpos = pidevice.qPOS() # array of current positions where the index is the axis(stage) number.
+</code></pre>
+
+<p>There are also setter commands for which you do have to specify the axis. </p>
+<pre><code>pidevice.MOV(axis, target) # moves stage to target, where target is a float within the min to max range. 
+pitools.waitontarget(pidevice, axes=axis) # stops program until stage is in the desire position
+</code></pre>
+
+<p>(In our cause the min is -13mm and max is 13mm)</p>
+<p>Many more commands can be found in the gcscommands.py file.</p>
+<h2 id="part-2">Part 2</h2>
+<p>Lets create the movement portion of the Amplified Grating application.
+This application consists of a GUI asks users to provide a total distance, step size, and exposure time. I am assuming these three varibles are properly provided to this program as floats.</p>
+<p>To begin we will make set up the connect to the controller, and then to the stages.</p>
+<pre><code>CONTROLLERNAME = 'E-873'
+STAGES = ['Q-545.240']
+REFMODES = ['FNL', 'FRF']
+
+with GCSDevice(CONTROLLERNAME) as pidevice:
+    pitools.startup(pidevice, stages=STAGES, refmodes=REFMODES)
+</code></pre>
+
+<p>Then we will query the stage for its max, min, and current position.</p>
+<pre><code>rangemin = pidevice.qTMN()
+rangemax = pidevice.qTMX()
+curpos = pidevice.qPOS()
+</code></pre>
+
+<p>(We are assuming we only have one stage, but this can be scaled to multiple)</p>
+<p>The goal is to make incremental steps over a total distance and at each point wait for the given exposure time.</p>
+<p>Because we want the starting position of all experiments to be consistent, the first step is to move the stage to a standard position. I decided the minumum because it provides the most amount of space to use for the experiment. The move to the minimum position:</p>
+<pre><code>CONTROLLERNAME = 'E-873'
+STAGES = ['Q-545.240']
+REFMODES = ['FNL', 'FRF']
+
+with GCSDevice(CONTROLLERNAME) as pidevice:
+    pitools.startup(pidevice, stages=STAGES, refmodes=REFMODES)
+
+    rangemin = pidevice.qTMN()
+    rangemax = pidevice.qTMX()
+    curpos = pidevice.qPOS()
+
+    axis = &quot;1&quot;
+    pidevice.MOV(axis, rangemin[axis])
+    pitools.waitontarget(pidevice, axes=axis)
+</code></pre>
+
+<p>Next we creat a for loop which will incrmentally increase the target position until it reaches a displacment of total distance. For this we will use the numpy package which provides the function "arange(start, end, increment)" which creates a float range.</p>
+<pre><code>
+for target in numpy.arange(rangemin[axis] + step_size, rangemin[axis] + total_distance + step_size, step_size):
+    pidevice.MOV(axis, target)
+    pitools.waitontarget(pidevice, axes=axis)
+    time.sleep(exposure_time)
+    position = pidevice.qPOS(axis)[axis]
+    print('current position of axis {} is {:.4f}'.format(axis, position))
+</code></pre>
+
+<p>The standard time python library is used to make the program wait for the given exposure time using the sleep function.
+An add feature of this program is it will print the current position of the stage with 4 significant figures each time a position is reach so the user can follow along with the experiment.</p>
+<p>The Program all together:</p>
+<pre><code>CONTROLLERNAME = 'E-873'
+STAGES = ['Q-545.240']
+REFMODES = ['FNL', 'FRF']
+
+with GCSDevice(CONTROLLERNAME) as pidevice:
+    pitools.startup(pidevice, stages=STAGES, refmodes=REFMODES)
+
+    rangemin = pidevice.qTMN()
+    rangemax = pidevice.qTMX()
+    curpos = pidevice.qPOS()
+
+    axis = &quot;1&quot;
+    pidevice.MOV(axis, rangemin[axis])
+    pitools.waitontarget(pidevice, axes=axis)
+
+    for target in numpy.arange(rangemin[axis] + step_size, rangemin[axis] + total_distance + step_size, step_size):
+        pidevice.MOV(axis, target)
+        pitools.waitontarget(pidevice, axes=axis)
+        time.sleep(exposure_time)
+        position = pidevice.qPOS(axis)[axis]
+        print('current position of axis {} is {:.4f}'.format(axis, position))
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../Diagrams/" class="btn btn-neutral float-right" title="Diagrams">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../Tkinter/" class="btn btn-neutral" title="Tkinter"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../Tkinter/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../Diagrams/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

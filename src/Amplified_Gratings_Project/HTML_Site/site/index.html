@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="None">
+  
+  <link rel="shortcut icon" href="img/favicon.ico">
+  <title>Home - AmplifyGratings</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Home";
+    var mkdocs_page_input_path = "index.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="js/jquery-2.1.1.min.js" defer></script>
+  <script src="js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="./index.html" class="icon icon-home"> AmplifyGratings</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./index.html">Home</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#amplified-gratings-project">Amplified Gratings Project</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#summary">Summary</a></li>
+        
+            <li><a class="toctree-l3" href="#use-instructions">Use Instructions</a></li>
+        
+            <li><a class="toctree-l3" href="#logic-flow">Logic Flow</a></li>
+        
+            <li><a class="toctree-l3" href="#future-work">Future Work</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="Tkinter/index.html">Tkinter</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="PIController/index.html">PIController</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="Diagrams/index.html">Diagrams</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href=".">AmplifyGratings</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Home</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="amplified-gratings-project">Amplified Gratings Project</h1>
+<h2 id="summary">Summary</h2>
+<p>The Amplified Gratings Application provides a graphical interface which provides users control over a PI nano stage controller. Specifically this program allows users to select a unit and type in a distance, step size, exposure time, and serial port. From that information the application does conversions from milimeters, microns or nanometers and displays an estimation of how long an experiment will take with those parameters. Once the begin experiment button is pressed, if all feilds are filled the application moves the connected stage the total distance, at increments of the input step size. The stage will wait for the given exposure time at each increment. Additional features are an abort experiment button which will stop the stage, and a display of the start time of the experiment.</p>
+<h2 id="use-instructions">Use Instructions</h2>
+<ol>
+<li>Connect computer to Pi nano Stage controller via RS232 cable.</li>
+<li>Run the Start.py file.</li>
+<li>Fill in information into the text box.</li>
+<li>Press begin experiment button</li>
+<li>Press the abort button to stop the experiment or let the experiment finish.</li>
+</ol>
+<h2 id="logic-flow">Logic Flow</h2>
+<ol>
+<li>Run Start.py<ul>
+<li>Creates a RunApp object, which creates a GUI and a thread which will be used in the future to run the experiment.</li>
+</ul>
+</li>
+<li>A MyGUI object is created<ul>
+<li>Variables that hold the values for the distance, step size, exposure time and button text are created.</li>
+<li>Tkinter frames 0, 1, and 2 are created and initialized with Labels, Entries(text boxes), OptionMenus(dropdowns), and a button for starting and stopping the experiment.</li>
+<li>The clock labels are set to display zero.</li>
+</ul>
+</li>
+<li>Filling textboxes triggers the function update_time_estimation() via the tkinter trace() function. <ul>
+<li>Trace checks if the text in the boxes change, if they do then the time is updated to reflect the input experiment parameters. If not all parameters are filled then the time will be set to zero.</li>
+</ul>
+</li>
+<li>Begin the experiment <ul>
+<li>Press the begin/abort button, calling the pressed_button() function in the RunApp class.</li>
+</ul>
+</li>
+<li><strong>Press Button:</strong> when the experiment is <strong>not</strong> running.<ul>
+<li>calls the run() function</li>
+<li>The run() function tries to get information from the GUI textboxes and convert them to millimeters.</li>
+<li>The button text is changed to "abort experiment", the start time is set, begin_experiment is set to true, and the experiment thread is started.</li>
+<li>Experiment_thread starts by calling worker_thread which calls run_experiment()<ul>
+<li>run_experiment() uses PIPython to connect to the PI nano stage controller E-873.</li>
+<li>The controller than connects to stage "Q-545.240"</li>
+<li>Then the stage moves to the minimum position.</li>
+<li>Finally the loop begins which checks if Begin_experiment is true, if it is then a movement of step_size is made.</li>
+</ul>
+</li>
+<li>If the experiment finishes begin_experiment is set to false, button text is changed to “Begin Experiment”, and the time is updated to zero.</li>
+</ul>
+</li>
+<li><strong>Pressing Button:</strong> when the experiment is running<ul>
+<li>Calls the function stop_experiment()</li>
+<li>begin_experiment is set to false, the button text is set to “Begin Experiment”, and the start time is set to zero.</li>
+<li>Before each incremental movement of the motor begin_experiment will be checked, if false then movement will stop.</li>
+</ul>
+</li>
+</ol>
+<h2 id="future-work">Future Work</h2>
+<ul>
+<li>Implementing shutter control</li>
+<li>Implementing pulse laser control</li>
+<li>Implementing multi stage(axis) control</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Tkinter/" class="btn btn-neutral float-right" title="Tkinter">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+        <span style="margin-left: 15px"><a href="Tkinter/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme.js" defer></script>
+      <script src="search/main.js" defer></script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.0.4
+Build Date UTC : 2020-01-09 16:10:28
+-->

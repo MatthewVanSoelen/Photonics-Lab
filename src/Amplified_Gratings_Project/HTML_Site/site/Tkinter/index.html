@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Tkinter - AmplifyGratings</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Tkinter";
+    var mkdocs_page_input_path = "Tkinter.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="icon icon-home"> AmplifyGratings</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../index.html">Home</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./index.html">Tkinter</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#creating-a-gui-using-tkinter">Creating a GUI using Tkinter</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#part-1">Part 1</a></li>
+        
+            <li><a class="toctree-l3" href="#part-2">Part 2</a></li>
+        
+            <li><a class="toctree-l3" href="#part-3">Part 3</a></li>
+        
+            <li><a class="toctree-l3" href="#part-4">Part 4</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../PIController/index.html">PIController</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../Diagrams/index.html">Diagrams</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">AmplifyGratings</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Tkinter</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="creating-a-gui-using-tkinter">Creating a GUI using Tkinter</h1>
+<h2 id="part-1">Part 1</h2>
+<p>Tkinter is a python package that provides resources to create interactive GUIs (graphical user interfaces). There are many resources online which provide tutorials and documentation for Tkinter, the following will be a brief overview and tutorial of a simple Tkinter based GUI. </p>
+<p>Tkinter is a standard package included in python so no downloads are necessary. To begin we will import the package, which tells python we want to use the resources inside of the Tkinter Package. Once imported we will create a window with the title “Amplified Gratings”.</p>
+<pre><code>from tkinter import *
+
+window = Tk()
+window.title(&quot;Amplified Gratings&quot;)
+
+window.mainloop()
+</code></pre>
+
+<p>Our result: </p>
+<p><img alt="" src="../img/tkinterWindow.png" /></p>
+<p>Next we will add a tkinter widget to the window. Widgets consist of a range of items such as a Labels, Buttons, or text fields.</p>
+<pre><code>label = Label(window, text=&quot;hello&quot;)
+</code></pre>
+
+<p>In order to display a widget in the window we have to tell the window where it should be. This can be done using .grid(), .pack(), or the .place() functions. We will be using .grid(), it is important to note the rows and columns of the grid do have have any width or height and take on the dimensions of items inside of them.</p>
+<pre><code>from tkinter import *
+
+window = Tk()
+window.title(&quot;Amplified Gratings&quot;)
+
+label = Label(window, text=&quot;hello&quot;)
+label.grid(column=0, row=0)
+window.mainloop()
+</code></pre>
+
+<p>Our result:</p>
+<p><img alt="" src="../img/tkinterLabel.png" /></p>
+<p>Notice the size of the window and grid took the dimensions of the label, and cuts off the title.
+In order to fix this the window and or label can be given a size. In this example we will do both </p>
+<p>To better see the dimensions of the label we will add a border.</p>
+<p>Window minimum dimensions:</p>
+<pre><code>width = 300
+height = 300
+window.minsize(width, height)
+</code></pre>
+
+<p>Label dimensions:</p>
+<pre><code>label = Label(window, text=&quot;hello&quot;, width=5, height=3, borderwidth=2, relief=SOLID)
+</code></pre>
+
+<p>Code all together:</p>
+<pre><code>from tkinter import *
+
+width = 300
+height = 300
+
+window = Tk()
+window.minsize(width, height)
+window.title(&quot;Amplified Gratings&quot;)
+
+label = Label(window, text=&quot;hello&quot;, width=5, height=3, borderwidth=2, relief=SOLID)
+label.grid(column=0, row=0)
+window.mainloop()
+</code></pre>
+
+<p>result:</p>
+<p><img alt="" src="../img/tkinterLabel2.png" /></p>
+<p>Tkinter widgets have many features that can be added to them such as different borders, dimensions, colorsm, x and y padding and text fonts.</p>
+<h2 id="part-2">Part 2</h2>
+<p>Next we will add a button which changes the text of the Label. When the button is pressed it will call a function which toggles text.</p>
+<p>When adding functions, and varibale that interact with serveral parts of the GUI is is easiest to create the GUI inside of a class. This is done to allow varibles to be added and changed by different parts of the GUI.</p>
+<p>To do this I will create a class call MyGUI and paste the gui code we have so far inside of the initializer, aside from the creation of the imports, window, the runloop, and I will add a line to create the class object. To associate varibles with the class object we add "self." in front of them.</p>
+<pre><code>from tkinter import *
+
+class MyGUI:
+    def __init__(self, window):
+
+        self.labelText = StringVar()
+        self.labelText.set(&quot;hello&quot;)
+
+        self.label = Label(window, textvariable = labelText, width=5, height=3, borderwidth=2, relief=SOLID)
+        self.label.grid(column=0, row=0)
+
+width = 300
+height = 300
+
+window = Tk()
+window.minsize(width, height)
+window.title(&quot;Amplified Gratings&quot;)
+
+gui = MyGUI(window)
+window.mainloop()
+</code></pre>
+
+<p>Now to create the toggle button. First we should create a tkinter StringVar to hold the text for our Label:</p>
+<pre><code>self.labelText = StringVar()
+self.labelText.set(&quot;hello&quot;)
+</code></pre>
+
+<p>Then we should replace the text argument with a textvarible for out label:</p>
+<pre><code>self.label = Label(window, textvariable = labelText, width=5, height=3, borderwidth=2, relief=SOLID)
+self.label.grid(column=0, row=0)
+</code></pre>
+
+<p>To add a button we will define a function called pressed_button and add a tkinter button:</p>
+<pre><code>from tkinter import *
+
+class MyGUI:
+    def __init__(self, window):
+
+        self.labelText = StringVar()
+        self.labelText.set(&quot;hello&quot;)
+
+        self.label = Label(window, textvariable = self.labelText, width=5, height=3, borderwidth=2, relief=SOLID)
+        self.label.grid(column=0, row=0)
+
+        self.button = Button(window, text=&quot;press&quot;, command=self.pressed_button)
+        self.button.grid(column=1, row=0)
+
+    def pressed_button(self):
+        if self.labelText.get() == &quot;begin experiment&quot;:
+            self.labelText.set(&quot;abort experiment&quot;)
+        else:
+            self.labelText.set(&quot;begin experiment&quot;)
+
+width = 300
+height = 300
+
+window = Tk()
+window.minsize(width, height)
+window.title(&quot;Amplified Gratings&quot;)
+gui = MyGUI(window)
+window.mainloop()
+</code></pre>
+
+<p>result: </p>
+<p><img alt="" src="https://media.giphy.com/media/hSQjnTXd56xFDRVzPi/giphy.gif" /></p>
+<p>First I will change the starting text to say "begin experiment"</p>
+<pre><code>self.labelText.set(&quot;begin experiment&quot;)
+</code></pre>
+
+<p>The label is very close to the edge and the words get cut off so we will increase the width of the label and create a spacer. and rearrange the widgets in the grid.</p>
+<pre><code>margin = 2
+
+self.spacer = Label(window, width=margin, height=margin)
+self.spacer.grid(column=0, row=0)
+
+self.label = Label(window, textvariable = self.labelText, width=12, height=2, borderwidth=2, relief=SOLID)
+self.label.grid(column=1, row=1)
+</code></pre>
+
+<p>result:</p>
+<p><img alt="" src="../img/tkinterSpacer.png" /></p>
+<h2 id="part-3">Part 3</h2>
+<p>Text feilds are import when designing a GUI. Tkinter provides an Entry widget, which acts as a text box.</p>
+<p>We will add a label which updates as a text box is filled out. More specifically a password box which uses a label to display the strength of your password.</p>
+<p>In order to do this we will use a Entry widget, StringVar to keep track of the current text in the box, and a Label to display a message. We will use the trace function on the StringVar to call a function when the entry box is changed.</p>
+<p>First we add the label saying to enter your password:</p>
+<pre><code>self.entryLabel = Label(window,text=&quot;Enter your password:&quot;)
+self.entryLabel.grid(column=0, row=2)
+</code></pre>
+
+<p>Next we add a StringVar to hold the password and Entry box to type the password in. The trace function will call the checkStrength() function when the StringVar is writen too.</p>
+<pre><code>self.password = StringVar()
+self.password.trace(&quot;w&quot;, lambda name, index, mode, password=self.password:self.checkStrength())
+
+self.entry = Entry(window, textvariable=self.password)
+self.entry.grid(column=1, row=2)
+</code></pre>
+
+<p>We then create the StringVar for hold the strenth string, and the Label to display it.</p>
+<pre><code>self.strengthText = StringVar()
+self.strengthText.set(&quot;&quot;)
+
+self.strengthLabel = Label(window, textvariable=self.strengthText, width = 10)
+self.strengthLabel.grid(column=2, row=2)
+</code></pre>
+
+<p>Finally we create the checkStrength() function, and decide the strengths that coorespsond to certains length ranges. As an added feature the label will change color based on the strength.</p>
+<pre><code>def checkStrength(self):
+    length = len(self.password.get())
+    if length == 0:
+        self.strengthText.set(&quot;&quot;)
+        self.strengthLabel.config(bg=&quot;systemWindowBody&quot;)
+    elif length &gt;= 8:
+        self.strengthText.set(&quot;Strong&quot;)
+        self.strengthLabel.config(bg=&quot;green3&quot;)
+    elif length &gt;= 6:
+        self.strengthText.set(&quot;Good&quot;)
+        self.strengthLabel.config(bg=&quot;gold2&quot;)
+    elif length &gt;= 4:
+        self.strengthText.set(&quot;ok&quot;)
+        self.strengthLabel.config(bg=&quot;DarkOrange2&quot;)
+    else:
+        self.strengthText.set(&quot;Not Accepted&quot;)
+        self.strengthLabel.config(bg=&quot;red2&quot;)
+</code></pre>
+
+<p>The following is all the code together:</p>
+<pre><code>from tkinter import *
+
+class MyGUI:
+    def __init__(self, window):
+
+        margin = 2
+
+        self.spacer = Label(window, width=margin, height=margin)
+        self.spacer.grid(column=0, row=0)
+
+        self.labelText = StringVar()
+        self.labelText.set(&quot;begin experiment&quot;)
+
+        self.label = Label(window, textvariable = self.labelText, width=12, height=2, borderwidth=2, relief=SOLID)
+        self.label.grid(column=1, row=1)
+
+        self.button = Button(window, text=&quot;press&quot;, command=self.pressed_button)
+        self.button.grid(column=2, row=1)
+
+        self.entryLabel = Label(window,text=&quot;Enter your password:&quot;)
+        self.entryLabel.grid(column=0, row=2)
+
+        self.password = StringVar()
+        self.password.trace(&quot;w&quot;, lambda name, index, mode, password=self.password:self.checkStrength())
+
+        self.entry = Entry(window, textvariable=self.password)
+        self.entry.grid(column=1, row=2)
+
+        self.strengthText = StringVar()
+        self.strengthText.set(&quot;&quot;)
+
+        self.strengthLabel = Label(window, textvariable=self.strengthText, width = 10)
+        self.strengthLabel.grid(column=2, row=2)
+
+    def checkStrength(self):
+        length = len(self.password.get())
+        if length == 0:
+            self.strengthText.set(&quot;&quot;)
+            self.strengthLabel.config(bg=&quot;systemWindowBody&quot;)
+        elif length &gt;= 8:
+            self.strengthText.set(&quot;Strong&quot;)
+            self.strengthLabel.config(bg=&quot;green3&quot;)
+        elif length &gt;= 6:
+            self.strengthText.set(&quot;Good&quot;)
+            self.strengthLabel.config(bg=&quot;gold2&quot;)
+        elif length &gt;= 4:
+            self.strengthText.set(&quot;ok&quot;)
+            self.strengthLabel.config(bg=&quot;DarkOrange2&quot;)
+        else:
+            self.strengthText.set(&quot;Not Accepted&quot;)
+            self.strengthLabel.config(bg=&quot;red2&quot;)
+
+    def pressed_button(self):
+        if self.labelText.get() == &quot;begin experiment&quot;:
+            self.labelText.set(&quot;abort experiment&quot;)
+        else:
+            self.labelText.set(&quot;begin experiment&quot;)
+
+width = 300
+height = 300
+
+window = Tk()
+window.minsize(width, height)
+window.title(&quot;Amplified Gratings&quot;)
+gui = MyGUI(window)
+window.mainloop()
+</code></pre>
+
+<p>The result:</p>
+<p><img alt="" src="https://media.giphy.com/media/RhjdNIkBPNumMOmxbm/giphy.gif" /></p>
+<h2 id="part-4">Part 4</h2>
+<p>The final tkinter topic this will touch on are frames. Frames are used mainly to better organize widgets throughout the GUI.</p>
+<p>Frames can be placed inside of a window, and widgets can be placed in a frame. </p>
+<p>For example we can create a frame and add a label to it using the following:</p>
+<pre><code>self.myFrame = Frame(window)
+self.myFrame.pack()
+
+self.label = Label(myFramem, text=&quot;hello&quot;)
+self.grid(column=0, row=0)
+</code></pre>
+
+<p>In the demo we have built through out the tutorial I will use two frames to separate the top section and the bottom. This is a good idea because both parts may be relavant to the GUI but are not to each other. </p>
+<p>To do this I will create a top and bottom frame and change the widgets so they are added to the correct frame when created. 
+As finishing touches I add a border to the frames, make the window wider, position the frames using the .place() function which allows you to place widgets or frames reltive to its container.</p>
+<p>Final code:</p>
+<pre><code>from tkinter import *
+
+class MyGUI:
+    def __init__(self, window):
+
+        #Frames 
+        self.topFrame = Frame(window, borderwidth=2, relief=SUNKEN)
+        self.topFrame.place(relx = 0.05, rely = 0.15, relwidth = 0.9, relheight = 0.35)
+
+
+        self.bottomFrame = Frame(window, borderwidth=2, relief=RAISED)
+        self.bottomFrame.place(relx = 0.05, rely = 0.6, relwidth = 0.9, relheight = 0.35)
+
+        # Top Frame
+        self.labelText = StringVar()
+        self.labelText.set(&quot;begin experiment&quot;)
+
+        margin = 2
+        self.spacer = Label(self.topFrame, width=margin, height=margin)
+        self.spacer.grid(column=0, row=0)
+
+        self.label = Label(self.topFrame, textvariable = self.labelText, width=12, height=2, borderwidth=2, relief=SOLID)
+        self.label.grid(column=1, row=1)
+
+        self.button = Button(self.topFrame, text=&quot;press&quot;, command=self.pressed_button)
+        self.button.grid(column=2, row=1)
+
+
+        # Bottom Frame
+        self.entryLabel = Label(self.bottomFrame,text=&quot;Enter your password:&quot;)
+        self.entryLabel.grid(column=0, row=0)
+
+        self.password = StringVar()
+        self.password.trace(&quot;w&quot;, lambda name, index, mode, password=self.password:self.checkStrength())
+
+        self.entry = Entry(self.bottomFrame, textvariable=self.password)
+        self.entry.grid(column=1, row=0)
+
+        self.strengthText = StringVar()
+        self.strengthText.set(&quot;&quot;)
+
+        self.strengthLabel = Label(self.bottomFrame, textvariable=self.strengthText, width = 10)
+        self.strengthLabel.grid(column=2, row=0)
+
+    def checkStrength(self):
+        length = len(self.password.get())
+        if length == 0:
+            self.strengthText.set(&quot;&quot;)
+            self.strengthLabel.config(bg=&quot;systemWindowBody&quot;)
+        elif length &gt;= 8:
+            self.strengthText.set(&quot;Strong&quot;)
+            self.strengthLabel.config(bg=&quot;green3&quot;)
+        elif length &gt;= 6:
+            self.strengthText.set(&quot;Good&quot;)
+            self.strengthLabel.config(bg=&quot;gold2&quot;)
+        elif length &gt;= 4:
+            self.strengthText.set(&quot;ok&quot;)
+            self.strengthLabel.config(bg=&quot;DarkOrange2&quot;)
+        else:
+            self.strengthText.set(&quot;Not Accepted&quot;)
+            self.strengthLabel.config(bg=&quot;red2&quot;)
+
+    def pressed_button(self):
+        if self.labelText.get() == &quot;begin experiment&quot;:
+            self.labelText.set(&quot;abort experiment&quot;)
+        else:
+            self.labelText.set(&quot;begin experiment&quot;)
+
+width = 500
+height = 300
+
+window = Tk()
+window.minsize(width, height)
+window.title(&quot;Amplified Gratings&quot;)
+gui = MyGUI(window)
+window.mainloop()
+</code></pre>
+
+<p>Result:</p>
+<p><img alt="" src="../img/tkinterFrames.png" /></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../PIController/" class="btn btn-neutral float-right" title="PIController">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../PIController/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>
