@@ -32,8 +32,8 @@ class Color_Slider:
         
         
         # Reverse the monitor pixel order (because, the SLM monitor is located ón the left side of the main monitor)
-        #begin_slm_horizontal = str(int(begin_monitor_horizontal) - int(begin_slm_horizontal))
-        #begin_slm_vertical = str(int(begin_monitor_vertical) - int(begin_slm_vertical))
+        begin_slm_horizontal = str(int(begin_monitor_horizontal) - int(begin_slm_horizontal))
+        begin_slm_vertical = str(int(begin_monitor_vertical) - int(begin_slm_vertical))
         
         #Define picture/window size in pixels (size of the SLM)
         width = 1920
