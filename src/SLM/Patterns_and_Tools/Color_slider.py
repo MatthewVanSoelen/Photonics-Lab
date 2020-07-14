@@ -27,8 +27,8 @@ class Color_Slider:
         # Assign the separated digits of the string to a variable
         begin_monitor_horizontal = monitor_values[0]
         begin_monitor_vertical = monitor_values[1]
-        begin_slm_horizontal = 20 # monitor_values[7]
-        begin_slm_vertical = 20 # monitor_values[8]
+        begin_slm_horizontal = monitor_values[7]
+        begin_slm_vertical = monitor_values[8]
         
         
         # Reverse the monitor pixel order (because, the SLM monitor is located ón the left side of the main monitor)
@@ -42,32 +42,37 @@ class Color_Slider:
         self.color = IntVar()
         
         
-        self.slider = Scale(self.master, from_=0, to=255, tickinterval=255, variable= self.color ,orient=HORIZONTAL, sliderlength=100)
+        self.slider = Scale(self.master, from_=0, to=255, tickinterval=255, variable= self.color ,orient=HORIZONTAL, length=400)
         self.slider.set(0)
         self.slider.pack()
         
-        self.entry = Entry(self.master, textvariable=self.color)
+        def decrement_color():
+            self.color.set(self.color.get() - 1)
+        
+        def increment_color():
+            self.color.set(self.color.get() + 1)
+        
+        self.frame1 = Frame(self.master)
+        Button(self.frame1, text="-1", command= decrement_color).pack(side=LEFT)
+        Button(self.frame1, text="+1", command= increment_color).pack(side=RIGHT)
+        self.entry = Entry(self.frame1, textvariable=self.color)
         self.entry.pack()
+        self.frame1.pack()
 
         self.color_window = Toplevel(self.master)
         self.color_window.overrideredirect(1)
         self.color_window.bind("<Escape>", lambda e: color_window.destroy())
         self.color_window_geometry = str("{:}".format(width) + 'x' + "{:}".format(height) + '+' + "{:}".format(begin_slm_horizontal) + '+' + "{:}".format(begin_slm_vertical))
         self.color_window.geometry(self.color_window_geometry)
-        self.img = Image.fromarray(self.data)
-        self.img = self.img.convert('L')
-        self.photo = ImageTk.PhotoImage(self.img)
 
-        self.window_slm_label = Label(self.color_window, image=self.photo)
-        self.window_slm_label.pack()
 
-        def display_color():
-            self.data[:,:] = int(self.color.get())
-            self.img = Image.fromarray(self.data)
-            self.img = self.img.convert('L')
-            self.photo = ImageTk.PhotoImage(self.img)
-            self.window_slm_label.config(image=self.photo)
+        def display_color(*args):
+            hex_num = hex(self.color.get())
+            hex_num = hex_num[2:]
+            hex_color = "#%s%s%s"%(hex_num, hex_num, hex_num)
+            self.color_window.config(bg=hex_color)
 
+        self.color.trace("w", display_color)
         Button(self.master, text='Display', command=display_color).pack()
 
 
@@ -75,6 +80,6 @@ class Color_Slider:
         
 master = Tk()
 master.title("Color Slider")
-master.minsize(300, 300)
+master.minsize(600, 200)
 app = Color_Slider(master)
 master.mainloop()
