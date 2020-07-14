@@ -42,24 +42,23 @@ class Color_Slider:
         self.color = IntVar()
         
         
-        self.slider = Scale(self.master, from_=0, to=255, tickinterval=255, variable= self.color ,orient=HORIZONTAL, length=400)
+        self.slider = Scale(self.master, from_=0, to=255, tickinterval=255, variable= self.color ,orient=HORIZONTAL, length=400, width = 30, font=20)
         self.slider.set(0)
         self.slider.pack()
         
-        def decrement_color():
-            self.color.set(self.color.get() - 1)
-        
-        def increment_color():
-            self.color.set(self.color.get() + 1)
+        def increment_color(x):
+            self.color.set(self.color.get() + x)
         
         self.frame1 = Frame(self.master)
-        Button(self.frame1, text="-1", command= decrement_color).pack(side=LEFT)
-        Button(self.frame1, text="+1", command= increment_color).pack(side=RIGHT)
-        self.entry = Entry(self.frame1, textvariable=self.color)
+        Button(self.frame1, text="-10", font=20, command= lambda: increment_color(-10)).pack(side=LEFT)
+        Button(self.frame1, text="-1", font=20, command= lambda: increment_color(-1)).pack(side=LEFT)
+        Button(self.frame1, text="+10", font=20, command= lambda: increment_color(10)).pack(side=RIGHT)
+        Button(self.frame1, text="+1", font=20, command= lambda: increment_color(1)).pack(side=RIGHT)
+        self.entry = Entry(self.frame1, font=20, textvariable=self.color)
         self.entry.pack()
         self.frame1.pack()
 
-        self.color_window = Toplevel(self.master)
+        self.color_window = Toplevel(self.master, bg="#000000")
         self.color_window.overrideredirect(1)
         self.color_window.bind("<Escape>", lambda e: color_window.destroy())
         self.color_window_geometry = str("{:}".format(width) + 'x' + "{:}".format(height) + '+' + "{:}".format(begin_slm_horizontal) + '+' + "{:}".format(begin_slm_vertical))
@@ -68,12 +67,15 @@ class Color_Slider:
 
         def display_color(*args):
             hex_num = hex(self.color.get())
+            print(hex_num)
             hex_num = hex_num[2:]
+            if(len(hex_num) < 2):
+                hex_num = "0%s"%(hex_num)
             hex_color = "#%s%s%s"%(hex_num, hex_num, hex_num)
+            print(hex_color)
             self.color_window.config(bg=hex_color)
 
         self.color.trace("w", display_color)
-        Button(self.master, text='Display', command=display_color).pack()
 
 
 
