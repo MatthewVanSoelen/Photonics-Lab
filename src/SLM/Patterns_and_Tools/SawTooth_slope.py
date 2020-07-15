@@ -25,21 +25,20 @@ begin_slm_vertical = monitor_values[8]
 
 
 # Reverse the monitor pixel order (because, the SLM monitor is located ón the left side of the main monitor)
-#begin_slm_horizontal = str(int(begin_monitor_horizontal) - int(begin_slm_horizontal))
-#begin_slm_vertical = str(int(begin_monitor_vertical) - int(begin_slm_vertical))
+begin_slm_horizontal = str(int(begin_monitor_horizontal) - int(begin_slm_horizontal))
+begin_slm_vertical = str(int(begin_monitor_vertical) - int(begin_slm_vertical))
 
 #Define picture/window size in pixels (size of the SLM)
 width = 1920
 height = 1152
 
-width_array = 2240
-height_array = 2240
-#width_array = 2*width
-#height_array = 2*height
+array_width = int(np.ceil( np.sqrt(pow(width, 2) + pow(height, 2))))
+array_height = array_width
+
 ### Begin of the code for the pattern of the SLM ###
 
 #Create a zero-array for the image
-data = np.zeros((height_array, width_array), dtype = np.uint16)
+data = np.zeros((array_height, array_width), dtype = np.uint16)
 Degree = 0                    # rotate image by Degree 
 y_max = 255                    # hightest gray value
 y_min = 0                    # Lowest gray value
@@ -56,16 +55,21 @@ if(g_reverse):
 else:
     reverse = 1
 
-for i in range(width_array):                        # for creates color for each column
+for i in range(array_width):                        # for creates color for each column
     color = slope * (reverse * i%x_max) + y_min     # SLope intercept form: y = mx + b (y = color)
     data[:, i] = color                                # Save color to full column of data
 
 ### End of the code for the pattern of the SLM ###
+def center_crop(image, array_width, array_height, width, height):
+    x_margin = (array_width - width) //2
+    y_margin = (array_height - height) // 2
+    return image.crop((x_margin, y_margin, x_margin + width, y_margin + height))
                       
 #Transform the created array into an image
 img = Image.fromarray(data)    # convert array to Image
 img = img.convert('L')        # convert colors to gray values
 img = img.rotate(Degree)    # rotate image by degree
+img = center_crop(img, array_width, array_height, width, height)
 
 #Save the created image
 if(g_reverse):

@@ -32,10 +32,9 @@ import numpy as np # Scientific computing package (NumPy)
 width = 1920
 height = 1152
 
-width_array = 2240
-height_array = 2240
-#width_array = 2*width
-#height_array = 2*height
+width_array = int(np.ceil( np.sqrt(pow(width, 2) + pow(height, 2))))
+height_array = width_array
+
 ### Begin of the code for the pattern of the SLM ###
 
 #Create a zero-array for the image
@@ -74,11 +73,16 @@ for i in range(width_array):                            # for creates color for 
 
 
 ### End of the code for the pattern of the SLM ###
+def center_crop(image, array_width, array_height, width, height):
+    x_margin = (array_width - width) //2
+    y_margin = (array_height - height) // 2
+    return image.crop((x_margin, y_margin, x_margin + width, y_margin + height))
                       
 #Transform the created array into an image
-img = Image.fromarray(data) # convert array to Image
-img = img.convert('L')      # convert colors to gray values
+img = Image.fromarray(data)    # convert array to Image
+img = img.convert('L')        # convert colors to gray values
 img = img.rotate(Degree)    # rotate image by degree
+img = center_crop(img, width_array, height_array, width, height)
 img.show()
 #Save the created image
 # if(g_reverse):

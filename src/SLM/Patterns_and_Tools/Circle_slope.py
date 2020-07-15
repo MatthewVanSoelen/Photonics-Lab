@@ -33,17 +33,16 @@ begin_slm_vertical = monitor_values[8]
 
 
 # Reverse the monitor pixel order (because, the SLM monitor is located ón the left side of the main monitor)
-#begin_slm_horizontal = str(int(begin_monitor_horizontal) - int(begin_slm_horizontal))
-#begin_slm_vertical = str(int(begin_monitor_vertical) - int(begin_slm_vertical))
+begin_slm_horizontal = str(int(begin_monitor_horizontal) - int(begin_slm_horizontal))
+begin_slm_vertical = str(int(begin_monitor_vertical) - int(begin_slm_vertical))
 
 #Define picture/window size in pixels (size of the SLM)
 width = 1920
 height = 1152
 
-width_array = 2240
-height_array = 2240
-twice_width_array = 2*width
-twice_height_array = 2*height
+width_array = int(np.ceil( np.sqrt(pow(width, 2) + pow(height, 2))))
+height_array = width_array
+
 ### Begin of the code for the pattern of the SLM ###
 
 #Create a zero-array for the image
@@ -75,11 +74,16 @@ for i in range(width_array):                        # for creates color for each
 
 ### End of the code for the pattern of the SLM ###
                       
+def center_crop(image, array_width, array_height, width, height):
+    x_margin = (array_width - width) //2
+    y_margin = (array_height - height) // 2
+    return image.crop((x_margin, y_margin, x_margin + width, y_margin + height))
+                      
 #Transform the created array into an image
 img = Image.fromarray(data)    # convert array to Image
 img = img.convert('L')        # convert colors to gray values
 img = img.rotate(Degree)    # rotate image by degree
-
+img = center_crop(img, width_array, height_array, width, height)
 #Save the created image
 if(g_reverse):
     img.save('Circle_Reverse_Grating_' + str(slope) + '_' + str(Degree) + 'Deg.png')
