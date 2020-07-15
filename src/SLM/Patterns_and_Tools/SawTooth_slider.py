@@ -148,6 +148,9 @@ class SawTooth_Slider:
             y_margin = (array_height - height) // 2
             return image.crop((x_margin, y_margin, x_margin + width, y_margin + height))
         
+        def corner_crop(image, width, height):
+            return image.crop((0,0,width, height))
+        
         def create_grating():
            
             self.slope = (self.y_max.get()-self.y_min.get())/self.x_max.get()
@@ -159,7 +162,7 @@ class SawTooth_Slider:
             self.img = Image.fromarray(self.data)
             self.img = self.img.convert('L')
             self.img = self.img.rotate(self.degree.get())
-            self.img = center_crop(self.img, array_width, array_height, width, height)
+            self.img = corner_crop(self.img, width, height)
             self.photo = ImageTk.PhotoImage(self.img)
         
         self.pattern_window = Toplevel(self.master)

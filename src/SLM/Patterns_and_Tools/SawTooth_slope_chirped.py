@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jul 15 13:18:07 2020
+
+@author: Matthew_VS
+"""
+
+
 ### Python libraries ###
 # Monitor packages
 from screeninfo import get_monitors # Screen Information (screeninfo) is a package to fetch location and size of physical screens.
@@ -39,13 +47,15 @@ array_height = array_width
 
 #Create a zero-array for the image
 data = np.zeros((array_height, array_width), dtype = np.uint16)
-Degree = 0                    # rotate image by Degree 
-y_max = 255                    # hightest gray value
-y_min = 0                    # Lowest gray value
-x_max = 100                    # width of each sawtooth
+Degree = 0                  # rotate image by Degree 
+y_max = 255                 # hightest gray value
+y_min = 0                   # Lowest gray value
+x_max = 100                 # width of each sawtooth
 slope = (y_max-y_min)/x_max # rate of change of gray values
-g_reverse = False            # for Black->White use FALSE
+chirp_increment = 5         # how many pixels each period increases 
+g_reverse = False           # for Black->White use FALSE
                             # for White->Black use TRUE
+skip = True                 # if first period should not get incremented for chirp affect 
 
 
 ## SawTooth pattern
@@ -55,20 +65,32 @@ if(g_reverse):
 else:
     reverse = 1
 
-for i in range(array_width):                        # for creates color for each column
+
+
+
+for i in range(array_width):                        # for loop creates color for each column
+    
+    if i % x_max == 0 and skip:
+        skip = False
+        
+    elif i % x_max == 0 and not skip:
+        x_max += chirp_increment
+        skip = True
+    
     color = slope * (reverse * i%x_max) + y_min     # SLope intercept form: y = mx + b (y = color)
     data[:, i] = color                                # Save color to full column of data
-
+    
+    
+    
 ### End of the code for the pattern of the SLM ###
 def center_crop(image, array_width, array_height, width, height):
     x_margin = (array_width - width) //2
     y_margin = (array_height - height) // 2
     return image.crop((x_margin, y_margin, x_margin + width, y_margin + height))
                       
-
 def corner_crop(image, width, height):
     return image.crop((0,0,width, height))
-
+    
 #Transform the created array into an image
 img = Image.fromarray(data)    # convert array to Image
 img = img.convert('L')        # convert colors to gray values
@@ -77,9 +99,9 @@ img = corner_crop(img, width, height)
 
 #Save the created image
 if(g_reverse):
-    img.save('Sawtooth_Reverse_Grating_' + str(slope) + '_' + str(Degree) + 'Deg.png')
+    img.save('Sawtooth_Reverse_Grating_Chirped' + str(slope) + '_' + str(Degree) + 'Deg.png')
 else:
-    img.save('Sawtooth_Grating_' + str(slope) + '_' + str(Degree) + 'Deg.png')
+    img.save('Sawtooth_Grating_Chirped' + str(slope) + '_' + str(Degree) + 'Deg.png')
     
 
 

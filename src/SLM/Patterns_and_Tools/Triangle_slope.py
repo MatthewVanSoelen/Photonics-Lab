@@ -78,11 +78,15 @@ def center_crop(image, array_width, array_height, width, height):
     y_margin = (array_height - height) // 2
     return image.crop((x_margin, y_margin, x_margin + width, y_margin + height))
                       
+
+def corner_crop(image, width, height):
+    return image.crop((0,0,width, height))
+
 #Transform the created array into an image
 img = Image.fromarray(data)    # convert array to Image
 img = img.convert('L')        # convert colors to gray values
 img = img.rotate(Degree)    # rotate image by degree
-img = center_crop(img, width_array, height_array, width, height)
+img = corner_crop(img, width, height)
 img.show()
 #Save the created image
 # if(g_reverse):
