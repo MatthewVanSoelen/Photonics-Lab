@@ -52,7 +52,7 @@ y_max = 255                 # hightest gray value
 y_min = 0                   # Lowest gray value
 x_max = 100                 # width of each sawtooth
 slope = (y_max-y_min)/x_max # rate of change of gray values
-chirp_increment = 5         # how many pixels each period increases 
+chirp_increment = 1         # how many pixels each period increases 
 g_reverse = False           # for Black->White use FALSE
                             # for White->Black use TRUE
 skip = True                 # if first period should not get incremented for chirp affect 
@@ -66,19 +66,22 @@ else:
     reverse = 1
 
 
-
-
-for i in range(array_width):                        # for loop creates color for each column
-    
-    if i % x_max == 0 and skip:
-        skip = False
-        
-    elif i % x_max == 0 and not skip:
-        x_max += chirp_increment
-        skip = True
-    
+for i in range(array_width):                        # for creates color for each column
     color = slope * (reverse * i%x_max) + y_min     # SLope intercept form: y = mx + b (y = color)
-    data[:, i] = color                                # Save color to full column of data
+    data[:, i] = color
+    slope += chirp_increment        
+
+# for i in range(array_width):                        # for loop creates color for each column
+    
+#     if i % x_max == 0 and skip:
+#         skip = False
+        
+#     elif i % x_max == 0 and not skip:
+#         x_max += chirp_increment
+#         skip = True
+    
+#     color = slope * (reverse * i%x_max) + y_min     # SLope intercept form: y = mx + b (y = color)
+#     data[:, i] = color                                # Save color to full column of data
     
     
     
