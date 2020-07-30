@@ -16,12 +16,19 @@ from PIL import Image, ImageTk # Python Imaging Librarier (PIL) package
 # Processing packages
 import re # Regular Expression (re) is a package to check, if a string contains the specified search pattern.
 import numpy as np # Scientific computing package (NumPy)
+import os # used to create path to image folder
 
 
 
 class SawTooth_Slider:
     def __init__(self, master):
+        
+        current_path = os.getcwd()
+        folder_path = os.path.join(current_path, "Grating_Images")
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
 
+        
         self.master = master
         ### Monitor controlling 
         # Finds the resolution of all monitors that are connected.
@@ -151,6 +158,10 @@ class SawTooth_Slider:
         def corner_crop(image, width, height):
             return image.crop((0,0,width, height))
         
+        def save_image(img, file_name):
+            file_name = os.path.join(folder_path, file_name)
+            img.save(file_name)
+        
         def create_grating():
            
             self.slope = (self.y_max.get()-self.y_min.get())/self.x_max.get()
@@ -162,7 +173,7 @@ class SawTooth_Slider:
             self.img = Image.fromarray(self.data)
             self.img = self.img.convert('L')
             self.img = self.img.rotate(self.degree.get())
-            self.img = corner_crop(self.img, width, height)
+            self.img = center_crop(self.img, array_width, array_height ,width, height)
             self.photo = ImageTk.PhotoImage(self.img)
         
         self.pattern_window = Toplevel(self.master)
@@ -196,7 +207,8 @@ class SawTooth_Slider:
         
         def save_grating(*args):
             rouned_slope = np.around(self.slope, 4)
-            self.img.save('Sawtooth_Grating_' + str(self.slope) + 'Slope_' + str(self.degree.get()) + 'Deg.png')
+            name = 'Sawtooth_Grating_' + str(self.slope) + 'Slope_' + str(self.degree.get()) + 'Deg.png'
+            save_image(self.img, name)
             
         Button(self.master, text="Save", font=20, command = save_grating).grid(row=4, column=0, padx=20, pady=20)
 

@@ -14,7 +14,12 @@ from PIL import Image, ImageTk # Python Imaging Librarier (PIL) package
 # Processing packages
 import re # Regular Expression (re) is a package to check, if a string contains the specified search pattern.
 import numpy as np # Scientific computing package (NumPy)
+import os # used to create path to image folder
 
+current_path = os.getcwd()
+folder_path = os.path.join(current_path, "Grating_Images")
+if not os.path.exists(folder_path):
+    os.makedirs(folder_path)
 
 ### Monitor controlling 
 # Finds the resolution of all monitors that are connected.
@@ -56,16 +61,18 @@ g_reverse = False            # for Black->White use FALSE
                             # for White->Black use TRUE
 cx, cy = width_array //2, height_array //2 # The center of circle
 radius = height_array//2
-
-## SawTooth pattern
+intercept = 0
+## Circle pattern
 
 if(g_reverse):
     reverse = -1
+    intercept = y_max
 else:
     reverse = 1
+    intercept = y_min
 
 for i in range(width_array):                        # for creates color for each column
-    color = slope * (reverse * i%x_max) + y_min     # Slope intercept form: y = mx + b (y = color)
+    color = slope * (reverse * i%x_max) + intercept     # Slope intercept form: y = mx + b (y = color)
     x, y = np.ogrid[-radius: radius, -radius: radius]
     index = x**2 + y**2 <= radius**2
     data[cy-radius:cy+radius, cx-radius:cx+radius][index] = color                                # Save color to full column of data 
@@ -78,7 +85,11 @@ def center_crop(image, array_width, array_height, width, height):
     x_margin = (array_width - width) //2
     y_margin = (array_height - height) // 2
     return image.crop((x_margin, y_margin, x_margin + width, y_margin + height))
-                      
+
+def save_image(img, file_name):
+    file_name = os.path.join(folder_path, file_name)
+    img.save(file_name)
+    
 #Transform the created array into an image
 img = Image.fromarray(data)    # convert array to Image
 img = img.convert('L')        # convert colors to gray values
@@ -86,10 +97,11 @@ img = img.rotate(Degree)    # rotate image by degree
 img = center_crop(img, width_array, height_array, width, height)
 #Save the created image
 if(g_reverse):
-    img.save('Circle_Reverse_Grating_' + str(slope) + '_' + str(Degree) + 'Deg.png')
+    name = 'Circle_Reverse_Grating_' + str(slope) + '_' + str(Degree) + 'Deg.png'
+    save_image(img, name)
 else:
-    img.save('Circle_Grating_' + str(slope) + '_' + str(Degree) + 'Deg.png')
-    
+    name = 'Circle_Grating_' + str(slope) + '_' + str(Degree) + 'Deg.png'
+    save_image(img, name)
 
 
 # Create a window environment on the computer

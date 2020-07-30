@@ -8,11 +8,16 @@ from PIL import Image, ImageTk # Python Imaging Librarier (PIL) package
 # Processing packages
 import re # Regular Expression (re) is a package to check, if a string contains the specified search pattern.
 import numpy as np # Scientific computing package (NumPy)
+import os # used to create path to image folder
 
 
 
 class Color_Slider:
     def __init__(self, master):
+        current_path = os.getcwd()
+        folder_path = os.path.join(current_path, "Grating_Images")
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
 
         self.master = master
         ### Monitor controlling 

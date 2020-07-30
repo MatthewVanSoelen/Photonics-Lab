@@ -57,7 +57,7 @@ y_max = 255                 # hightest gray value
 y_min = 0                   # Lowest gray value
 x_max = 60                 # width of each sawtooth
 slope = (y_max-y_min)/float(x_max) # rate of change of gray values
-chirp_increment = 0         # how many pixels each period increases 
+chirp_increment = 10         # how many pixels each period increases 
 g_reverse = False           # for Black->White use FALSE
                             # for White->Black use TRUE
 orig_x_max = x_max
@@ -109,13 +109,11 @@ img = corner_crop(img, width, height)
 
 #Save the created image
 if(g_reverse):
-    save_image(img, "Sawtooth_Reverse_Grating_Chirped' + str(slope) + '_' + str(Degree) + 'Deg.png")
-    # img.save('Sawtooth_Reverse_Grating_Chirped' + str(slope) + '_' + str(Degree) + 'Deg.png')
+    name = 'Sawtooth_Reverse_Grating_Chirped' + str(slope) + '_' + str(Degree) + 'Deg.png'
+    save_image(img, name)
 else:
-    save_image(img, "Sawtooth_Grating_Chirped' + str(slope) + '_' + str(Degree) + 'Deg.png")
-    # img.save('Sawtooth_Grating_Chirped' + str(slope) + '_' + str(Degree) + 'Deg.png')
-    
-
+    name = 'Sawtooth_Grating_Chirped' + str(slope) + '_' + str(Degree) + 'Deg.png'
+    save_image(img, name)
 
 # Create a window environment on the computer
 image_window = Tk()
