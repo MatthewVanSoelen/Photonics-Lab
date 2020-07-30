@@ -51,38 +51,36 @@ Degree = 0                  # rotate image by Degree
 y_max = 255                 # hightest gray value
 y_min = 0                   # Lowest gray value
 x_max = 100                 # width of each sawtooth
-slope = (y_max-y_min)/x_max # rate of change of gray values
+slope = (y_max-y_min)/float(x_max) # rate of change of gray values
 chirp_increment = 1         # how many pixels each period increases 
 g_reverse = False           # for Black->White use FALSE
                             # for White->Black use TRUE
-skip = True                 # if first period should not get incremented for chirp affect 
-
+orig_x_max = x_max
+intercept = 0
 
 ## SawTooth pattern
 
 if(g_reverse):
     reverse = -1
+    intercept = y_max
 else:
     reverse = 1
+    intercept = y_min
+i = 0   # index of color array
+x = 0   # x value for the given line
+
+while(i < width):
+    color = slope * reverse * (x % (x_max + 1)) + intercept
+    data[i] = color
+
+    if x != 0 and x % x_max == 0:
+        x_max += chirp_increment
+        slope  = (y_max - y_min)/float(x_max)
+        x += x_max - orig_x_max
+    x += 1
+    i += 1
 
 
-for i in range(array_width):                        # for creates color for each column
-    color = slope * (reverse * i%x_max) + y_min     # SLope intercept form: y = mx + b (y = color)
-    data[:, i] = color
-    slope += chirp_increment        
-
-# for i in range(array_width):                        # for loop creates color for each column
-    
-#     if i % x_max == 0 and skip:
-#         skip = False
-        
-#     elif i % x_max == 0 and not skip:
-#         x_max += chirp_increment
-#         skip = True
-    
-#     color = slope * (reverse * i%x_max) + y_min     # SLope intercept form: y = mx + b (y = color)
-#     data[:, i] = color                                # Save color to full column of data
-    
     
     
 ### End of the code for the pattern of the SLM ###
