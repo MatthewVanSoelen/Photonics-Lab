@@ -15,7 +15,12 @@ from PIL import Image, ImageTk # Python Imaging Librarier (PIL) package
 # Processing packages
 import re # Regular Expression (re) is a package to check, if a string contains the specified search pattern.
 import numpy as np # Scientific computing package (NumPy)
+import os # used to create path to image folder
 
+current_path = os.getcwd()
+folder_path = os.path.join(current_path, "Grating_Images")
+if not os.path.exists(folder_path):
+    os.makedirs(folder_path)
 ### Monitor controlling 
 # Finds the resolution of all monitors that are connected.
 active_monitors = get_monitors() # "monitor(screenwidth x screenheight + startpixel x + startpixel y)"
@@ -91,6 +96,10 @@ def center_crop(image, array_width, array_height, width, height):
                       
 def corner_crop(image, width, height):
     return image.crop((0,0,width, height))
+
+def save_image(img, file_name):
+    file_name = os.path.join(folder_path, file_name)
+    img.save(file_name)
     
 #Transform the created array into an image
 img = Image.fromarray(data)    # convert array to Image
@@ -100,9 +109,11 @@ img = corner_crop(img, width, height)
 
 #Save the created image
 if(g_reverse):
-    img.save('Sawtooth_Reverse_Grating_Chirped' + str(slope) + '_' + str(Degree) + 'Deg.png')
+    save_image(img, "Sawtooth_Reverse_Grating_Chirped' + str(slope) + '_' + str(Degree) + 'Deg.png")
+    # img.save('Sawtooth_Reverse_Grating_Chirped' + str(slope) + '_' + str(Degree) + 'Deg.png')
 else:
-    img.save('Sawtooth_Grating_Chirped' + str(slope) + '_' + str(Degree) + 'Deg.png')
+    save_image(img, "Sawtooth_Grating_Chirped' + str(slope) + '_' + str(Degree) + 'Deg.png")
+    # img.save('Sawtooth_Grating_Chirped' + str(slope) + '_' + str(Degree) + 'Deg.png')
     
 
 
