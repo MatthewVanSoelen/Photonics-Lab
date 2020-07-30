@@ -50,9 +50,9 @@ data = np.zeros((array_height, array_width), dtype = np.uint16)
 Degree = 0                  # rotate image by Degree 
 y_max = 255                 # hightest gray value
 y_min = 0                   # Lowest gray value
-x_max = 100                 # width of each sawtooth
+x_max = 60                 # width of each sawtooth
 slope = (y_max-y_min)/float(x_max) # rate of change of gray values
-chirp_increment = 1         # how many pixels each period increases 
+chirp_increment = 0         # how many pixels each period increases 
 g_reverse = False           # for Black->White use FALSE
                             # for White->Black use TRUE
 orig_x_max = x_max
@@ -71,7 +71,7 @@ x = 0   # x value for the given line
 
 while(i < width):
     color = slope * reverse * (x % (x_max + 1)) + intercept
-    data[i] = color
+    data[:,i] = color
 
     if x != 0 and x % x_max == 0:
         x_max += chirp_increment
@@ -117,7 +117,6 @@ image_window.iconify()
 # Create a window on the screen of the SLM monitor
 window_slm = Toplevel(image_window)
 window_slm_geometry = str("{:}".format(width) + 'x' + "{:}".format(height) + '+' + "{:}".format(begin_slm_horizontal) + '+' + "{:}".format(begin_slm_vertical))
-print(window_slm_geometry)
 window_slm.geometry(window_slm_geometry)
 window_slm.overrideredirect(1)
 
