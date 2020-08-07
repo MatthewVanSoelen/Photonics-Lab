@@ -57,8 +57,8 @@ y_max = 255                 # hightest gray value
 y_min = 0                   # Lowest gray value
 x_max = 60                 # width of each sawtooth
 slope = (y_max-y_min)/float(x_max) # rate of change of gray values
-chirp_increment = 10         # how many pixels each period increases 
-g_reverse = False           # for Black->White use FALSE
+chirp_increment = 0         # how many pixels each period increases 
+g_reverse = True           # for Black->White use FALSE
                             # for White->Black use TRUE
 orig_x_max = x_max
 intercept = 0
@@ -74,7 +74,7 @@ else:
 i = 0   # index of color array
 x = 0   # x value for the given line
 
-while(i < width):
+while(i < array_width):
     color = slope * reverse * (x % (x_max + 1)) + intercept
     data[:,i] = color
 
@@ -105,7 +105,7 @@ def save_image(img, file_name):
 img = Image.fromarray(data)    # convert array to Image
 img = img.convert('L')        # convert colors to gray values
 img = img.rotate(Degree)    # rotate image by degree
-img = corner_crop(img, width, height)
+img = center_crop(img, array_width, array_height, width, height)
 
 #Save the created image
 if(g_reverse):

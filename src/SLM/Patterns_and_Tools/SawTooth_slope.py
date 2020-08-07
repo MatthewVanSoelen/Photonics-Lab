@@ -46,10 +46,10 @@ array_height = array_width
 data = np.zeros((array_height, array_width), dtype = np.uint16)
 Degree = 0                    # rotate image by Degree 
 y_max = 255                    # hightest gray value
-y_min = 0                    # Lowest gray value
-x_max = 100                    # width of each sawtooth
-slope = (y_max-y_min)/x_max # rate of change of gray values
-g_reverse = False            # for Black->White use FALSE
+y_min = 10                    # Lowest gray value
+x_max =250                    # width of each sawtooth
+slope = (y_max-y_min)/float(x_max) # rate of change of gray values
+g_reverse = True            # for Black->White use FALSE
                             # for White->Black use TRUE
 
 
@@ -64,7 +64,7 @@ else:
     intercept = y_min
 
 for i in range(array_width):                        # for creates color for each column
-    color = slope * (reverse * i%x_max) + intercept     # SLope intercept form: y = mx + b (y = color)
+    color = slope * reverse * (i % (x_max + 1)) + intercept     # SLope intercept form: y = mx + b (y = color)
     data[:, i] = color                                # Save color to full column of data
 
 ### End of the code for the pattern of the SLM ###
