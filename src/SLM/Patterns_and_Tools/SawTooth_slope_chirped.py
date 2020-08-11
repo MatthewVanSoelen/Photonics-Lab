@@ -75,7 +75,7 @@ i = 0   # index of color array
 x = 0   # x value for the given line
 
 while(i < array_width):
-    color = slope * reverse * (x % (x_max + 1)) + intercept
+    color = slope * reverse * (x % x_max) + intercept
     data[:,i] = color
 
     if x != 0 and x % x_max == 0:

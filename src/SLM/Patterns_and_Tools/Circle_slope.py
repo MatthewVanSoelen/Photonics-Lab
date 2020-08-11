@@ -60,7 +60,7 @@ slope = (y_max-y_min)/x_max # rate of change of gray values
 g_reverse = False            # for Black->White use FALSE
                             # for White->Black use TRUE
 cx, cy = width_array //2, height_array //2 # The center of circle
-radius = height_array//2
+radius = cy
 intercept = 0
 ## Circle pattern
 
@@ -72,11 +72,12 @@ else:
     intercept = y_min
 
 for i in range(width_array):                        # for creates color for each column
-    color = slope * (reverse * i%x_max) + intercept     # Slope intercept form: y = mx + b (y = color)
+    color = slope * reverse * ( i % x_max) + intercept     # Slope intercept form: y = mx + b (y = color)
     x, y = np.ogrid[-radius: radius, -radius: radius]
     index = x**2 + y**2 <= radius**2
     data[cy-radius:cy+radius, cx-radius:cx+radius][index] = color                                # Save color to full column of data 
     radius -= 1
+    print(color)
 
 
 ### End of the code for the pattern of the SLM ###

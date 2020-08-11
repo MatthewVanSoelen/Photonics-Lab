@@ -64,7 +64,7 @@ else:
     intercept = y_min
 
 for i in range(array_width):                        # for creates color for each column
-    color = slope * reverse * (i % (x_max + 1)) + intercept     # SLope intercept form: y = mx + b (y = color)
+    color = slope * reverse * (i % x_max ) + intercept     # SLope intercept form: y = mx + b (y = color)
     data[:, i] = color                                # Save color to full column of data
 
 ### End of the code for the pattern of the SLM ###
