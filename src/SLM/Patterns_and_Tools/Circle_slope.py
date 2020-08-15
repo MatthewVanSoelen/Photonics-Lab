@@ -77,9 +77,6 @@ for i in range(width_array):                        # for creates color for each
     index = x**2 + y**2 <= radius**2
     data[cy-radius:cy+radius, cx-radius:cx+radius][index] = color                                # Save color to full column of data 
     radius -= 1
-    print(color)
-
-
 ### End of the code for the pattern of the SLM ###
                       
 def center_crop(image, array_width, array_height, width, height):

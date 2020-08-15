@@ -57,7 +57,7 @@ y_max = 255                 # hightest gray value
 y_min = 0                   # Lowest gray value
 x_max = 60                 # width of each sawtooth
 slope = (y_max-y_min)/float(x_max) # rate of change of gray values
-chirp_increment = 0         # how many pixels each period increases 
+chirp_increment = 2         # how many pixels each period increases 
 g_reverse = True           # for Black->White use FALSE
                             # for White->Black use TRUE
 orig_x_max = x_max
