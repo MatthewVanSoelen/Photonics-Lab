@@ -42,8 +42,8 @@ class SawTooth_Slider:
         # Assign the separated digits of the string to a variable
         begin_monitor_horizontal = monitor_values[0]
         begin_monitor_vertical = monitor_values[1]
-        begin_slm_horizontal = monitor_values[7]
-        begin_slm_vertical = monitor_values[8]
+        begin_slm_horizontal = monitor_values[5]
+        begin_slm_vertical = monitor_values[6]
         
         
         # Reverse the monitor pixel order (because, the SLM monitor is located ón the left side of the main monitor)
