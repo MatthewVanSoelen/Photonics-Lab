@@ -9,12 +9,9 @@ class ListItem():
     Group the image and grating information in one object
     """
 
-    def __init__ (self, image: MyImage, grating: MyGrating, item_details: dict):
-        self.image = image
+    def __init__ (self, grating: MyGrating, item_details: dict):
         self.grating = grating
         self.item_details = item_details
-        self.image_as_array = []
-        self.map_timing = item_details['map_timing']
         self.map_laser_power = item_details['map_laser_power']
 
 
@@ -22,14 +19,14 @@ class ListItem():
 
     def __repr__(self):
         if self.grating.configs['g_type'] == 'Custom':
-            name = "%s %s %s" %(self.image.name_image, self.grating.configs['g_type'], self.grating.configs['grating_name'])
+            name = "%s %s" %( self.grating.configs['g_type'], self.grating.configs['grating_name'])
         else:
-            name = "%s %s %d" %(self.image.name_image, self.grating.configs['g_type'], self.grating.configs['g_angle'])
+            name = "%s %d" %(self.grating.configs['g_type'], self.grating.configs['g_angle'])
         return name
     
     def __str__ (self):
         if self.grating.configs['g_type'] == 'Custom':
-            name = "%s %s %s" %(self.image.name_image, self.grating.configs['g_type'], self.grating.configs['grating_name'])
+            name = "%s %s" %(self.grating.configs['g_type'], self.grating.configs['grating_name'])
         else:
-            name = "%s %s %d" %(self.image.name_image, self.grating.configs['g_type'], self.grating.configs['g_angle'])
+            name = "%s %d" %(self.grating.configs['g_type'], self.grating.configs['g_angle'])
         return name

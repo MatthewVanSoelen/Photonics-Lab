@@ -37,7 +37,7 @@ from list_item import ListItem
 from slm_window import SLM_window
 import pdb
 
-class SLM_Image(HologramCreator):
+class Sawtooth_Hixel(HologramCreator):
 
     def __init__(self, root: tk.Tk):
         """
@@ -65,21 +65,29 @@ class SLM_Image(HologramCreator):
         self.frames[0][4].grid(row=0, column=4, pady=10, rowspan=200,  sticky='NE', padx=10)
         
         #Setup main window with HologramCreator, the parent.
+        '''
         super().setup_film(self.frames[0][0])
         super().setup_image_select(self.frames[1][0])
-        super().setup_initialize_experiment(self.frames[2][0])
-        super().setup_while_running(self.frames[3][0])
+        '''
+        super().setup_initialize_experiment(self.frames[0][0])
+        super().setup_while_running(self.frames[1][0])
         super().setup_grating_options(self.frames[0][1])
+        '''
         super().setup_exposure_details(self.frames[0][3])
         super().setup_ignore_details(self.frames[0][3])
-        super().setup_laser_details(self.frames[0][3])
+        '''
+        super().setup_laser_details(self.frames[2][2])
+        '''
         super().setup_grating_details(self.frames[0][3])
         super().setup_image_array(self.frames[0][4])
+        '''
         super().setup_experiment_details_view(self.frames[2][1])
 
-        #Setup main window with SLM_Image, the self.
+        #Setup main window with Sawtooth_Hixel, the self.
         self.setup_menu()
+        '''
         self.setup_image_default(self.frames[1][2], self.frames[2][2])
+        '''
         self.setup_grating_default(self.frames[0][2])
         self.setup_list_view(self.frames[1][1])
         
@@ -122,10 +130,6 @@ class SLM_Image(HologramCreator):
             'Laser':lambda:self.set_equipment_settings(
                 'Equipment/Laser Settings.txt', 'Laser')
         }
-        submenu_view = {
-            'Image as Array':lambda:self.display_image_array(self.item.image),
-            'Mapping Graph':lambda:self.generate_plot(self.item)
-        }
         submenu_help = {
             'General':lambda:self.help_window('Help/General.txt'),
             'Set Up Film':lambda:self.help_window('Help/Set Up Film.txt'),
@@ -140,42 +144,11 @@ class SLM_Image(HologramCreator):
             'File':submenu_file,
             'Serial':submenu_serial,
             'Equipment':submenu_equipment,
-            'View':submenu_view,
             'Help':submenu_help
         }
         #Pass to parent method to create a main menu.
         self.main_menu = super().create_mainmenu(self.root, menu_total)
 
-    
-    def setup_image_default(self, frame_top:tk.Frame, frame_bottom:tk.Frame):
-        """
-        Set up the default images on main window.
-        """
-
-        image_configs = {
-            'max_display_x':200,
-            'max_display_y':200,
-            'file_image':'Images/Sample Image.png',
-            'name_image':'Sample Image'
-            
-        }
-        try:
-            self.image = MyImage(image_configs)
-        except NoFileError as e:
-            e.advice = 'Place a new default image in the correct directory.'
-            super().error_window(e)
-            return
-        self.label_image_title = tk.Label(frame_top)
-        self.label_image_title.pack()
-        self.label_image = tk.Label(frame_top, 
-            image=self.image.original_tkinter)
-        self.label_image.pack()
-        self.label_imagemod_title = tk.Label(frame_bottom, 
-            text='Modified Sample Image')
-        self.label_imagemod_title.pack()
-        self.label_imagemod = tk.Label(frame_bottom, 
-            image=self.image.modified_tkinter)
-        self.label_imagemod.pack()
 
     def setup_grating_default(self, frame:tk.Frame):
         """
@@ -222,13 +195,11 @@ class SLM_Image(HologramCreator):
     def add_item(self):
         if len(self.item_list) < 4:
             self.collect_raw_data()
-            self.modify_and_map()
             self.item_details.update({
-                'map_timing': self.map_timing,
                 'map_laser_power': self.map_laser_power
                 })
             self.grating = MyGrating(self.grating_configs)
-            item = ListItem(self.image, self.grating, self.item_details)
+            item = ListItem(self.grating, self.item_details)
             self.item_list.append(item)
             self.update_list()
             
@@ -249,14 +220,9 @@ class SLM_Image(HologramCreator):
     def fill_item_deatils(self,item):
         
         # Change grating, images and titles
-        self.label_image.configure(image=item.image.original_tkinter)
-        self.label_imagemod.configure(image=item.image.modified_tkinter)
         self.label_grating.configure(image=item.grating.grating_preview_tk)
-        self.label_image_title.configure(text='%s'%(item.image.name_image))
-        self.label_imagemod_title.configure(text='%s, Modified'%(item.image.name_image))
         
         # Change info in Selection Details view
-        self.image_name_label.config(text = "Image Name: %s" %(item.image.name_image))
         self.grating_type_label.config(text = "Grating Type: %s" %(item.grating.configs['g_type']))
         if item.grating.configs['g_type'] == 'Custom':
             self.rotation_angle_label.config(text = "Rotation Angle: N/A")
@@ -277,20 +243,9 @@ class SLM_Image(HologramCreator):
                 result = "No"
             self.reverse_label.config(text = "Reverse: %s" %(result))
         # Change text boxes info
-        self.text_exposure.delete(1.0,tk.END)
-        self.text_exposure.insert(1.0, item.item_details['strings_exposure'])
-        
-        self.text_ignore.delete(1.0,tk.END)
-        self.text_ignore.insert(1.0, item.item_details['strings_ignore'])
-
         self.text_laser.delete(1.0,tk.END)
         self.text_laser.insert(1.0, item.item_details['strings_laser'])
-        
-        self.text_grating_color.delete(1.0,tk.END)
-        self.text_grating_color.insert(1.0, item.item_details['strings_grating_color'])
-        
-        super().insert_image_array(item.image, self.text_array)
-        
+                
     def onselect(self, event):
             index = self.list_box.curselection()
             if not len(index) == 0:
@@ -332,40 +287,6 @@ class SLM_Image(HologramCreator):
         self.grating_name = ntpath.basename(self.grating_file_path)
         self.type_var.set('Custom')
         
-        
-##############################################################################
-#Choose Image
-##############################################################################
-
-    def image_select(self, file_image=None):
-        """
-        Select an image from a file dialogue box and update on screen.
-        """
-        
-        if file_image is None:
-            file_image = filedialog.askopenfilename(initialdir='Images', 
-                title="Select Image", filetypes=(("png images","*.png"),
-                    ("jpeg images","*.jpeg"), ("All files","*.*")))
-        file_name = ntpath.basename(file_image)
-        image_configs = {
-            'max_display_x':200,
-            'max_display_y':200,
-            'file_image':file_image,
-            'name_image':file_name
-        }
-        try:
-            self.image = MyImage(image_configs)
-        except NoFileError as e:
-            e.advice = 'Select a different image.'
-            super().error_window(e)
-            return
-        self.label_image.configure(image=self.image.original_tkinter)
-        self.label_imagemod.configure(image=self.image.modified_tkinter)
-        self.label_image_title.configure(text=self.image.name_image)
-        self.label_imagemod_title.configure(text='%s, Modified'%(self.image.name_image))
-
-
-
 ##############################################################################
 #Data Processing Driver Function
 ##############################################################################
@@ -411,7 +332,7 @@ class SLM_Image(HologramCreator):
             super().error_window(e)
             return
         #Further processing of data into mappings, and modifify to images.
-        self.modify_and_map()
+        
         #Generate a time estimation
         self.run_time()
 
@@ -445,48 +366,6 @@ class SLM_Image(HologramCreator):
         Pull raw data from window and save in variables.
         """
         
-        #Hologram width.
-        try:
-            self.hologram_width = 1000 * float(self.entry_width.get().strip()) 
-        except ValueError as e:
-            message = 'Hologram width must be a floating point.'
-            raise InputError(message, e)
-        try:
-            self.hologram_height =1000 * float(self.entry_height.get().strip()) 
-        except ValueError as e:
-            message = 'Hologram height must be a floating point.'
-            raise InputError(message, e)
-        #Spot size
-        try:
-            val = self.entry_spot.get().strip()
-            if val != '':
-                self.spot_size = float(val)
-            else:
-                self.spot_size = -1
-        except ValueError as e:
-            message = 'Spot size must be a floating point.'
-            raise InputError(message, e)
-        #Pixels Horizontal.
-        try:
-            val = self.entry_pixel_x.get().strip()
-            if val != '':
-                self.pixels_x = int(val)
-            else:
-                self.pixels_x = self.image.original_PIL.width
-        except ValueError as e:
-            message = 'Horizontal Pixels must be an int.'
-            raise InputError(message, e)
-        #Pixels Vertical.
-        try:
-            val = self.entry_pixel_y.get().strip()
-            if val != '':
-                self.pixels_y = int(val)
-            else:
-                self.pixels_y = self.image.original_PIL.height
-        except ValueError as e:
-            message = 'Vertical Pixels must be an int.'
-            raise InputError(message, e)
-            
         #Grating Type
         try:
             val = self.type_var.get().strip()
@@ -551,18 +430,11 @@ class SLM_Image(HologramCreator):
                 raise InputError(message, e)
             self.grating_configs['reverse'] = self.g_reverse.get()
             
-        self.cropping = self.entry_crop.get().strip()
-        self.strings_exposure = self.text_exposure.get(1.0, 'end-1c').strip()
-        self.strings_ignore = self.text_ignore.get(1.0, 'end-1c').strip()
         self.strings_laser = self.text_laser.get(1.0, 'end-1c').strip()
-        self.strings_grating_color = self.text_grating_color.get(1.0, 'end-1c').strip()
-
+       
         self.item_details = {
-            'strings_exposure':self.strings_exposure,
-            'strings_ignore':self.strings_ignore,
-            'strings_laser':self.strings_laser,
-            'strings_grating_color':self.strings_grating_color
-        }
+            'strings_laser':self.strings_laser
+            }
     
     def write_experiment(self):
         """
@@ -574,22 +446,11 @@ class SLM_Image(HologramCreator):
         while self.file_experiment == '':
             self.file_experiment = super().get_save_file()
         #Put all data in a dictionary for writing to file.
-        datas = {
-            'Hologram Width':self.hologram_width,
-            'Hologram Height':self.hologram_height,
-            'Spot Size':self.spot_size,
-            'Pixels Horizontal':self.pixels_x, 
-            'Pixels Vertical':self.pixels_y,
-            'Cropping' :self.cropping,
-        }
+        datas = {}
         index = 1
         
         for item in self.item_list:
-            item_dict = {'Strings Exposure %d'%index: item.item_details['strings_exposure'],
-                    'Strings Ignore %d'%index: item.item_details['strings_ignore'],
-                    'Strings Laser %d'%index: item.item_details['strings_laser'],
-                    'Strings Grating Color %d'%index: item.item_details['strings_grating_color'],
-                    'Image File %d'%index: item.image.file_image,
+            item_dict = {'Strings Laser %d'%index: item.item_details['strings_laser'],
                     'Grating File %d'%index: item.grating.file_path,
                     'grating_type %d'%index: item.grating.configs['g_type']
                     }
@@ -631,79 +492,15 @@ class SLM_Image(HologramCreator):
         super().write_file(self.file_experiment, data_dict, 'a')
         super().write_file('Experiments/Previous Experiment.txt', data_dict, 'a')
 
-    def modify_and_map(self):
-        """
-        Process the data by modifying images, creating mappings, delta x, y.
-        """
-
-        #Modify the image and display.
-        self.image.downsize_image((self.pixels_x, self.pixels_y))
-        self.image.crop_image(self.cropping)
-        super().insert_image_array(self.image, self.text_array)
-        self.label_imagemod.configure(image=self.image.modified_tkinter)
-        #Process other data into mappings of pixel values and delta distances.
-        configs_timing = {
-            'Input Exposure':self.strings_exposure,
-            'Input Ignore':self.strings_ignore,
-            'Gradient Range':256
-        }
-        configs_laser = {
-            'Input Laser':self.strings_laser,
-            'Gradient Range':256
-        }
-        configs_grating_color = {
-            'Input Grating Color':self.strings_grating_color,
-            'Gradient Range':256
-        }
-        self.map_timing = super().map_timing(configs_timing)
-        self.map_laser_power = super().map_laser_power(configs_laser)
-        self.delta_x = self.hologram_width / self.pixels_x
-        self.delta_y = self.hologram_height / self.pixels_y
-        dpi = self.image.modified_PIL.width / (39.37 * self.hologram_width)
-        self.label_dpi.configure(text='Image Resolution (dpi): '+str(int(dpi)))
-    
     def run_time(self):
         """
         Generate a rough runtime estimation and display on window.
         """
-        
-        run_time = 0
-        y_after_crop = self.image.modified_PIL.height
-        x_after_crop = self.image.modified_PIL.width
-        image_as_array = np.transpose(self.image.modified_array)
-        #Loop through every potential grating on hologram
-        for i in range (0, y_after_crop):
-            visited_row = False
-            farthest_x = 0
-            #Calculate exposure time
-            for j in range (0, x_after_crop):
-                add = self.map_timing[image_as_array[j][i]]
-                if add != 0:
-                    visited_row = True
-                    farthest_x = j
-                    run_time += add
-            #Calculate travel time in x direction
-            if visited_row == True:
-                run_time += ((farthest_x / x_after_crop) * self.hologram_width / .001)
-        #Calculate travel time in y direction
-        run_time += self.hologram_height / .001
-        #Print on Main Window.
+        # sum all exposure times together
+        runtime = 10 # number of seconds for experiment 
         end_time = (datetime.now() + timedelta(seconds=run_time)).strftime('%H:%M:%S -- %d/%m/%Y')
         self.label_est_time.configure(text='End Time Estimate: '+end_time)
     
-    def generate_plot(self, item):
-        """
-        Display a plot of the mappings, if they have been produced.
-        """
-
-        try:
-            data = {
-                'Exposure Time (s)':item.map_timing, 
-                'Laser Power (mW)':item.map_laser_power
-            }
-            super().generate_plot(data)
-        except Exception:
-            pass
                     
 ##############################################################################
 #Run Experiment Driver Function
@@ -809,7 +606,7 @@ class SLM_Image(HologramCreator):
         """
         # Create SLM Window
         self.create_SLM_window()
-        
+        '''
         #Move through the image array, expose according to mappings.
         prev_pix = None
         prev_powr = None
@@ -846,7 +643,7 @@ class SLM_Image(HologramCreator):
                     #Update previous pixel info to current pixel info
                     prev_pix = pix
                     prev_powr = powr
-
+                '''
     
 
     def check_pause_abort(self):
@@ -923,20 +720,11 @@ class SLM_Image(HologramCreator):
         """
 
         wigits = [
-            self.entry_pixel_x,
-            self.entry_pixel_y,
-            self.entry_spot,
-            self.entry_width,
-            self.entry_height,
-            self.entry_crop,
             self.entry_angle,
             self.entry_ymin,
             self.entry_ymax,
             self.entry_period,
-            self.text_exposure,
-            self.text_ignore,
-            self.text_laser,
-            self.text_grating_color
+            self.text_laser
         ]
         self.clear_items()
         self.g_reverse.set('0')
@@ -947,36 +735,12 @@ class SLM_Image(HologramCreator):
         Fill wigits with datas from file.
         """
         
-        #If data is not present, do not fill.
-        if 'Hologram Width' in datas:
-            self.entry_width.insert(1, datas['Hologram Width'])
-        if 'Hologram Height' in datas:
-            self.entry_height.insert(1, datas['Hologram Height'])
-        if 'Spot Size' in datas:
-            self.entry_spot.insert(1, datas['Spot Size'])
-        if 'Pixels Horizontal' in datas:
-            self.entry_pixel_x.insert(1, datas['Pixels Horizontal'])
-        if 'Pixels Vertical' in datas:
-            self.entry_pixel_y.insert(1, datas['Pixels Vertical'])
-        if 'Cropping' in datas:
-            self.entry_crop.insert(1, datas['Cropping'])
-        
+        #If data is not present, do not fill
         for i in range(1,5):
             
-            if 'Strings Exposure %d' %(i) in datas:
-                self.text_exposure.delete(1.0,tk.END)
-                self.text_exposure.insert(1.0,datas['Strings Exposure %d' %(i)])
-            if 'Strings Ignore %d' %(i) in datas:
-                self.text_ignore.delete(1.0,tk.END)
-                self.text_ignore.insert(1.0, datas['Strings Ignore %d' %(i)])
             if 'Strings Laser %d' %(i) in datas:
                 self.text_laser.delete(1.0,tk.END)
                 self.text_laser.insert(1.0, datas['Strings Laser %d' %(i)])
-            if 'Strings Grating Color %d' %(i) in datas:
-                self.text_grating_color.delete(1.0,tk.END)
-                self.text_grating_color.insert(1.0, datas['Strings Grating Color %d' %(i)])
-            if 'Image File %d' %(i) in datas:
-                self.image_select(datas['Image File %d' %(i)])
             if 'Grating File %d' %(i) in datas:
                 self.grating_select(datas['Grating File %d' %(i)])
             if 'grating_type %d' %(i) in datas:

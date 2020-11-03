@@ -1,11 +1,9 @@
 """
 A runner program which can run one of several GUI classes to run experiment.
 
-@author: Luke Kurlandski
-@date: December 2019
-@copyright: Copyright 2019, Luke Kurlandski, all rights reserved
+@author: Matthew Van Soelen
 
-Special thanks to Daniel Stolz, Matthew Van Soelen, and Dr. David McGee.
+Special thanks to Daniel Stolz, Luke Kurlanski, and Dr. David McGee.
 
 Read the Program Guide for detailed information about this program.
 """
@@ -24,7 +22,7 @@ def sawtooth_hixel():
 root = tk.Tk()
 configs = {
     'Window Title':'Hologram Creator -- '
-            + 'Copyright 2019, Luke Kurlandski and Matthew Van Soelen, all rights reserved',
+            + 'Copyright 2019, Matthew Van Soelen and Luke Kurlandski, all rights reserved',
     'Window Width':300,
     'Window Height':300
 }
