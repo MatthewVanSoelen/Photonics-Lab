@@ -1,0 +1,115 @@
+Hologram Width::
+0.02
+####################
+Hologram Height::
+0.0171
+####################
+Spot Size::
+30.0
+####################
+Pixels Horizontal::
+400
+####################
+Pixels Vertical::
+342
+####################
+Cropping::
+
+####################
+Strings Exposure::
+[0,100]:.01x
+[100,101]:5
+[101,256]:.02x
+####################
+Strings Ignore::
+[10,20]
+[250,251]
+####################
+Strings Laser::
+[0,100]:10
+[100,256]:.02x
+####################
+Image File::
+E:/PhotonicsResearch/HologramCreatorRedo/Images/Galaxy M101.png
+####################
+Motor Command Pause::
+.1
+####################
+Motor Velocity::
+1
+####################
+Motor Acceleration::
+4
+####################
+Motor Decceleration::
+4
+####################
+Shutter Command Pause::
+.1
+####################
+Shutter Operating Mode::
+1
+####################
+Laser Command Pause::
+.1
+####################
+Laser Max Power::
+10
+####################
+Laser Power Change Pause::
+0
+####################
+Motor Serial Port::
+COM5
+####################
+Motor Serial Baudrate::
+19200
+####################
+Motor Serial Timeout::
+.1
+####################
+Motor Serial Stopbits::
+1
+####################
+Motor Serial Bytesize::
+8
+####################
+Motor Serial Parity::
+None
+####################
+Shutter Serial Port::
+COM8
+####################
+Shutter Serial Baudrate::
+9600
+####################
+Shutter Serial Timeout::
+.1
+####################
+Shutter Serial Stopbits::
+1
+####################
+Shutter Serial Bytesize::
+8
+####################
+Shutter Serial Parity::
+None
+####################
+Laser Serial Port::
+COM3
+####################
+Laser Serial Baudrate::
+19200
+####################
+Laser Serial Timeout::
+.1
+####################
+Laser Serial Stopbits::
+1
+####################
+Laser Serial Bytesize::
+8
+####################
+Laser Serial Parity::
+None
+####################

@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Aug 14 18:29:01 2020
+
+@author: Matthew_VS
+"""
+
+
 """
 Provide GUI class to create a single image hologram.
 
@@ -37,7 +45,7 @@ from list_item import ListItem
 from slm_window import SLM_window
 import pdb
 
-class SLM_Image(HologramCreator):
+class SLM_Single_Image(HologramCreator):
 
     def __init__(self, root: tk.Tk):
         """
@@ -123,7 +131,7 @@ class SLM_Image(HologramCreator):
                 'Equipment/Laser Settings.txt', 'Laser')
         }
         submenu_view = {
-            'Image as Array':lambda:self.display_image_array(self.item.image),
+            'Image as Array':lambda:self.display_image_array(self.image),
             'Mapping Graph':lambda:self.generate_plot(self.item)
         }
         submenu_help = {
@@ -220,17 +228,17 @@ class SLM_Image(HologramCreator):
 
 
     def add_item(self):
-        if len(self.item_list) < 4:
-            self.collect_raw_data()
-            self.modify_and_map()
-            self.item_details.update({
-                'map_timing': self.map_timing,
-                'map_laser_power': self.map_laser_power
-                })
-            self.grating = MyGrating(self.grating_configs)
-            item = ListItem(self.image, self.grating, self.item_details)
-            self.item_list.append(item)
-            self.update_list()
+        self.collect_raw_data()
+        self.modify_and_map()
+        self.item_details.update({
+            'map_timing': self.map_timing,
+            'map_laser_power': self.map_laser_power
+            })
+        self.grating = MyGrating(self.grating_configs)
+        item = self.grating
+        self.item_list.append(item)
+        self.update_list()
+        
             
     def remove_item(self):
     
@@ -249,47 +257,33 @@ class SLM_Image(HologramCreator):
     def fill_item_deatils(self,item):
         
         # Change grating, images and titles
-        self.label_image.configure(image=item.image.original_tkinter)
-        self.label_imagemod.configure(image=item.image.modified_tkinter)
-        self.label_grating.configure(image=item.grating.grating_preview_tk)
-        self.label_image_title.configure(text='%s'%(item.image.name_image))
-        self.label_imagemod_title.configure(text='%s, Modified'%(item.image.name_image))
+        self.label_image.configure(image=self.image.original_tkinter)
+        self.label_imagemod.configure(image=self.image.modified_tkinter)
+        self.label_grating.configure(image=item.grating_preview_tk)
+        self.label_image_title.configure(text='%s'%(self.image.name_image))
+        self.label_imagemod_title.configure(text='%s, Modified'%(self.image.name_image))
         
         # Change info in Selection Details view
-        self.image_name_label.config(text = "Image Name: %s" %(item.image.name_image))
-        self.grating_type_label.config(text = "Grating Type: %s" %(item.grating.configs['g_type']))
-        if item.grating.configs['g_type'] == 'Custom':
+        self.image_name_label.config(text = "Image Name: %s" %(self.image.name_image))
+        self.grating_type_label.config(text = "Grating Type: %s" %(item.configs['g_type']))
+        if item.configs['g_type'] == 'Custom':
             self.rotation_angle_label.config(text = "Rotation Angle: N/A")
-            self.grating_name_label.config(text = "Grating Name: %s" %(item.grating.configs['grating_name']))
+            self.grating_name_label.config(text = "Grating Name: %s" %(item.configs['grating_name']))
             self.y_min_label.config(text = "Y min: N/A")
             self.y_max_label.config(text = "Y max: N/A")
             self.period_label.config(text = "Period: N/A")
             self.reverse_label.config(text = "Reverse: N/A")
         else:
             self.grating_name_label.config(text = "Grating Name: N/A")
-            self.rotation_angle_label.config(text = "Rotation Angle: %s" %(item.grating.configs['g_angle']))
-            self.y_min_label.config(text = "Y min: %s" %(item.grating.configs['y_min']))
-            self.y_max_label.config(text = "Y max: %s" %(item.grating.configs['y_max']))
-            self.period_label.config(text = "Period: %s" %(item.grating.configs['period']))
-            if item.grating.configs['reverse'] == 1:
+            self.rotation_angle_label.config(text = "Rotation Angle: %s" %(item.configs['g_angle']))
+            self.y_min_label.config(text = "Y min: %s" %(item.configs['y_min']))
+            self.y_max_label.config(text = "Y max: %s" %(item.configs['y_max']))
+            self.period_label.config(text = "Period: %s" %(item.configs['period']))
+            if item.configs['reverse'] == 1:
                 result = "Yes"
             else:
                 result = "No"
             self.reverse_label.config(text = "Reverse: %s" %(result))
-        # Change text boxes info
-        self.text_exposure.delete(1.0,tk.END)
-        self.text_exposure.insert(1.0, item.item_details['strings_exposure'])
-        
-        self.text_ignore.delete(1.0,tk.END)
-        self.text_ignore.insert(1.0, item.item_details['strings_ignore'])
-
-        self.text_laser.delete(1.0,tk.END)
-        self.text_laser.insert(1.0, item.item_details['strings_laser'])
-        
-        self.text_grating_color.delete(1.0,tk.END)
-        self.text_grating_color.insert(1.0, item.item_details['strings_grating_color'])
-        
-        super().insert_image_array(item.image, self.text_array)
         
     def onselect(self, event):
             index = self.list_box.curselection()
@@ -581,25 +575,27 @@ class SLM_Image(HologramCreator):
             'Pixels Horizontal':self.pixels_x, 
             'Pixels Vertical':self.pixels_y,
             'Cropping' :self.cropping,
+            'Strings Exposure':self.strings_exposure,
+            'Strings Ignore':self.strings_ignore,
+            'Strings Laser':self.strings_laser,
+            'Strings Grating Color': self.strings_grating_color,
+            'Image File': self.image.file_image
         }
         index = 1
         
         for item in self.item_list:
-            item_dict = {'Strings Exposure %d'%index: item.item_details['strings_exposure'],
-                    'Strings Ignore %d'%index: item.item_details['strings_ignore'],
-                    'Strings Laser %d'%index: item.item_details['strings_laser'],
-                    'Strings Grating Color %d'%index: item.item_details['strings_grating_color'],
-                    'Image File %d'%index: item.image.file_image,
-                    'Grating File %d'%index: item.grating.file_path,
-                    'grating_type %d'%index: item.grating.configs['g_type']
+            item_dict = {
+                    
+                    'Grating File %d'%index: item.file_path,
+                    'grating_type %d'%index: item.configs['g_type']
                     }
             if item_dict['grating_type %d'%index] != 'Custom':
                 item_dict.update(
-                    {'rotation_angle %d'%index: item.grating.configs['g_angle'],
-                    'y_min %d'%index: item.grating.configs['y_min'],
-                    'y_max %d'%index: item.grating.configs['y_max'],
-                    'period %d'%index: item.grating.configs['period'],
-                    'reverse %d'%index: item.grating.configs['reverse']
+                    {'rotation_angle %d'%index: item.configs['g_angle'],
+                    'y_min %d'%index: item.configs['y_min'],
+                    'y_max %d'%index: item.configs['y_max'],
+                    'period %d'%index: item.configs['period'],
+                    'reverse %d'%index: item.configs['reverse']
                     })
             print(item_dict)
             datas.update(item_dict)
@@ -815,23 +811,22 @@ class SLM_Image(HologramCreator):
         prev_powr = None
         y_after_crop = self.image.modified_PIL.height
         x_after_crop = self.image.modified_PIL.width
+        image_as_array = np.transpose(self.image.modified_array)
         
-        for item in self.item_list:
-            item.image_as_array = np.transpose(item.image.modified_array)
-
         for i in range(0, y_after_crop):
             on_this_row = False 
             for j in range(0, x_after_crop):
                 self.check_pause_abort()
                 cur_item = self.item_list[self.grating_map(j, i)]
-                pix = cur_item.image_as_array[j][i]
-                e_time = cur_item.map_timing[pix]
+                pix = image_as_array[j][i]
+                e_time = self.map_timing[pix]
+                powr = self.map_laser_power[pix]
                 if e_time < 0:
                     e_time = 0
-                powr = cur_item.map_laser_power[pix]
+                
                 #Enter conditional if the current pixel should be exposed.
                 if not super().compare_floats(e_time, 0):
-                    self.slm.display(cur_item.grating.grating_tk)
+                    self.slm.display(cur_item.grating_tk)
                     self.update_progress(pix,e_time,powr,i,j)
                     #Change the laser's power if the pixel value has changed.
                     if prev_pix is not None and prev_powr is not None:
@@ -960,23 +955,23 @@ class SLM_Image(HologramCreator):
             self.entry_pixel_y.insert(1, datas['Pixels Vertical'])
         if 'Cropping' in datas:
             self.entry_crop.insert(1, datas['Cropping'])
-        
-        for i in range(1,5):
+        if 'Strings Exposure' in datas:
+            self.text_exposure.insert(1.0, datas['Strings Exposure'])
+        if 'Strings Ignore' in datas:
+            self.text_ignore.insert(1.0, datas['Strings Ignore'])
+        if 'Strings Laser' in datas:
+            self.text_laser.insert(1.0, datas['Strings Laser'])
+        if 'Strings Grating Color' in datas:
+                self.text_grating_color.insert(1.0, datas['Strings Grating Color'])
+        if 'Image File' in datas:
+            self.image_select(datas['Image File'])
             
-            if 'Strings Exposure %d' %(i) in datas:
-                self.text_exposure.delete(1.0,tk.END)
-                self.text_exposure.insert(1.0,datas['Strings Exposure %d' %(i)])
-            if 'Strings Ignore %d' %(i) in datas:
-                self.text_ignore.delete(1.0,tk.END)
-                self.text_ignore.insert(1.0, datas['Strings Ignore %d' %(i)])
-            if 'Strings Laser %d' %(i) in datas:
-                self.text_laser.delete(1.0,tk.END)
-                self.text_laser.insert(1.0, datas['Strings Laser %d' %(i)])
-            if 'Strings Grating Color %d' %(i) in datas:
-                self.text_grating_color.delete(1.0,tk.END)
-                self.text_grating_color.insert(1.0, datas['Strings Grating Color %d' %(i)])
-            if 'Image File %d' %(i) in datas:
-                self.image_select(datas['Image File %d' %(i)])
+        end = 1
+        while('Grating File %d' %(end) in datas):
+            end += 1
+        
+        for i in range(1,end):
+            
             if 'Grating File %d' %(i) in datas:
                 self.grating_select(datas['Grating File %d' %(i)])
             if 'grating_type %d' %(i) in datas:

@@ -1,0 +1,12 @@
+Motor Command Pause::
+1
+####################
+Motor Velocity::
+1
+####################
+Motor Acceleration::
+1
+####################
+Motor Decceleration::
+1
+####################

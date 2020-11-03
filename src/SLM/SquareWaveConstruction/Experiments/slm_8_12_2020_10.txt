@@ -1,0 +1,273 @@
+Hologram Width::
+0.005
+####################
+Hologram Height::
+0.005
+####################
+Spot Size::
+30.0
+####################
+Pixels Horizontal::
+100
+####################
+Pixels Vertical::
+100
+####################
+Cropping::
+(10,10),(90,90)
+####################
+Strings Exposure 1::
+[0,100]:.01x
+[100,101]:5
+[101,256]:.02x
+####################
+Strings Ignore 1::
+[0,1]
+####################
+Strings Laser 1::
+
+####################
+Image File 1::
+C:/Users/mcgeelab/Desktop/Testing Software/Newport-Hologram-Creation/Images/150.png
+####################
+Grating File 1::
+Images/Sample_Grating.png
+####################
+grating_type 1::
+SawTooth
+####################
+rotation_angle 1::
+0
+####################
+y_min 1::
+10
+####################
+y_max 1::
+220
+####################
+period 1::
+80
+####################
+reverse 1::
+0
+####################
+Strings Exposure 2::
+[0,100]:.01x
+[100,101]:5
+[101,256]:.02x
+####################
+Strings Ignore 2::
+[0,1]
+####################
+Strings Laser 2::
+
+####################
+Image File 2::
+C:/Users/mcgeelab/Desktop/Testing Software/Newport-Hologram-Creation/Images/Galaxy M101.png
+####################
+Grating File 2::
+Images/Sample_Grating.png
+####################
+grating_type 2::
+SawTooth
+####################
+rotation_angle 2::
+30
+####################
+y_min 2::
+10
+####################
+y_max 2::
+220
+####################
+period 2::
+80
+####################
+reverse 2::
+0
+####################
+Strings Exposure 3::
+[0,100]:.01x
+[100,101]:5
+[101,256]:.02x
+####################
+Strings Ignore 3::
+[0,1]
+####################
+Strings Laser 3::
+
+####################
+Image File 3::
+C:/Users/mcgeelab/Desktop/Testing Software/Newport-Hologram-Creation/Images/Sample Image.png
+####################
+Grating File 3::
+Images/Sample_Grating.png
+####################
+grating_type 3::
+SawTooth
+####################
+rotation_angle 3::
+60
+####################
+y_min 3::
+10
+####################
+y_max 3::
+220
+####################
+period 3::
+80
+####################
+reverse 3::
+0
+####################
+Strings Exposure 4::
+[0,100]:.01x
+[100,101]:5
+[101,256]:.02x
+####################
+Strings Ignore 4::
+[0,1]
+####################
+Strings Laser 4::
+
+####################
+Image File 4::
+C:/Users/mcgeelab/Desktop/Testing Software/Newport-Hologram-Creation/Images/Galaxy M101.png
+####################
+Grating File 4::
+Images/Sample_Grating.png
+####################
+grating_type 4::
+SawTooth
+####################
+rotation_angle 4::
+90
+####################
+y_min 4::
+10
+####################
+y_max 4::
+220
+####################
+period 4::
+80
+####################
+reverse 4::
+0
+####################
+Motor Command Pause::
+.1
+####################
+Motor Velocity::
+1
+####################
+Motor Acceleration::
+4
+####################
+Motor Decceleration::
+4
+####################
+Shutter Command Pause::
+.1
+####################
+Shutter Operating Mode::
+1
+####################
+Strings Laser 1::
+[0,100]:10
+[100,256]:.02x
+####################
+Strings Laser 2::
+[0,100]:12
+[100,256]:.02x
+####################
+Strings Laser 3::
+[0,100]:13
+[100,256]:.02x
+####################
+Strings Laser 4::
+[0,100]:14
+[100,256]:.02x
+####################
+strings_laser 1::
+
+####################
+strings_laser 2::
+
+####################
+strings_laser 3::
+
+####################
+strings_laser 4::
+
+####################
+strings_laser 0::
+
+####################
+strings_laser::
+[0,256]:6.72
+####################
+Laser Command Pause::
+.1
+####################
+Laser Max Power::
+22
+####################
+Laser Power Change Pause::
+0
+####################
+Motor Serial Port::
+COM25
+####################
+Motor Serial Baudrate::
+19200
+####################
+Motor Serial Timeout::
+.1
+####################
+Motor Serial Stopbits::
+1
+####################
+Motor Serial Bytesize::
+8
+####################
+Motor Serial Parity::
+None
+####################
+Shutter Serial Port::
+COM24
+####################
+Shutter Serial Baudrate::
+9600
+####################
+Shutter Serial Timeout::
+.1
+####################
+Shutter Serial Stopbits::
+1
+####################
+Shutter Serial Bytesize::
+8
+####################
+Shutter Serial Parity::
+None
+####################
+Laser Serial Port::
+COM30
+####################
+Laser Serial Baudrate::
+19200
+####################
+Laser Serial Timeout::
+.1
+####################
+Laser Serial Stopbits::
+1
+####################
+Laser Serial Bytesize::
+8
+####################
+Laser Serial Parity::
+None
+####################

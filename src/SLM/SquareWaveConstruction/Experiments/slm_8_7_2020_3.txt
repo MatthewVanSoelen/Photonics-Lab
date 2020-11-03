@@ -1,0 +1,249 @@
+Hologram Width::
+0.01
+####################
+Hologram Height::
+0.01
+####################
+Spot Size::
+30.0
+####################
+Pixels Horizontal::
+100
+####################
+Pixels Vertical::
+100
+####################
+Cropping::
+(10,10),(90,90)
+####################
+strings_exposure 1::
+
+####################
+strings_ignore 1::
+
+####################
+strings_laser 1::
+
+####################
+Image File 1::
+C:/Users/Matthew_VS/Desktop/number_one.png
+####################
+Grating File 1::
+Images/Sampe_Grating.png
+####################
+grating_type 1::
+SawTooth
+####################
+rotation_angle 1::
+90
+####################
+y_min 1::
+40
+####################
+y_max 1::
+220
+####################
+period 1::
+80
+####################
+reverse 1::
+1
+####################
+strings_exposure 2::
+
+####################
+strings_ignore 2::
+
+####################
+strings_laser 2::
+
+####################
+Image File 2::
+C:/Users/Matthew_VS/Desktop/number_two.png
+####################
+Grating File 2::
+Images/Sampe_Grating.png
+####################
+grating_type 2::
+SawTooth
+####################
+rotation_angle 2::
+90
+####################
+y_min 2::
+40
+####################
+y_max 2::
+220
+####################
+period 2::
+80
+####################
+reverse 2::
+1
+####################
+strings_exposure 3::
+
+####################
+strings_ignore 3::
+
+####################
+strings_laser 3::
+
+####################
+Image File 3::
+C:/Users/Matthew_VS/Desktop/number_three.png
+####################
+Grating File 3::
+Images/Sampe_Grating.png
+####################
+grating_type 3::
+SawTooth
+####################
+rotation_angle 3::
+90
+####################
+y_min 3::
+40
+####################
+y_max 3::
+220
+####################
+period 3::
+80
+####################
+reverse 3::
+1
+####################
+strings_exposure 4::
+
+####################
+strings_ignore 4::
+
+####################
+strings_laser 4::
+
+####################
+Image File 4::
+C:/Users/Matthew_VS/Desktop/number_four.png
+####################
+Grating File 4::
+Images/Sampe_Grating.png
+####################
+grating_type 4::
+SawTooth
+####################
+rotation_angle 4::
+90
+####################
+y_min 4::
+40
+####################
+y_max 4::
+220
+####################
+period 4::
+80
+####################
+reverse 4::
+1
+####################
+Motor Command Pause::
+.1
+####################
+Motor Velocity::
+1
+####################
+Motor Acceleration::
+4
+####################
+Motor Decceleration::
+4
+####################
+Shutter Command Pause::
+.1
+####################
+Shutter Operating Mode::
+1
+####################
+strings_laser 1::
+
+####################
+strings_laser 2::
+
+####################
+strings_laser 3::
+
+####################
+strings_laser 4::
+
+####################
+strings_laser 0::
+
+####################
+strings_laser::
+[0,256]:6.72
+####################
+Laser Command Pause::
+.1
+####################
+Laser Max Power::
+22
+####################
+Laser Power Change Pause::
+0
+####################
+Motor Serial Port::
+COM7
+####################
+Motor Serial Baudrate::
+19200
+####################
+Motor Serial Timeout::
+.1
+####################
+Motor Serial Stopbits::
+1
+####################
+Motor Serial Bytesize::
+8
+####################
+Motor Serial Parity::
+None
+####################
+Shutter Serial Port::
+COM6
+####################
+Shutter Serial Baudrate::
+9600
+####################
+Shutter Serial Timeout::
+.1
+####################
+Shutter Serial Stopbits::
+1
+####################
+Shutter Serial Bytesize::
+8
+####################
+Shutter Serial Parity::
+None
+####################
+Laser Serial Port::
+COM4
+####################
+Laser Serial Baudrate::
+19200
+####################
+Laser Serial Timeout::
+.1
+####################
+Laser Serial Stopbits::
+1
+####################
+Laser Serial Bytesize::
+8
+####################
+Laser Serial Parity::
+None
+####################
