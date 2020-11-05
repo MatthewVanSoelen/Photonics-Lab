@@ -3,7 +3,7 @@ Strings Laser 1::
 [100,256]:.02x
 ####################
 Grating File 1::
-Images/Sample_Grating.png
+C:/Users/Matthew_VS/Desktop/Photonics-Lab/src/SLM/SquareWaveConstruction/Images/Sample_Grating.png
 ####################
 grating_type 1::
 SawTooth
@@ -31,7 +31,7 @@ Strings Laser 2::
 [100,256]:.02x
 ####################
 Grating File 2::
-Images/Sample_Grating.png
+C:/Users/Matthew_VS/Desktop/Photonics-Lab/src/SLM/SquareWaveConstruction/Images/Sample_Grating.png
 ####################
 grating_type 2::
 SawTooth
@@ -66,34 +66,6 @@ Custom
 ####################
 exposure_time 3::
 14.2
-####################
-Strings Laser 4::
-[0,100]:14
-[100,256]:.02x
-####################
-Grating File 4::
-C:/Users/Matthew_VS/Desktop/Photonics-Lab/src/SLM/SquareWaveConstruction/Images/Sample_Grating.png
-####################
-grating_type 4::
-SawTooth
-####################
-exposure_time 4::
-14.2
-####################
-rotation_angle 4::
-13
-####################
-y_min 4::
-20
-####################
-y_max 4::
-128
-####################
-period 4::
-28
-####################
-reverse 4::
-0
 ####################
 Motor Command Pause::
 .1

@@ -54,6 +54,7 @@ class Sawtooth_Hixel(HologramCreator):
         super().__init__(root, window_configs)
         self.item_list = []
         self.list_box = None
+        self.item_len = 2
         self.slm = None
         self.grating_name = None
         self.grating_file_path = None
@@ -165,7 +166,8 @@ class Sawtooth_Hixel(HologramCreator):
             'y_max' : 255,
             'y_min' : 0,
             'period' : 100,
-            'reverse' : 0
+            'reverse' : 0, 
+            'exp_time' : 0
         }
         grating_preview_configs = {
             'max_display_x':200,
@@ -191,9 +193,8 @@ class Sawtooth_Hixel(HologramCreator):
         for item in self.item_list:
             self.list_box.insert(tk.END, "%d: %s"%(self.item_list.index(item),item))
 
-
     def add_item(self):
-        if len(self.item_list) < 4:
+        if len(self.item_list) > -1:
             self.collect_raw_data()
             self.item_details.update({
                 'map_laser_power': self.map_laser_power
@@ -202,6 +203,8 @@ class Sawtooth_Hixel(HologramCreator):
             item = ListItem(self.grating, self.item_details)
             self.item_list.append(item)
             self.update_list()
+            if len(str(self.grating)) > self.item_len:
+                self.listbox.config(width=self.item_len)
             
     def remove_item(self):
     
@@ -224,6 +227,7 @@ class Sawtooth_Hixel(HologramCreator):
         
         # Change info in Selection Details view
         self.grating_type_label.config(text = "Grating Type: %s" %(item.grating.configs['g_type']))
+        self.exp_time_label.config(text = "Exposure Time: %s" %(item.grating.configs['exp_time']))
         if item.grating.configs['g_type'] == 'Custom':
             self.rotation_angle_label.config(text = "Rotation Angle: N/A")
             self.grating_name_label.config(text = "Grating Name: %s" %(item.grating.configs['grating_name']))
@@ -245,6 +249,7 @@ class Sawtooth_Hixel(HologramCreator):
         # Change text boxes info
         self.text_laser.delete(1.0,tk.END)
         self.text_laser.insert(1.0, item.item_details['strings_laser'])
+        
                 
     def onselect(self, event):
             index = self.list_box.curselection()
@@ -365,7 +370,16 @@ class Sawtooth_Hixel(HologramCreator):
         """
         Pull raw data from window and save in variables.
         """
-        
+        #Exposure Time 
+        try: 
+            val = self.entry_exp_time.get().strip()
+            if val != '':
+                self.grating_configs['exp_time'] = float(val)
+            else:
+                self.grating_configs['g_angle'] = 0
+        except ValueError as e:
+            message = 'Exposure Time must be a Decimal Value'
+                
         #Grating Type
         try:
             val = self.type_var.get().strip()
@@ -452,7 +466,8 @@ class Sawtooth_Hixel(HologramCreator):
         for item in self.item_list:
             item_dict = {'Strings Laser %d'%index: item.item_details['strings_laser'],
                     'Grating File %d'%index: item.grating.file_path,
-                    'grating_type %d'%index: item.grating.configs['g_type']
+                    'grating_type %d'%index: item.grating.configs['g_type'],
+                    'exposure_time %d'%index: item.grating.configs['exp_time']
                     }
             if item_dict['grating_type %d'%index] != 'Custom':
                 item_dict.update(
@@ -497,7 +512,7 @@ class Sawtooth_Hixel(HologramCreator):
         Generate a rough runtime estimation and display on window.
         """
         # sum all exposure times together
-        runtime = 10 # number of seconds for experiment 
+        run_time = 10 # number of seconds for experiment 
         end_time = (datetime.now() + timedelta(seconds=run_time)).strftime('%H:%M:%S -- %d/%m/%Y')
         self.label_est_time.configure(text='End Time Estimate: '+end_time)
     
@@ -724,6 +739,7 @@ class Sawtooth_Hixel(HologramCreator):
             self.entry_ymin,
             self.entry_ymax,
             self.entry_period,
+            self.entry_exp_time,
             self.text_laser
         ]
         self.clear_items()
@@ -759,6 +775,10 @@ class Sawtooth_Hixel(HologramCreator):
                 self.entry_period.insert(0, datas['period %d' %(i)])
             if 'reverse %d' %(i) in datas:
                 self.g_reverse.set(datas['reverse %d' %(i)])
+            if 'exposure_time %d' %(i) in datas:
+                self.entry_exp_time.delete(0,tk.END)
+                self.entry_exp_time.insert(0, datas['exposure_time %d' %(i)])
+                
             self.add_item()
         
     def overwrite_settings_serials(self, datas):
