@@ -337,7 +337,7 @@ class Sawtooth_Hixel(HologramCreator):
             super().error_window(e)
             return
         #Further processing of data into mappings, and modifify to images.
-        
+        self.modify_and_map()
         #Generate a time estimation
         self.run_time()
 
@@ -507,6 +507,13 @@ class Sawtooth_Hixel(HologramCreator):
         super().write_file(self.file_experiment, data_dict, 'a')
         super().write_file('Experiments/Previous Experiment.txt', data_dict, 'a')
 
+    def modify_and_map(self):
+        configs_laser = {
+            'Input Laser':self.strings_laser,
+            'Gradient Range':256
+            }
+        self.map_laser_power = super().(configs_laser)
+
     def run_time(self):
         """
         Generate a rough runtime estimation and display on window.
@@ -621,44 +628,19 @@ class Sawtooth_Hixel(HologramCreator):
         """
         # Create SLM Window
         self.create_SLM_window()
-        '''
-        #Move through the image array, expose according to mappings.
-        prev_pix = None
-        prev_powr = None
-        y_after_crop = self.image.modified_PIL.height
-        x_after_crop = self.image.modified_PIL.width
+        
         
         for item in self.item_list:
-            item.image_as_array = np.transpose(item.image.modified_array)
-
-        for i in range(0, y_after_crop):
-            on_this_row = False 
-            for j in range(0, x_after_crop):
-                self.check_pause_abort()
-                cur_item = self.item_list[self.grating_map(j, i)]
-                pix = cur_item.image_as_array[j][i]
-                e_time = cur_item.map_timing[pix]
-                if e_time < 0:
-                    e_time = 0
-                powr = cur_item.map_laser_power[pix]
-                #Enter conditional if the current pixel should be exposed.
-                if not super().compare_floats(e_time, 0):
-                    self.slm.display(cur_item.grating.grating_tk)
-                    self.update_progress(pix,e_time,powr,i,j)
-                    #Change the laser's power if the pixel value has changed.
-                    if prev_pix is not None and prev_powr is not None:
-                        if not super().compare_floats(powr, prev_powr):
-                            self.laser.change_power(powr)
-                    #Move motors to the correct positions and open shutter.
-                    if not on_this_row:
-                        self.motor.move_absolute(2, i*self.delta_y*1000) 
-                        on_this_row = True
-                    self.motor.move_absolute(1, j*self.delta_x*1000) 
-                    self.shutter.toggle(e_time)
-                    #Update previous pixel info to current pixel info
-                    prev_pix = pix
-                    prev_powr = powr
-                '''
+            self.check_pause_abort()
+            e_time = item.grating.configs['exp_time']
+            powr = item.map_laser_power
+            if e_time < 0:
+                e_time = 0
+            self.slm.display(item.grating.grating_tk)
+            if not super().compare_floats(powr, prev_powr):
+                self.laser.change_power(powr)
+            self.shutter.toggle(e_time)
+            
     
 
     def check_pause_abort(self):

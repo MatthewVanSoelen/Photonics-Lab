@@ -185,6 +185,7 @@ class MyGrating:
                 self.modified_tkinter = self.get_window_image(image)
                 self.modified_array = self.image_as_array(image)
             return image
+        
 
         def __repr__(self):
             if self.configs['g_type'] == 'Custom':
