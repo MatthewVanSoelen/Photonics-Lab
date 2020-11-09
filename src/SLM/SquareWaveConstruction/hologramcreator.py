@@ -76,11 +76,13 @@ class HologramCreator(App):
 
         tk.Label(frame, text='While Running', font="bold").pack()
         self.listbox = tk.Listbox(frame, height=3, selectmode=tk.SINGLE)
-        self.listbox.pack()
+        self.listbox.config(width=20)
+        self.listbox.pack(fill = tk.BOTH)
         self.listbox.insert(1, "Run")
         self.listbox.insert(2, "Pause")
         self.listbox.insert(3, "Abort")
         self.listbox.activate(1)
+        self.listbox.config(width=80)
         self.label_start_time = tk.Label(frame, text='Start Time: ')
         self.label_start_time.pack()
         self.label_est_time = tk.Label(frame, text='End Time Estimate: ')
@@ -261,6 +263,7 @@ class HologramCreator(App):
         except Exception:
             raise Exception('Error: laser string is improperly formatted.')
         return map_laser_power
+        
     
     def map_gratings(self, configs:dict):
         def cycle_image( j, i):

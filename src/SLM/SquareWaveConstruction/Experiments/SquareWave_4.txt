@@ -78,10 +78,10 @@ grating_type 4::
 SawTooth
 ####################
 exposure_time 4::
-2.5
+14.2
 ####################
 rotation_angle 4::
-45
+13
 ####################
 y_min 4::
 20

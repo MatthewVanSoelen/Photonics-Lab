@@ -19,14 +19,14 @@ class ListItem():
 
     def __repr__(self):
         if self.grating.configs['g_type'] == 'Custom':
-            name = "%s %s | %d" %(self.grating.configs['g_type'], self.grating.configs['grating_name'], self.grating.configs['exp_time'])
+            name = "%s %s | " %(self.grating.configs['g_type'], self.grating.configs['grating_name']) + "{:.2f}".format( self.grating.configs['exp_time'])
         else:
-            name = "%s %s | %d" %(self.grating.configs['g_type'], self.grating.configs['g_angle'], self.grating.configs['exp_time'])
+            name = "%s %s | " %(self.grating.configs['g_type'], self.grating.configs['g_angle']) + "{:.2f}".format( self.grating.configs['exp_time'])
         return name
     
     def __str__ (self):
         if self.grating.configs['g_type'] == 'Custom':
-            name = "%s %s | %d" %(self.grating.configs['g_type'], self.grating.configs['grating_name'], self.grating.configs['exp_time'])
+            name = "%s %s | " %(self.grating.configs['g_type'], self.grating.configs['grating_name']) + "{:.2f}".format( self.grating.configs['exp_time'])
         else:
-            name = "%s %s | %d" %(self.grating.configs['g_type'], self.grating.configs['g_angle'], self.grating.configs['exp_time'])
+            name = "%s %s | " %(self.grating.configs['g_type'], self.grating.configs['g_angle']) + "{:.2f}".format( self.grating.configs['exp_time'])
         return name

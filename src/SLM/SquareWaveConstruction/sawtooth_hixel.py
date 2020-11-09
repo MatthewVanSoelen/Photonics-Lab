@@ -510,16 +510,19 @@ class Sawtooth_Hixel(HologramCreator):
     def modify_and_map(self):
         configs_laser = {
             'Input Laser':self.strings_laser,
-            'Gradient Range':256
+            'Gradient Range':len(self.item_list)
             }
-        self.map_laser_power = super().(configs_laser)
+        self.map_laser_power = super().map_laser_power(configs_laser)
+        print("Map_timing", self.map_laser_power)
 
     def run_time(self):
         """
         Generate a rough runtime estimation and display on window.
         """
         # sum all exposure times together
-        run_time = 10 # number of seconds for experiment 
+        run_time = 0 # number of seconds for experiment 
+        for item in self.item_list:
+            run_time += item.grating.configs['exp_time']
         end_time = (datetime.now() + timedelta(seconds=run_time)).strftime('%H:%M:%S -- %d/%m/%Y')
         self.label_est_time.configure(text='End Time Estimate: '+end_time)
     
@@ -629,11 +632,12 @@ class Sawtooth_Hixel(HologramCreator):
         # Create SLM Window
         self.create_SLM_window()
         
+        powr = self.item_list[0].map_laser_power[0]
         
-        for item in self.item_list:
+        for index, item in enumerate(self.item_list):
             self.check_pause_abort()
             e_time = item.grating.configs['exp_time']
-            powr = item.map_laser_power
+            powr = item.map_laser_power[index]
             if e_time < 0:
                 e_time = 0
             self.slm.display(item.grating.grating_tk)
