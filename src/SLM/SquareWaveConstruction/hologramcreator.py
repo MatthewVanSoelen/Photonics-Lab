@@ -125,13 +125,17 @@ class HologramCreator(App):
         tk.Label(frame, text='Exposure time (s)', font='bold').grid(row=4, column=1)
         self.entry_exp_time = tk.Entry(frame, width = 15)
         self.entry_exp_time.grid(row=5, column = 1)
+        
+        tk.Label(frame, text="Laser Power (?)", font='bold').grid(row=6, column=0)
+        self.entry_laser_power = tk.Entry(frame, width = 15)
+        self.entry_laser_power.grid(row=7, column=0)
 
         self.g_reverse = tk.IntVar()
-        tk.Checkbutton(frame, text = 'Reverse Grating', variable = self.g_reverse).grid(row=6, column=1)
+        tk.Checkbutton(frame, text = 'Reverse Grating', variable = self.g_reverse).grid(row=8, column=0)
         
         selection_frame = tk.Frame(frame, borderwidth=2, relief=tk.SOLID, pady=4)
-        selection_frame.grid(row=6, column=0)
-        tk.Label(selection_frame, text='Custom Grating', font='bold').grid(row=0, column=0)
+        selection_frame.grid(row=8, column=0)
+        tk.Label(selection_frame, text='Upload Grating', font='bold').grid(row=0, column=0)
         self.button_image = tk.Button(selection_frame, text='Select a Grating', 
             command=self.grating_select)
         self.button_image.grid(row=0, column=1)
@@ -180,6 +184,8 @@ class HologramCreator(App):
         self.reverse_label.grid(row=4, column=1)
         self.exp_time_label = tk.Label(sub_frame, text="Exposure Time: ")
         self.exp_time_label.grid(row=5, column=0)
+        self.rotation_angle_label = tk.Label(sub_frame, text = "Laser Power: ")
+        self.rotation_angle_label.grid(row=5, column=1)
         
 ##############################################################################
 #Data Processing

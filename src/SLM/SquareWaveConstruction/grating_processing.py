@@ -189,14 +189,14 @@ class MyGrating:
 
         def __repr__(self):
             if self.configs['g_type'] == 'Custom':
-                name = "%s %s | %d" %(self.configs['g_type'], self.configs['grating_name'], self.configs['exp_time'])
+                name = "%s %s | %d" %(self.configs['g_type'], self.configs['grating_name'], self.configs['exp_time'], "s")
             else:
-                name = "%s %s | %d" %(self.configs['g_type'], self.configs['g_angle'], self.configs['exp_time'])
+                name = "%s %s | %d" %(self.configs['g_type'], self.configs['g_angle'], self.configs['exp_time'], "s")
             return name
     
         def __str__ (self):
             if self.configs['g_type'] == 'Custom':
-                name = "%s %s | %d" %(self.configs['g_type'], self.configs['grating_name'], self.configs['exp_time'])
+                name = "%s %s | %d" %(self.configs['g_type'], self.configs['grating_name'], self.configs['exp_time'], "s")
             else:
-                name = "%s %s | %d" %(self.configs['g_type'], self.configs['g_angle'], self.configs['exp_time'])
+                name = "%s %s | %d" %(self.configs['g_type'], self.configs['g_angle'], self.configs['exp_time'], "s")
             return name

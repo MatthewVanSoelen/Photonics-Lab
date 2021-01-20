@@ -76,9 +76,9 @@ class Sawtooth_Hixel(HologramCreator):
         '''
         super().setup_exposure_details(self.frames[0][3])
         super().setup_ignore_details(self.frames[0][3])
-        '''
+        
         super().setup_laser_details(self.frames[2][2])
-        '''
+        
         super().setup_grating_details(self.frames[0][3])
         super().setup_image_array(self.frames[0][4])
         '''
@@ -196,11 +196,9 @@ class Sawtooth_Hixel(HologramCreator):
     def add_item(self):
         if len(self.item_list) > -1:
             self.collect_raw_data()
-            self.item_details.update({
-                'map_laser_power': self.map_laser_power
-                })
+            
             self.grating = MyGrating(self.grating_configs)
-            item = ListItem(self.grating, self.item_details)
+            item = ListItem(self.grating)
             self.item_list.append(item)
             self.update_list()
             if len(str(self.grating)) > self.item_len:
@@ -246,9 +244,6 @@ class Sawtooth_Hixel(HologramCreator):
             else:
                 result = "No"
             self.reverse_label.config(text = "Reverse: %s" %(result))
-        # Change text boxes info
-        self.text_laser.delete(1.0,tk.END)
-        self.text_laser.insert(1.0, item.item_details['strings_laser'])
         
                 
     def onselect(self, event):
@@ -337,7 +332,7 @@ class Sawtooth_Hixel(HologramCreator):
             super().error_window(e)
             return
         #Further processing of data into mappings, and modifify to images.
-        self.modify_and_map()
+        '''self.modify_and_map()'''
         #Generate a time estimation
         self.run_time()
 
@@ -444,11 +439,18 @@ class Sawtooth_Hixel(HologramCreator):
                 raise InputError(message, e)
             self.grating_configs['reverse'] = self.g_reverse.get()
             
-        self.strings_laser = self.text_laser.get(1.0, 'end-1c').strip()
+            #Laser Power
+            try:
+                val = self.entry_laser_power.get().strip()
+                if val != '' or float(val) > -1:
+                    self.grating_configs['laser_power'] = float(val)
+                else:
+                    self.grating_configs['laser_power'] = 6
+            except ValueError as e:
+                message = 'Laser power must be an integer greater than -1'
+                raise InputError(message, e)
+            self.grating_configs['laser_power'] = self.entry_laser_power.get()
        
-        self.item_details = {
-            'strings_laser':self.strings_laser
-            }
     
     def write_experiment(self):
         """
@@ -471,7 +473,8 @@ class Sawtooth_Hixel(HologramCreator):
                     }
             if item_dict['grating_type %d'%index] != 'Custom':
                 item_dict.update(
-                    {'rotation_angle %d'%index: item.grating.configs['g_angle'],
+                    {'power_level %d'%index:item.grating.configs['laser_power'],
+                    'rotation_angle %d'%index: item.grating.configs['g_angle'],
                     'y_min %d'%index: item.grating.configs['y_min'],
                     'y_max %d'%index: item.grating.configs['y_max'],
                     'period %d'%index: item.grating.configs['period'],
@@ -506,14 +509,14 @@ class Sawtooth_Hixel(HologramCreator):
             data_dict.update(data)
         super().write_file(self.file_experiment, data_dict, 'a')
         super().write_file('Experiments/Previous Experiment.txt', data_dict, 'a')
-
+        '''
     def modify_and_map(self):
         configs_laser = {
             'Input Laser':self.strings_laser,
             'Gradient Range':len(self.item_list)
             }
         self.map_laser_power = super().map_laser_power(configs_laser)
-        print("Map_timing", self.map_laser_power)
+        print("Map_timing", self.map_laser_power)'''
 
     def run_time(self):
         """
@@ -628,21 +631,22 @@ class Sawtooth_Hixel(HologramCreator):
     def movement(self):
         """
         Conduct the physical movement of machinery and such.
+        Loop through gratings for single pixel,
+        expose pixel with approriate time and grating.
         """
         # Create SLM Window
         self.create_SLM_window()
         
-        powr = self.item_list[0].map_laser_power[0]
+        powr = self.item_list[0].grating.configs['laser_power']
         
         for index, item in enumerate(self.item_list):
             self.check_pause_abort()
             e_time = item.grating.configs['exp_time']
-            powr = item.map_laser_power[index]
+            powr = item.grating.configs['laser_power']
             if e_time < 0:
                 e_time = 0
             self.slm.display(item.grating.grating_tk)
-            if not super().compare_floats(powr, prev_powr):
-                self.laser.change_power(powr)
+            
             self.shutter.toggle(e_time)
             
     
@@ -726,7 +730,7 @@ class Sawtooth_Hixel(HologramCreator):
             self.entry_ymax,
             self.entry_period,
             self.entry_exp_time,
-            self.text_laser
+            self.entry_laser_power
         ]
         self.clear_items()
         self.g_reverse.set('0')
@@ -740,9 +744,9 @@ class Sawtooth_Hixel(HologramCreator):
         #If data is not present, do not fill
         for i in range(1,5):
             
-            if 'Strings Laser %d' %(i) in datas:
-                self.text_laser.delete(1.0,tk.END)
-                self.text_laser.insert(1.0, datas['Strings Laser %d' %(i)])
+            if 'laser_power %d' %(i) in datas:
+                self.entry_laser_power.delete(0,tk.END)
+                self.entry_laser_power.insert(0, datas['laser_power %d' %(i)])
             if 'Grating File %d' %(i) in datas:
                 self.grating_select(datas['Grating File %d' %(i)])
             if 'grating_type %d' %(i) in datas:
@@ -793,7 +797,7 @@ class Sawtooth_Hixel(HologramCreator):
                     shutter_serials[key] = datas[key]
                 else:
                     shutter_settings[key] = datas[key]
-            if 'LASER' in KEY and 'STRINGS LASER' != KEY: 
+            if 'LASER' in KEY and 'laser_power' != KEY: 
                 if has_SERIAL:
                     laser_serials[key] = datas[key]
                 else:
