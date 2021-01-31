@@ -41,7 +41,7 @@ class HologramCreator(App):
         frames_vertical = (configs['Frames Vertical'] if 'Frames Vertical' 
             in configs else 0)
         if 'Window Title' not in configs:
-            configs['Window Title'] = ('Sastooth Hixel Creator -- '
+            configs['Window Title'] = ('Sawtooth Hixel Creator -- '
                 + 'Copyright 2019, Matthew Van Soelen, all rights reserved')
         #Call to parent consructor.
         super().__init__(root, configs)
@@ -98,7 +98,7 @@ class HologramCreator(App):
         """
         Set up grating options entry widgets
         """
-        frame.config(borderwidth=2, relief=tk.SUNKEN)
+        frame.config(borderwidth=2, relief=tk.SUNKEN, bg = 'gainsboro')
 
         tk.Label(frame, text='Rotation Angle', font='bold').grid(row=0, column=0)
         self.entry_angle = tk.Entry(frame, width = 15)
@@ -184,8 +184,8 @@ class HologramCreator(App):
         self.reverse_label.grid(row=4, column=1)
         self.exp_time_label = tk.Label(sub_frame, text="Exposure Time: ")
         self.exp_time_label.grid(row=5, column=0)
-        self.rotation_angle_label = tk.Label(sub_frame, text = "Laser Power: ")
-        self.rotation_angle_label.grid(row=5, column=1)
+        self.laser_power_label = tk.Label(sub_frame, text = "Laser Power: ")
+        self.laser_power_label.grid(row=5, column=1)
         
 ##############################################################################
 #Data Processing

@@ -187,16 +187,16 @@ class MyGrating:
             return image
         
 
-        def __repr__(self):
+        def __repr__ (self):
             if self.configs['g_type'] == 'Custom':
-                name = "%s %s | %d" %(self.configs['g_type'], self.configs['grating_name'], self.configs['exp_time'], "s")
+                name = "%s %s" %(self.configs['g_type'], self.configs['grating_name']) + "\N{DEGREE SIGN} | {:.2f} (s)| {:.2f} (mW)".format( self.configs['exp_time'],self.configs['laser_power'])
             else:
-                name = "%s %s | %d" %(self.configs['g_type'], self.configs['g_angle'], self.configs['exp_time'], "s")
+                name = "%s %s" %(self.configs['g_type'], self.configs['g_angle']) + "\N{DEGREE SIGN} | {:.2f} (s)| {:.2f} (mW)".format( self.configs['exp_time'],self.configs['laser_power'])
             return name
     
         def __str__ (self):
             if self.configs['g_type'] == 'Custom':
-                name = "%s %s | %d" %(self.configs['g_type'], self.configs['grating_name'], self.configs['exp_time'], "s")
+                name = "%s %s" %(self.configs['g_type'], self.configs['grating_name']) + "\N{DEGREE SIGN} | {:.2f} (s)| {:.2f} (mW)".format( self.configs['exp_time'],self.configs['laser_power'])
             else:
-                name = "%s %s | %d" %(self.configs['g_type'], self.configs['g_angle'], self.configs['exp_time'], "s")
+                name = "%s %s" %(self.configs['g_type'], self.configs['g_angle']) + "\N{DEGREE SIGN} | {:.2f} (s)| {:.2f} (mW)".format( self.configs['exp_time'],self.configs['laser_power'])
             return name

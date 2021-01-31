@@ -233,12 +233,14 @@ class Sawtooth_Hixel(HologramCreator):
             self.y_max_label.config(text = "Y max: N/A")
             self.period_label.config(text = "Period: N/A")
             self.reverse_label.config(text = "Reverse: N/A")
+            self.laser_power_label.config(text = "Laser Power: %s" %(item.grating.configs['laser_power']))
         else:
             self.grating_name_label.config(text = "Grating Name: N/A")
             self.rotation_angle_label.config(text = "Rotation Angle: %s" %(item.grating.configs['g_angle']))
             self.y_min_label.config(text = "Y min: %s" %(item.grating.configs['y_min']))
             self.y_max_label.config(text = "Y max: %s" %(item.grating.configs['y_max']))
             self.period_label.config(text = "Period: %s" %(item.grating.configs['period']))
+            self.laser_power_label.config(text = "Laser Power: %s" %(item.grating.configs['laser_power']))
             if item.grating.configs['reverse'] == 1:
                 result = "Yes"
             else:
@@ -367,17 +369,28 @@ class Sawtooth_Hixel(HologramCreator):
         """
         #Exposure Time 
         try: 
-            val = self.entry_exp_time.get().strip()
+            val = self.entry_exp_time.get().replace(" ","")
             if val != '':
                 self.grating_configs['exp_time'] = float(val)
             else:
                 self.grating_configs['g_angle'] = 0
         except ValueError as e:
-            message = 'Exposure Time must be a Decimal Value'
+            message = 'Exposure Time must be a Decimal VaFlue'
+            
+        #Laser Power
+        try:
+            val = self.entry_laser_power.get().replace(" ","")
+            if len(val) > 0 and float(val) > -1:
+                self.grating_configs['laser_power'] = float(val)
+            else:
+                self.grating_configs['laser_power'] = 0.0
+        except ValueError as e:
+            message = 'Laser power must be an integer greater than -1'
+            raise InputError(message, e)
                 
         #Grating Type
         try:
-            val = self.type_var.get().strip()
+            val = self.type_var.get().replace(" ","")
             if val != '':
                 self.grating_configs['g_type'] = str(val)
             else:
@@ -395,7 +408,7 @@ class Sawtooth_Hixel(HologramCreator):
             #Rotation Angle
             try:
                 #pdb.set_trace()
-                val = self.entry_angle.get().strip()
+                val = self.entry_angle.get().replace(" ","")
                 if val != '':
                     self.grating_configs['g_angle'] = int(val)
                 else:
@@ -407,7 +420,7 @@ class Sawtooth_Hixel(HologramCreator):
 
             #Ymin
             try:
-                val = self.entry_ymin.get().strip()
+                val = self.entry_ymin.get().replace(" ","")
                 if val != '':
                     self.grating_configs['y_min'] = int(val)
                 else:
@@ -418,7 +431,7 @@ class Sawtooth_Hixel(HologramCreator):
 
             #Ymax
             try:
-                val = self.entry_ymax.get().strip()
+                val = self.entry_ymax.get().replace(" ","")
                 if val != '':
                     self.grating_configs['y_max'] = int(val)
                 else:
@@ -429,7 +442,7 @@ class Sawtooth_Hixel(HologramCreator):
 
             #Period
             try:
-                val = self.entry_period.get().strip()
+                val = self.entry_period.get().replace(" ","")
                 if val != '' or val > 0:
                     self.grating_configs['period'] = int(val)
                 else:
@@ -437,19 +450,10 @@ class Sawtooth_Hixel(HologramCreator):
             except ValueError as e:
                 message = 'Period width (pixels) must be an int greater than 0'
                 raise InputError(message, e)
+                
             self.grating_configs['reverse'] = self.g_reverse.get()
             
-            #Laser Power
-            try:
-                val = self.entry_laser_power.get().strip()
-                if val != '' or float(val) > -1:
-                    self.grating_configs['laser_power'] = float(val)
-                else:
-                    self.grating_configs['laser_power'] = 6
-            except ValueError as e:
-                message = 'Laser power must be an integer greater than -1'
-                raise InputError(message, e)
-            self.grating_configs['laser_power'] = self.entry_laser_power.get()
+            
        
     
     def write_experiment(self):
@@ -466,14 +470,15 @@ class Sawtooth_Hixel(HologramCreator):
         index = 1
         
         for item in self.item_list:
-            item_dict = {'Strings Laser %d'%index: item.item_details['strings_laser'],
+            item_dict = {
                     'Grating File %d'%index: item.grating.file_path,
                     'grating_type %d'%index: item.grating.configs['g_type'],
-                    'exposure_time %d'%index: item.grating.configs['exp_time']
+                    'exposure_time %d'%index: item.grating.configs['exp_time'],
+                    'laser_power %d'%index:item.grating.configs['laser_power'],
                     }
             if item_dict['grating_type %d'%index] != 'Custom':
                 item_dict.update(
-                    {'power_level %d'%index:item.grating.configs['laser_power'],
+                    {
                     'rotation_angle %d'%index: item.grating.configs['g_angle'],
                     'y_min %d'%index: item.grating.configs['y_min'],
                     'y_max %d'%index: item.grating.configs['y_max'],
@@ -546,6 +551,7 @@ class Sawtooth_Hixel(HologramCreator):
         self.listbox.selection_set(0)
         self.root.update()
         #Establish and initialize the equipment for experiment.
+        '''
         try:
             print("test")
             #Use simple threading to prevent laggy main window.
@@ -556,6 +562,7 @@ class Sawtooth_Hixel(HologramCreator):
                 time.sleep(.25)
             x.join()
             #pdb.set_trace()
+            
         except EquipmentError as e: 
             super().error_window(e)
             super().close_ports(self.equipment)
@@ -571,6 +578,7 @@ class Sawtooth_Hixel(HologramCreator):
             super().error_window(EquipmentError(message, e))
             super().close_ports(self.equipment)
             return
+        '''
         #Conduct the movement and exposure process.
         try:
             #Use simple threading to prevent laggy main window.
@@ -584,10 +592,10 @@ class Sawtooth_Hixel(HologramCreator):
             #self.slm_thread.join()
 
         except UserInterruptError as e:
-            super().close_ports(self.equipment)
-            super().error_window(e)
+            ''' super().close_ports(self.equipment)
+            super().error_window(e) '''
             return
-        except EquipmentError as e:
+        ''' except EquipmentError as e:
             super().close_ports(self.equipment)
             super().error_window(e)
             return
@@ -598,7 +606,7 @@ class Sawtooth_Hixel(HologramCreator):
             return
         #Finally, perform clean up processes.
         self.experiment_finish()
-
+        '''
 ##############################################################################
 #Run Experiment Worker Functions
 ############################################################################## 
@@ -638,16 +646,20 @@ class Sawtooth_Hixel(HologramCreator):
         self.create_SLM_window()
         
         powr = self.item_list[0].grating.configs['laser_power']
-        
+        prev_powr = powr
         for index, item in enumerate(self.item_list):
             self.check_pause_abort()
             e_time = item.grating.configs['exp_time']
             powr = item.grating.configs['laser_power']
+            # if not super().compare_floats(powr, prev_powr):
+                # self.laser.change_power(powr)
             if e_time < 0:
                 e_time = 0
             self.slm.display(item.grating.grating_tk)
-            
-            self.shutter.toggle(e_time)
+            time.sleep(e_time)
+            # prev_powr = powr
+            # self.shutter.toggle(e_time)
+        self.slm.close_window()
             
     
 
@@ -742,8 +754,8 @@ class Sawtooth_Hixel(HologramCreator):
         """
         
         #If data is not present, do not fill
-        for i in range(1,5):
-            
+        i = 1
+        while('exposure_time %d' %(i) in datas):
             if 'laser_power %d' %(i) in datas:
                 self.entry_laser_power.delete(0,tk.END)
                 self.entry_laser_power.insert(0, datas['laser_power %d' %(i)])
@@ -768,7 +780,7 @@ class Sawtooth_Hixel(HologramCreator):
             if 'exposure_time %d' %(i) in datas:
                 self.entry_exp_time.delete(0,tk.END)
                 self.entry_exp_time.insert(0, datas['exposure_time %d' %(i)])
-                
+            i += 1
             self.add_item()
         
     def overwrite_settings_serials(self, datas):

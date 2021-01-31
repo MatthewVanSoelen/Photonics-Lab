@@ -30,7 +30,7 @@ class App:
         window_title = (configs['Window Title'] if 'Window Title' 
             in configs else 'App')
         self.root.title(window_title)
-        self.root.config()
+        self.root.config(bg='gainsboro')
         #Reconfigure size of window if nessecary and center.
         if 'Window Width' not in configs and 'Window Height' not in configs:
             return

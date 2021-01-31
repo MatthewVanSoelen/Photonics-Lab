@@ -25,60 +25,6 @@ period 1::
 reverse 1::
 0
 ####################
-Grating File 2::
-Images/Sample_Grating.png
-####################
-grating_type 2::
-SawTooth
-####################
-exposure_time 2::
-8.3
-####################
-laser_power 2::
-1.2
-####################
-rotation_angle 2::
-45
-####################
-y_min 2::
-20
-####################
-y_max 2::
-220
-####################
-period 2::
-85
-####################
-reverse 2::
-0
-####################
-Grating File 3::
-Images/Sample_Grating.png
-####################
-grating_type 3::
-SawTooth
-####################
-exposure_time 3::
-1.6
-####################
-laser_power 3::
-6.4
-####################
-rotation_angle 3::
-90
-####################
-y_min 3::
-13
-####################
-y_max 3::
-165
-####################
-period 3::
-95
-####################
-reverse 3::
-0
-####################
 Motor Command Pause::
 .1
 ####################
@@ -96,15 +42,6 @@ Shutter Command Pause::
 ####################
 Shutter Operating Mode::
 1
-####################
-laser_power 1::
-2.3
-####################
-laser_power 2::
-1.2
-####################
-laser_power 3::
-6.4
 ####################
 Strings Laser 1::
 [0,100]:10
