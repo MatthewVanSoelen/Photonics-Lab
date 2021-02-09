@@ -5,7 +5,6 @@ from matplotlib import cm
 import numpy as np
 from PIL import Image
 import os
-import sys
 
 
 class Pattern:
