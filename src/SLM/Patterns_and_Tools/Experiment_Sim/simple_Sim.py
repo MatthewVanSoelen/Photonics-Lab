@@ -8,13 +8,22 @@ import os
 
 
 class Pattern:
-    def __init__(self, height:int, width:int):
-        self.height = height
-        self.width = width
+    def __init__(self, height:int=None, width:int=None, file_name:str = None):
         
-        self.data = np.zeros((height, width), dtype = np.uint16)
-        self.x_set = set(range(0, width))
-        self.y_set = set(range(0, height))
+
+        if file_name:
+            image = Image.open(file_name).convert('L')
+            self.data = np.asarray(image, dtype = np.uint16)
+            self.height, self.width = self.data.shape
+        elif height and width:
+            self.data = np.zeros((height, width), dtype = np.uint16)
+            self.height = height
+            self.width = width
+        else:
+            exit(0)
+
+        self.x_set = set(range(0, self.width))
+        self.y_set = set(range(0, self.height))
 
         current_path = os.getcwd()
         self.folder_path = os.path.join(current_path, "Patterns")
@@ -55,16 +64,17 @@ class Pattern:
 
     def create_FFT_image(self):
         self.fft = np.fft.fft2(self.image)
-        self.fft = np.abs(self.fft)
-        max_value = np.max(self.fft)
+        fft_shift = np.fft.fftshift(self.fft)
+        self.mag_spectrum = np.abs(fft_shift)
+        max_value = np.max(self.mag_spectrum)
         if max_value <= 0:
             c = 0
         else:
             c = 255/(1 + np.log(max_value))
 
-        self.fft = c * np.log(1 + self.fft)
+        self.mag_spectrum = c * np.log(1 + self.mag_spectrum)
 
-        self.fft_image = Image.fromarray(self.fft)
+        self.fft_image = Image.fromarray(self.mag_spectrum)
         self.fft_image = self.fft_image.convert('L')
 
     def display_fft_image(self):
@@ -79,18 +89,20 @@ class Pattern:
         x = np.arange(0, self.width, 1)
         y = np.arange(0, self.height, 1)
         X, Y = np.meshgrid(x, y)
-        Z = self.fft
+        Z = self.mag_spectrum
+
 
         surface = ax.plot_surface(X, Y, Z, cmap=cm.cividis)
         fig.colorbar(surface, shrink=0.5, aspect=5)
         plt.show()
 
 pattern = Pattern(width=1920, height=1152)
-pattern.add_vertical_bar(930, 990, 120)
+# pattern = Pattern(file_name="Patterns/screen_shot.png")
+# pattern.add_vertical_bar(930, 990, 120)
 # pattern.add_vertical_bar(100, 160, 240)
-pattern.add_horizontal_bar(566, 586, 116)
+# pattern.add_horizontal_bar(566, 586, 116)
 # pattern.add_horizontal_bar(90, 130, 16)
-# pattern.add_circle(100, 960, 576, 200)
+pattern.add_circle(100, 960, 576, 200)
 pattern.create_image()
 pattern.save_image("pattern_temp.png")
 pattern.display_image()
