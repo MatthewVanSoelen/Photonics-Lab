@@ -11,13 +11,14 @@ import numpy as np
 
 import os
 import ntpath
+import sys
 
 class SimGUI:
     def __init__(self, root: Tk):
 
         self.root = root
         self.root.title('Surface Grating Simulation')
-        self.root.minsize(1000,500)
+        self.root.minsize(800,500)
         self.root.config(bg='gainsboro')
         self.thumbnail_size = (450,450)
 
@@ -48,8 +49,8 @@ class SimGUI:
         img.show()
 
     def save_image(self, image: Image):
-        if self.file_name:
-            file_name = self.file_name
+        if self.pattern_name:
+            file_name = self.pattern_name
         else:
             file_name = "Canvas.png"
         file_name = os.path.join(self.folder_path, file_name)
@@ -250,21 +251,23 @@ class SimGUI:
 
         if shift:
             fft = np.fft.fftshift(fft)
-
+        
         self.fft = np.abs(fft)
+
         max_value = np.max(self.fft)
         if max_value <= 0:
             c = 0
         else:
-            c = 255/(1 + np.log(max_value))
+            c = 255/(1 + max_value)
 
-        self.fft = c * np.log(1 + self.fft)
-
+        self.fft = c * self.fft
+        print(type(self.fft))
         self.fft_image = Image.fromarray(self.fft)
         self.fft_image = self.fft_image.convert('L')
         self.thumbnail_fft = self.fft_image.copy()
         self.thumbnail_fft.thumbnail(self.thumbnail_size)
         self.tk_fft = ImageTk.PhotoImage(self.thumbnail_fft)
+
 
     def apply_blur(self):
         self.orig_image = self.orig_image.filter(ImageFilter.GaussianBlur(radius=int(self.guassain_num.get())))
@@ -333,7 +336,8 @@ class SimGUI:
             self.display_fft_button.config(text="Fouier Tranform: Canvas")
 
         elif reason == "Draw":
-            
+            print("Draw")
+            self.data = np.asarray(self.orig_image, dtype=np.uint16)
             self.thumbnail_image = self.orig_image.copy()
             self.thumbnail_image.thumbnail(self.thumbnail_size)
             self.tk_image = ImageTk.PhotoImage(self.thumbnail_image)
