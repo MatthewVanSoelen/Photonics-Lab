@@ -40,6 +40,16 @@ class SimGUI:
         self.thumbnail_fft = self.thumbnail_image
         self.tk_fft = self.tk_image
 
+        self.i_fft = self.data
+        self.i_fft_image = self.orig_image
+        self.thumbnail_i_fft = self.thumbnail_image
+        self.tk_i_fft = self.tk_image
+
+        current_path = os.getcwd()
+        self.folder_path = os.path.join(current_path, "Patterns")
+        if not os.path.exists(self.folder_path):
+            os.makedirs(self.folder_path)
+
         self.file_path = None
         self.pattern_name = "Default"
 
@@ -91,28 +101,63 @@ class SimGUI:
         Create various elements apart of the left GUI
         """
 
-
         self.source_options = {'Canvas','Upload'}
         self.pattern_source = StringVar(self.root)
         self.pattern_source.set('Canvas')
         OptionMenu(self.l_frame, self.pattern_source, *self.source_options).grid(row=0, column=0)
 
-        
+        scaling_method_frame = Frame(self.l_frame, borderwidth=2, relief=SUNKEN)
+        scaling_method_frame.grid(row=1, column=0)
+
+        self.scaling_method_state = IntVar(self.root)
+        self.scaling_method_state.set(0)
+        Radiobutton(scaling_method_frame, 
+                    text='Linear scaling', 
+                    variable=self.scaling_method_state,
+                    value = 0).grid(row=0,column=0)
+        Radiobutton(scaling_method_frame, 
+                    text='Logarithmic scaling', 
+                    variable=self.scaling_method_state,
+                    value = 1).grid(row=1,column=0)
 
         self.upload_pattern_button = Button(self.l_frame, 
                                             text='Select a Pattern', 
                                             command=self.pattern_select)
-        self.upload_pattern_button.grid(row=1, column=0)
+        self.upload_pattern_button.grid(row=0, column=1)
+
+        toggle_frame = Frame(self.l_frame)
+        toggle_frame.grid(row=1, column=1)
 
         self.fft_shift_state = BooleanVar(self.root)
         self.fft_shift_state.set(True)
-        Checkbutton(self.l_frame, 
+        Checkbutton(toggle_frame, 
                     text='Shift Fouier Tranform', 
-                    variable=self.fft_shift_state).grid(row=1,column=1)
+                    variable=self.fft_shift_state).grid(row=0,column=0)
+
+        self.zero_order_state = BooleanVar(self.root)
+        self.zero_order_state.set(True)
+        Checkbutton(toggle_frame, 
+                    text='Zero Order', 
+                    variable=self.zero_order_state).grid(row=1,column=0)
+
+        i_fft_of_frame = Frame(self.l_frame, borderwidth=2, relief=SUNKEN)
+        i_fft_of_frame.grid(row=2, column=0)
+        Label(i_fft_of_frame, text="Inverse Fouier Tranform data source:").grid(row=0, column=0)
+
+        self.i_fft_of_state = IntVar(self.root)
+        self.i_fft_of_state.set(0)
+        Radiobutton(i_fft_of_frame, 
+                    text='Fouier Transform', 
+                    variable=self.i_fft_of_state,
+                    value = 0).grid(row=1,column=0)
+        Radiobutton(i_fft_of_frame, 
+                    text='Original Image', 
+                    variable=self.i_fft_of_state,
+                    value = 1).grid(row=2,column=0)
 
         
         blur_frame = Frame(self.l_frame, borderwidth=2, relief=SUNKEN)
-        blur_frame.grid(row=2, column=0, rowspan=2, columnspan=2)
+        blur_frame.grid(row=3, column=0, rowspan=2, columnspan=2)
         self.blur_button = Button(blur_frame, 
                                     text="Apply blur",
                                     command=self.apply_blur)
@@ -124,7 +169,7 @@ class SimGUI:
         self.guassain_num_spinbox.grid(row=1, column=1)
 
         shape_options_frame = Frame(self.l_frame, borderwidth=2, relief=SUNKEN)
-        shape_options_frame.grid(row=4, column=0, columnspan=2, rowspan=2)
+        shape_options_frame.grid(row=5, column=0, columnspan=2, rowspan=2)
 
         self.shape_options = {'Circle', 'Rectangle'}
         self.shape = StringVar(self.root)
@@ -141,7 +186,7 @@ class SimGUI:
         self.gray_value_entry.grid(row=1, column=1)
 
         self.coords_frame = Frame(shape_options_frame)
-        self.coords_frame.grid(row=2, column=0, rowspan=1, columnspan=4)
+        self.coords_frame.grid(row=2, column=0) #, rowspan=1, columnspan=4)
 
         Label(self.coords_frame, text="X:").grid(row=0, column=0)
         self.x_entry = Entry(self.coords_frame, width=self.entry_width)
@@ -152,7 +197,7 @@ class SimGUI:
         self.y_entry.grid(row=0, column=3)
 
         self.dim_frame = Frame(shape_options_frame)
-        self.dim_frame.grid(row=3, column=0, rowspan=1, columnspan=4)
+        self.dim_frame.grid(row=3, column=0)#, rowspan=1, columnspan=4)
 
         Label(self.dim_frame, text="Width:").grid(row=0, column=0)
         self.width_entry = Entry(self.dim_frame, width=self.entry_width)
@@ -163,7 +208,7 @@ class SimGUI:
         self.height_entry.grid(row=0, column=3)
 
         self.radius_frame = Frame(shape_options_frame)
-        self.radius_frame.grid(row=4, column=0, columnspan=2)
+        self.radius_frame.grid(row=4, column=0)#, columnspan=2)
 
         Label(self.radius_frame, text="Radius:").grid(row=0, column=0)
         self.radius_entry = Entry(self.radius_frame, width=self.entry_width)
@@ -172,12 +217,12 @@ class SimGUI:
         self.reset_button = Button(self.l_frame,
                                     text='reset',
                                     command= self.reset_all)
-        self.reset_button.grid(row=6, column=0)
+        self.reset_button.grid(row=7, column=0)
 
         self.update_previews_button = Button(self.l_frame,
                                     text='update previews',
-                                    command=lambda:self.update_previews("Draw"))
-        self.update_previews_button.grid(row=6, column=1)
+                                    command=lambda:self.update_previews(self.pattern_source.get()))
+        self.update_previews_button.grid(row=7, column=1)
 
     def fill_right_frame(self):
         """
@@ -206,7 +251,7 @@ class SimGUI:
 
         # Frame on top of Fouier Trnasformed Image
         fft_header = Frame(self.r_frame)
-        fft_header.grid(row=2, column=0)
+        fft_header.grid(row=0, column=1)
 
         # Button which displays Fourier Tranformed image
         self.display_fft_button = Button(fft_header, 
@@ -222,13 +267,33 @@ class SimGUI:
 
         # Label which holds Fouier Tranformed image thumbnail
         self.fft_image_label = Label(self.r_frame, image=self.tk_fft)
-        self.fft_image_label.grid(row=3, column=0)
+        self.fft_image_label.grid(row=1, column=1)
 
         # Button which displays Fouier Transformed as a 3D Graph
-        self.display_fft_graph_button = Button(self.r_frame, 
+        self.display_fft_graph_button = Button(self.r_frame,
                                                 text='Fouier Tranform Graph', 
                                                 command= lambda: self.display_fft_graph(self.fft))
-        self.display_fft_graph_button.grid(row=4, column=0)
+        self.display_fft_graph_button.grid(row=2, column=1)
+
+        # Frame on top of Inverse Fouier Trnasformed Image
+        i_fft_header = Frame(self.r_frame)
+        i_fft_header.grid(row=0, column=2)
+
+        # Button which displays Inverse Fourier Tranformed image
+        self.display_i_fft_button = Button(i_fft_header, 
+                                            text='Inverse Fouier Tranform: Defualt', 
+                                            command= lambda: self.display_image(self.i_fft_image))
+        self.display_i_fft_button.grid(row=0, column=0)
+
+        # Button which saves Inverse Fouier Tranformed image
+        self.save_i_fft_button = Button(i_fft_header,
+                                        text='Save',
+                                        command= lambda: self.save_image(self.i_fft_image))
+        self.save_i_fft_button.grid(row=0, column=1)
+
+        # Label which holds Inverse Fouier Tranformed image thumbnail
+        self.i_fft_image_label = Label(self.r_frame, image=self.tk_i_fft)
+        self.i_fft_image_label.grid(row=1, column=2)
 
     def pattern_select(self, file_path=None):
         
@@ -246,28 +311,69 @@ class SimGUI:
         self.update_previews("Upload")
 
 
-    def create_fft(self, shift:bool ):
-        fft = np.fft.fft2(self.data)
+    def create_fft(self, scaling_method:int, shift:bool):
+        self.raw_fft = np.fft.fft2(self.data)
 
         if shift:
-            fft = np.fft.fftshift(fft)
-        
-        self.fft = np.abs(fft)
-
-        max_value = np.max(self.fft)
-        if max_value <= 0:
-            c = 0
+            self.fft = np.fft.fftshift(self.raw_fft)
         else:
-            c = 255/(1 + max_value)
+            self.fft = self.raw_fft
 
-        self.fft = c * self.fft
-        print(type(self.fft))
+        self.fft = np.abs(self.fft)
+        max_value = np.max(self.fft)
+        temp_index = np.unravel_index(np.argmax(self.fft), self.fft.shape)
+        temp_value = self.fft[temp_index]
+        self.fft[temp_index] = 0
+        max_value = np.max(self.fft)
+        if self.zero_order_state.get():
+            self.fft[temp_index] = temp_value
+
+        print(max_value, np.unravel_index(np.argmax(self.fft), self.fft.shape))
+        if scaling_method == 0:
+            if max_value <= 0:
+                c = 0
+            else:
+                c = 255/(max_value)
+            self.fft = c * self.fft
+
+        elif scaling_method == 1:
+            if max_value <= 0:
+                c = 0
+            else:
+                c = 255/np.log(1 + max_value)
+            self.fft = c * np.log(1+self.fft)
+        else:
+            print("Unknown scaling method")
+        
+        # self.fft = np.where(self.fft > 255, 255, self.fft)
+        # print(type(self.fft))
         self.fft_image = Image.fromarray(self.fft)
         self.fft_image = self.fft_image.convert('L')
         self.thumbnail_fft = self.fft_image.copy()
         self.thumbnail_fft.thumbnail(self.thumbnail_size)
         self.tk_fft = ImageTk.PhotoImage(self.thumbnail_fft)
 
+    def create_inverse_fft(self, data_source: int, shift: bool):
+        if data_source == 0 and shift:
+            i_fft = np.fft.ifftshift(self.raw_fft)
+        elif data_source == 0 and not shift:
+            i_fft = self.raw_fft
+        if data_source == 1 and shift:
+            i_fft = np.fft.ifftshift(self.data)
+        elif data_source == 1 and not shift:
+            i_fft = self.data
+
+        
+            # i_fft = np.fft.ifftshift(self.data)
+        # i_fft = np.fft.ifftshift(self.raw_fft)
+        i_fft = np.fft.ifft2(i_fft)
+        self.i_fft = np.abs(i_fft)
+
+        self.i_fft_image = Image.fromarray(self.i_fft)
+        self.i_fft_image = self.i_fft_image.convert('L')
+        self.thumbnail_i_fft = self.i_fft_image.copy()
+        self.thumbnail_i_fft.thumbnail(self.thumbnail_size)
+        self.tk_i_fft = ImageTk.PhotoImage(self.thumbnail_i_fft)
 
     def apply_blur(self):
         self.orig_image = self.orig_image.filter(ImageFilter.GaussianBlur(radius=int(self.guassain_num.get())))
@@ -309,21 +415,24 @@ class SimGUI:
         # update_previews the labels and data 
     
         if reason == "Upload":
-            try:
-                self.orig_image = Image.open(self.file_path).convert('L')
-                self.data = np.asarray(self.orig_image, dtype=np.uint16)
-                self.height, self.width = self.data.shape
+            # try:
+            self.orig_image = Image.open(self.file_path).convert('L')
+            self.data = np.asarray(self.orig_image, dtype=np.uint16)
+            self.height, self.width = self.data.shape
 
-                self.thumbnail_image = self.orig_image.copy()
-                self.thumbnail_image.thumbnail(self.thumbnail_size)
-                self.tk_image = ImageTk.PhotoImage(self.thumbnail_image)
+            self.thumbnail_image = self.orig_image.copy()
+            self.thumbnail_image.thumbnail(self.thumbnail_size)
+            self.tk_image = ImageTk.PhotoImage(self.thumbnail_image)
 
-                self.display_orig_button.config(text="Original-Gray: %s"%(self.pattern_name))
-                self.create_fft(self.fft_shift_state.get())
-                self.display_fft_button.config(text="Fouier Tranform: %s"%(self.pattern_name))
+            self.display_orig_button.config(text="Original-Gray: %s"%(self.pattern_name))
+            self.create_fft(self.scaling_method_state.get(), self.fft_shift_state.get())
+            self.display_fft_button.config(text="Fouier Tranform: %s"%(self.pattern_name))
 
-            except Exception:
-                print("Error: \' %s \' can not be opened"%(self.file_path))
+            self.create_inverse_fft(self.i_fft_of_state.get(), self.fft_shift_state.get())
+            self.display_i_fft_button.config(text="Inverse Fouier Tranform: %s"%(self.pattern_name))
+
+            # except Exception:
+            #     print("Error: \' %s \' can not be opened"%(self.file_path))
             
         elif reason == "Canvas":
             self.orig_image = Image.fromarray(self.data).convert('L')
@@ -332,8 +441,10 @@ class SimGUI:
             self.tk_image = ImageTk.PhotoImage(self.thumbnail_image)
 
             self.display_orig_button.config(text="Original-Gray: Canvas")
-            self.create_fft(self.fft_shift_state.get())
+            self.create_fft(self.scaling_method_state.get(),self.fft_shift_state.get())
             self.display_fft_button.config(text="Fouier Tranform: Canvas")
+            self.create_inverse_fft(self.i_fft_of_state.get(), self.fft_shift_state.get())
+            self.display_i_fft_button.config(text="Inverse  Fouier Tranform: Canvas")
 
         elif reason == "Draw":
             print("Draw")
@@ -343,19 +454,24 @@ class SimGUI:
             self.tk_image = ImageTk.PhotoImage(self.thumbnail_image)
 
             self.display_orig_button.config(text="Original-Gray: Canvas")
-            self.create_fft(self.fft_shift_state.get())
+            self.create_fft(self.scaling_method_state.get(),self.fft_shift_state.get())
             self.display_fft_button.config(text="Fouier Tranform: Canvas")
+            self.create_inverse_fft(self.i_fft_of_state.get(), self.fft_shift_state.get())
+            self.display_i_fft_button.config(text="Inverse Fouier Tranform: Canvas")
 
         elif reason == "Reset":
             self.guassain_num.set(0)
             self.pattern_source.set("Canvas")
             self.fft_shift_state.set(True)
             self.display_orig_button.config(text="Original-Gray: Default")
-            self.create_fft(self.fft_shift_state.get())
+            self.create_fft(self.scaling_method_state.get(),self.fft_shift_state.get())
             self.display_fft_button.config(text="Fouier Tranform: Default")
+            self.create_inverse_fft(self.i_fft_of_state.get(), self.fft_shift_state.get())
+            self.display_i_fft_button.config(text="Inverse Fouier Tranform: Default")
 
         self.orig_image_label.config(image=self.tk_image)
         self.fft_image_label.config(image=self.tk_fft)
+        self.i_fft_image_label.config(image=self.tk_i_fft)
 
     def reset_all(self):
         self.create_defaults()
