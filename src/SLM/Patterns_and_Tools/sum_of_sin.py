@@ -10,9 +10,9 @@ if not os.path.exists(folder_path):
 def single_freq(data, x, amplitude, freq, folder_path, width, height):
     file_name = "freq_%s.png"%(freq)
 
-    for i in range(height):
+    for i in range(width):
         gray = amplitude * (np.sin(x * freq) + 1)
-        data[:, i] = gray
+        data[i, :] = gray
 
     img = Image.fromarray(data).convert('L')
     file_name = os.path.join(folder_path, file_name)
@@ -73,10 +73,10 @@ def line_of_length(data, length, x, amplitude, folder_path, width, height):
     img.save(file_name)
     img.show()
 
-def point_at(x, amplitude, freq, folder_path, width, height):
+def point_at(x, coords, amplitude, folder_path, width, height):
     side = np.sqrt(width**2 + height**2)
-    data = np.zeros((width,height), dtype=np.uint16)
-    data_full = 
+    data = np.zeros((height,width), dtype=np.uint16)
+    
     dist = np.sqrt( coords[0]**2 + coords[1]**2)
     freq = get_coefficient(width, dist)
     angel = np.degrees(np.arctan(coords[1]/coords[0]))
@@ -85,12 +85,64 @@ def point_at(x, amplitude, freq, folder_path, width, height):
     
     for i in range(height):
         gray = amplitude * (np.sin(x * freq) + 1)
-        data[:, i] = gray
-        print(gray)
+        data[i, :] = gray
     print(data)
     img = Image.fromarray(data).convert('L')
     img.show()
     img = img.rotate(angel)
+    file_name = os.path.join(folder_path, file_name)
+    img.save(file_name)
+    img.show()
+
+def point_at_2(coords, amplitude, folder_path, width, height):
+    x = np.linspace(0, 2*np.pi, width)
+    y = np.linspace(0, 2*np.pi*(height/width), height)
+    
+    dist = np.floor(np.sqrt( coords[0]**2 + coords[1]**2))
+    freq = get_coefficient(width, dist)
+    if coords[0] < 1:
+        angel = 0
+    else:
+        angel = np.arctan(coords[1]/coords[0])
+    # angel = 0
+    print(dist, freq, coords, angel)
+
+    file_name = "point_2_[%s,%s].png"%(coords[0], coords[1])
+
+    mesh_x, mesh_y = np.meshgrid(x, y)
+    angled_mesh = mesh_x*np.cos(angel)+mesh_y*np.sin(angel)
+    data = amplitude * (np.sin(angled_mesh * freq) + 1)
+    img = Image.fromarray(data).convert('L')
+
+    file_name = os.path.join(folder_path, file_name)
+    img.save(file_name)
+    img.show()
+
+def line_at(coords, length, amplitutde, folder_path, width, height):
+    x = np.linspace(0, 2*np.pi, width)
+    y = np.linspace(0, 2*np.pi*(height/width), height)
+    data = np.zeros((height,width), dtype=np.uint16)
+    file_name = "line_at_[%s,%s]_%s.png"%(coords[0], coords[1], length)
+
+    row = coords[1]
+    for i in range(length-1):
+        column = coords[0] + i
+
+        dist = np.sqrt( column**2 + row**2)
+        freq = get_coefficient(width, dist)
+        if column < 1:
+            angel = 0
+        else:
+            angel = np.arctan(row/column)
+        # angel = 0
+        print(dist, freq, (column, row), angel)
+
+        mesh_x, mesh_y = np.meshgrid(x, y)
+        angled_mesh = mesh_x*np.cos(angel)+mesh_y*np.sin(angel)
+        temp = amplitude * (np.sin(angled_mesh * freq) + 1)
+        data = temp + data
+    data = data/length
+    img = Image.fromarray(data).convert('L')
     file_name = os.path.join(folder_path, file_name)
     img.save(file_name)
     img.show()
@@ -100,18 +152,19 @@ def get_coefficient(width, dist):
     scaling_constant = 1600
     return (dist/scaling_constant) * width
 
+# height = 1152
 width = 1920
-height = 1152
-mode = 4
-temp_data = np.zeros((width,height), dtype=np.uint16)
-data = np.zeros((width,height), dtype=np.uint16)
+height = width
+mode = 7
+temp_data = np.zeros((height,width), dtype=np.uint16)
+data = np.zeros((height,width), dtype=np.uint16)
 
 x = np.linspace(-np.pi,np.pi, width)
 
 amplitude = 127 
 if mode == 1:
     # single frequency
-    freq = 1.2
+    freq = 12
     single_freq(data, x, amplitude, freq, folder_path, width, height)
 elif mode == 2:
     # sum of range of frequencies
@@ -132,8 +185,26 @@ elif mode == 4:
 
 elif mode == 5: 
     # point at defined coords
-    x_pos = 10
-    y_pos = 20
+    x_pos = 5
+    y_pos = 5
     coords = [x_pos, y_pos]
-    freq = 26.832815729997478
-    point_at(x, amplitude, freq, folder_path, width, height)
+    point_at(x, coords, amplitude, folder_path, width, height)
+
+    # point_at_2(coords, amplitude, folder_path, width, height)
+
+elif mode == 6:
+    # point at defined coords [using a graph transform]
+    x_pos = 10
+    y_pos = 10
+    coords = [x_pos, y_pos]
+
+    point_at_2(coords, amplitude, folder_path, width, height)
+
+elif mode == 7:
+    # create a horizontal line starting at coords [using a graph transform]
+    x_pos = 100
+    y_pos = 100
+    coords = [x_pos, y_pos]
+    length = 50
+
+    line_at(coords, length, amplitude, folder_path, width, height)

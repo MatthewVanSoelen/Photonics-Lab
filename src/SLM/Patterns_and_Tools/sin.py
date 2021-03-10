@@ -42,12 +42,13 @@ width = 1920
 height = 1152
 data = np.zeros((width, height), dtype=np.uint16)
 ratio = width/height
-x = np.linspace(0, 4*np.pi, width)
-y = np.linspace(0, 4*np.pi*height/width, height)
+x = np.linspace(0, 2*np.pi, width)
+y = np.linspace(0, 2*np.pi*(height/width), height)
 
 mesh_x, mesh_y = np.meshgrid(x, y)
-angel = np.radians(45)
-data = 127.0 * (np.sin((mesh_x*np.cos(angel)+mesh_y*np.sin(angel)) * 12) + 1)
+angel = np.radians(0)
+angled_mesh = mesh_x*np.cos(angel)+mesh_y*np.sin(angel)
+data = 127.0 * (np.sin(angled_mesh * 1.2) + 1)
 img = Image.fromarray(data).convert('L')
 
 img.show()
