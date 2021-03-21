@@ -232,7 +232,9 @@ class Pattern_GUI:
             elif self.p_type.get() == self.types[4]:
                 self.ver_line()
         elif self.method.get() == "Meshgrid":
-            if self.p_type.get() == self.types[1]:
+            if self.p_type.get() == self.types[0]:
+                self.single_freq_meshgrid()
+            elif self.p_type.get() == self.types[1]:
                 self.point_at_meshgrid()
             
         self.update_view()
@@ -319,8 +321,8 @@ class Pattern_GUI:
         self.data = self.crop_array_center(self.data)
 
     def hor_line(self):
-        self.data = np.zeros((2*self.height, 2*self.width), dtype = np.uint16)
-        temp_data = np.zeros((2*self.height, 2*self.width), dtype = np.uint16)
+        self.data = np.zeros((2*self.height, 2*self.width))
+        temp_data = np.zeros((2*self.height, 2*self.width))
 
         if int(self.x_entry.get()) or self.x_entry.get() == '0':
             x_pos = int(self.x_entry.get())
@@ -358,6 +360,7 @@ class Pattern_GUI:
             for i in range(2*self.height):
                 gray = self.amplitude * (np.sin(x * (freq*2)) + 1)
                 temp_data[i] = gray
+                pdb.set_trace()
             img = Image.fromarray(temp_data).convert('L')
             img = img.rotate(angle)
             temp_data = np.asarray(img, dtype=np.uint16)
@@ -412,6 +415,23 @@ class Pattern_GUI:
         self.data = self.data / line_height
         self.data = self.crop_array_center(self.data)
 
+    def single_freq_meshgrid(self):
+        if float(self.freq_entry.get()) or self.freq_entry.get() == '0':
+            freq = float(self.freq_entry.get())
+        else:
+            freq = 10
+            print("freq set to 10")
+
+        x = np.linspace(0, 2*np.pi, self.width)
+        y = np.linspace(0, 2*np.pi*(self.height/self.width), self.height)
+
+        self.pattern_name = "freq_%s_meshgrid.png"%(freq)
+
+        mesh_x, mesh_y = np.meshgrid(x, y)
+        angle = 0
+        angled_mesh = mesh_x*np.cos(angle)+mesh_y*np.sin(angle)
+        self.data = self.amplitude * (np.sin(angled_mesh * freq) + 1)
+
     def point_at_meshgrid(self):
         if int(self.x_entry.get()) or self.x_entry.get() == '0':
             x_pos = int(self.x_entry.get())
@@ -428,7 +448,7 @@ class Pattern_GUI:
         x = np.linspace(0, 2*np.pi, self.width)
         y = np.linspace(0, 2*np.pi*(self.height/self.width), self.height)
 
-        dist = np.floor(np.sqrt( x_pos**2 + y_pos**2))
+        dist = np.sqrt( x_pos**2 + y_pos**2)
         freq = self.get_coefficient(self.width, dist)
         if x_pos < 1:
             angel = 0
@@ -445,7 +465,7 @@ class Pattern_GUI:
 
 
     def get_coefficient(self, width, dist):
-        scaling_constant = 1600
+        scaling_constant = 1600.0
         return (dist/scaling_constant) * width
 
 
