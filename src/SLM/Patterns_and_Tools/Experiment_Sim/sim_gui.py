@@ -313,7 +313,7 @@ class SimGUI:
 
     def create_fft(self, scaling_method:int, shift:bool):
         self.raw_fft = np.fft.fft2(self.data)
-
+        print(self.raw_fft)
         if shift:
             self.fft = np.fft.fftshift(self.raw_fft)
         else:

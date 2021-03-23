@@ -46,6 +46,8 @@ class Pattern_GUI:
         self.entry_box_width = 6
         self.label_box_width = 8
 
+        self.entry_colors = ['black', 'light cyan']
+
     def create_frames(self):
         self.l_frame = Frame(self.root)
         self.l_frame.grid(row = 0, column = 0)
@@ -101,7 +103,7 @@ class Pattern_GUI:
         select_frame = Frame(self.pattern_options_frame)
         select_frame.pack(side="top", fill="both", expand=True)
         Label(select_frame,text="Pattern Type:").grid(row=0, column=0)
-        self.types = ['Single Freq','Single Point [x,y]', 'Point of angle', 'Hor. Line', 'Ver. Line', 'Diagonal Line']
+        self.types = ['Single Freq','Single Point [x,y]', 'Hor. Line', 'Ver. Line', 'Diagonal Line']
         self.type_options = set(self.types)
         self.p_type = StringVar(self.root)
         self.p_type.set('Single Freq')
@@ -129,13 +131,18 @@ class Pattern_GUI:
 
         line_dim_frame = Frame(self.pattern_options_frame)
         line_dim_frame.pack(side="top", fill="both", expand=True)
-        Label(line_dim_frame, text="Line Width:", width=self.label_box_width).grid(row=0, column=0)
-        self.line_width_entry = Entry(line_dim_frame, width=self.entry_box_width)
-        self.line_width_entry.grid(row=0, column=1)
 
-        Label(line_dim_frame, text="Line Height:", width=self.label_box_width).grid(row=0, column=2)
-        self.line_height_entry = Entry(line_dim_frame, width=self.entry_box_width)
-        self.line_height_entry.grid(row=0, column=3)
+        Label(line_dim_frame, text="Line Length:", width=self.label_box_width).grid(row=0, column=0)
+        self.line_len_entry = Entry(line_dim_frame, width=self.entry_box_width)
+        self.line_len_entry.grid(row=0, column=1)
+
+        # Label(line_dim_frame, text="Line Width:", width=self.label_box_width).grid(row=0, column=0)
+        # self.line_width_entry = Entry(line_dim_frame, width=self.entry_box_width)
+        # self.line_width_entry.grid(row=0, column=1)
+
+        # Label(line_dim_frame, text="Line Height:", width=self.label_box_width).grid(row=0, column=2)
+        # self.line_height_entry = Entry(line_dim_frame, width=self.entry_box_width)
+        # self.line_height_entry.grid(row=0, column=3)
 
         process_frame = Frame(self.pattern_options_frame)
         process_frame.pack(side="top", fill="both", expand=True)
@@ -143,6 +150,8 @@ class Pattern_GUI:
                                     text='Process',
                                     command= self.process)
         self.process_button.grid(row=0, column=0)
+
+        self.p_type.trace("w", self.update_color)
 
 
     def fill_right_frame(self):
@@ -178,6 +187,29 @@ class Pattern_GUI:
 
         self.display_orig_button.config(text="Original: %s"%(self.pattern_name))
         self.orig_image_label.config(image=self.tk_image)
+
+    def update_color(self, *args):
+        self.freq_entry.config(bg= self.entry_colors[0])
+        self.angle_entry.config(bg= self.entry_colors[0])
+        self.x_entry.config(bg= self.entry_colors[0])
+        self.y_entry.config(bg= self.entry_colors[0])
+        self.line_len_entry.config(bg= self.entry_colors[0])
+        
+        if self.p_type.get() == self.types[0]:
+            self.freq_entry.config(bg= self.entry_colors[1])
+            self.angle_entry.config(bg= self.entry_colors[1])
+        elif self.p_type.get() == self.types[1]:
+            self.x_entry.config(bg= self.entry_colors[1])
+            self.y_entry.config(bg= self.entry_colors[1])
+        elif self.p_type.get() == self.types[2] or self.p_type.get() == self.types[3]:
+            self.x_entry.config(bg= self.entry_colors[1])
+            self.y_entry.config(bg= self.entry_colors[1])
+            self.line_len_entry.config(bg= self.entry_colors[1])
+        elif self.p_type.get() == self.types[4]:
+            self.angle_entry.config(bg= self.entry_colors[1])
+            self.x_entry.config(bg= self.entry_colors[1])
+            self.y_entry.config(bg= self.entry_colors[1])
+            self.line_len_entry.config(bg= self.entry_colors[1])
 
     def crop_image_corner(self, image):
         return image.crop((0,0,self.width, self.height))
@@ -220,86 +252,124 @@ class Pattern_GUI:
             self.width = 2000
             self.height = self.width
 
-        if self.method.get() == "Old":
-            if self.p_type.get() == self.types[0]:
-                self.single_freq()
-            elif self.p_type.get() == self.types[1]:
-                self.single_point()
-            elif self.p_type.get() == self.types[2]:
-                self.angle_point()
-            elif self.p_type.get() == self.types[3]:
-                self.hor_line()
-            elif self.p_type.get() == self.types[4]:
-                self.ver_line()
-        elif self.method.get() == "Meshgrid":
-            if self.p_type.get() == self.types[0]:
-                self.single_freq_meshgrid()
-            elif self.p_type.get() == self.types[1]:
-                self.point_at_meshgrid()
+        if self.p_type.get() == self.types[0]:
+            self.single_freq()
+        elif self.p_type.get() == self.types[1]:
+            self.single_point()
+        elif self.p_type.get() == self.types[2]:
+            self.hor_line()
+        elif self.p_type.get() == self.types[3]:
+            self.ver_line()
+        elif self.p_type.get() == self.types[4]:
+            self.diagnal_line()
+
+        # if self.method.get() == "Old":
+        #     if self.p_type.get() == self.types[0]:
+        #         self.single_freq()
+        #     elif self.p_type.get() == self.types[1]:
+        #         self.single_point()
+        #     elif self.p_type.get() == self.types[2]:
+        #         self.angle_point()
+        #     elif self.p_type.get() == self.types[3]:
+        #         self.hor_line()
+        #     elif self.p_type.get() == self.types[4]:
+        #         self.ver_line()
+        # elif self.method.get() == "Meshgrid":
+        #     if self.p_type.get() == self.types[0]:
+        #         self.single_freq_meshgrid()
+        #     elif self.p_type.get() == self.types[1]:
+        #         self.point_at_meshgrid()
             
         self.update_view()
 
-    def single_freq(self):
-        self.data = np.zeros((self.height, self.width), dtype = np.uint16)
+    def point_at_old(self, x:int = None, y:int = None, freq:float=None, angle:int=None):
+        """
+        return array containing a sin pattern representing a point 
+        at the given coordinates or freq and angle
 
+        Method: Old 
+            sin pattern produced using 1D linspace, converted to image, 
+            rotated, converted back to array, and cropped
+        """
+        data = np.zeros((2*self.height, 2*self.width))
+
+        if x is not None and y is not None:
+            dist = np.sqrt( x**2 + y**2)
+            freq = self.get_coefficient(self.width, dist)
+
+            if x < 1:
+                angel = 0
+            else:
+                angle = np.degrees(np.arctan(y/x))
+        elif freq is None or angle is None:
+            print("point_at_old: Incomplete coords, freq and angle")
+
+        x = np.linspace(0, 2* np.pi, 2*self.width)
+
+        for i in range(2*self.height):
+            gray = self.amplitude * (np.sin(x * (freq*2)) + 1)
+            data[i] = gray
+        img = Image.fromarray(data)
+        img = img.rotate(- angle)
+        data = np.asarray(img)
+        data = self.crop_array_center(data)
+        return data
+
+    def point_at_meshgrid(self, x:int = None, y:int = None, freq:float=None, angle:int=None):
+        """
+        return array containing a sin pattern representing a point 
+        at the given coordinates or freq and angle
+
+        Method: Meshgrid
+            sin pattern produced using the meshgrid of two 1D linspace at specified angle
+        """
+        # pdb.set_trace()
+        lin_x = np.linspace(0, 2*np.pi, self.width)
+        lin_y = np.linspace(0, 2*np.pi*(self.height/self.width), self.height)
+
+        if x and y:
+            dist = np.sqrt( x**2 + y**2)
+            freq = self.get_coefficient(self.width, dist)
+
+            if x < 1:
+                angle = 0
+            else:
+                angle = np.arctan(y/x)
+        elif angle:
+            angle = np.radians(angle)
+        elif not freq or not angle:
+            print("point_at_meshgrid: Incomplete coords, freq and angle")
+        
+
+        mesh_x, mesh_y = np.meshgrid(lin_x, lin_y)
+        angled_mesh = mesh_x*np.cos(angle)+mesh_y*np.sin(angle)
+        data = self.amplitude * (np.sin(angled_mesh * freq) + 1)
+        return data
+
+    def points_of_arr(self, arr, method:int):
+        """
+        return array containing a sum of sin patterns 
+        representing the array of given points, using the given method
+        """
+        data = np.zeros((self.height, self.width))
+        for point in arr:
+            if method == 0: # old Method
+                data += self.point_at_old(x= point[0], y= point[1])
+            elif method == 1: # meshgrid Method
+                data += self.point_at_meshgrid(x= point[0], y= point[1])
+            else:
+                print("points_of_arr: Undefined Method")
+        # pdb.set_trace()
+        data = data / len(arr)
+        return data
+
+    def single_freq(self):
+        # pdb.set_trace()
         if float(self.freq_entry.get()):
             freq = float(self.freq_entry.get())
         else:
             freq = 1.2
             print("Freq set to 1.2")
-
-        self.pattern_name = "freq_%s.png"%(freq)
-
-        x = np.linspace(-np.pi, np.pi, self.width)
-
-        for i in range(self.height):
-            gray = self.amplitude * (np.sin(x * freq) + 1)
-            self.data[i] = gray
-
-    def single_point(self):
-        self.data = np.zeros((2*self.height, 2*self.width), dtype = np.uint16)
-        # pdb.set_trace()
-        if int(self.x_entry.get()) or self.x_entry.get() == '0':
-            x_pos = int(self.x_entry.get())
-        else:
-            x_pos = 10
-            print("x_pos set to 10")
-
-        if int(self.y_entry.get()) or self.y_entry.get() == '0':
-            y_pos = int(self.y_entry.get())
-        else:
-            y_pos = 10
-            print("y_pos set to 10")
-
-        dist = np.floor(np.sqrt( x_pos**2 + y_pos**2))
-        freq = self.get_coefficient(self.width, dist)
-
-        if x_pos < 1:
-            angle = 0
-        else:
-            angle = np.degrees(np.arctan(y_pos/x_pos))
-
-        self.pattern_name = "point_at_[%s,%s].png"%(x_pos, y_pos)
-
-        x = np.linspace(-np.pi, np.pi, 2*self.width)
-
-        for i in range(2*self.height):
-            gray = self.amplitude * (np.sin(x * (freq*2)) + 1)
-            self.data[i] = gray
-        # pdb.set_trace()
-        img = Image.fromarray(self.data).convert('L')
-        img = img.rotate(angle)
-        self.data = np.asarray(img, dtype=np.uint16)
-        self.data = self.crop_array_center(self.data)
-
-    def angle_point(self):
-        self.data = np.zeros((2*self.height, 2*self.width), dtype = np.uint16)
-        # pdb.set_trace()
-        if int(self.freq_entry.get()) or self.freq_entry.get() == '0':
-            freq = int(self.freq_entry.get())
-        else:
-            freq = 10
-            print("freq set to 10")
 
         if int(self.angle_entry.get()) or self.angle_entry.get() == '0':
             angle = int(self.angle_entry.get())
@@ -307,22 +377,42 @@ class Pattern_GUI:
             angle = 10
             print("angle set to 10")
 
-        self.pattern_name = "%s_point_of_%s\N{DEGREE SIGN}.png"%(freq, angle)
+        method = self.method.get()
 
-        x = np.linspace(-np.pi, np.pi, 2*self.width)
+        if method == "Old":
+            self.data =  self.point_at_old(freq = freq, angle = angle)
+        elif method == "Meshgrid":
+            self.data =  self.point_at_meshgrid(freq = freq, angle = angle)
+        else:
+            print("Undefined Method")
 
-        for i in range(2*self.height):
-            gray = self.amplitude * (np.sin(x * (freq*2)) + 1)
-            self.data[i] = gray
-        # pdb.set_trace()
-        img = Image.fromarray(self.data).convert('L')
-        img = img.rotate(angle)
-        self.data = np.asarray(img, dtype=np.uint16)
-        self.data = self.crop_array_center(self.data)
+        self.pattern_name = "freq_%s_%s\N{DEGREE SIGN}_%s.png"%(freq, angle, method)
+
+    def single_point(self):
+        if int(self.x_entry.get()) or self.x_entry.get() == '0':
+            x_pos = int(self.x_entry.get())
+        else:
+            x_pos = 10
+            print("x_pos set to 10")
+
+        if int(self.y_entry.get()) or self.y_entry.get() == '0':
+            y_pos = int(self.y_entry.get())
+        else:
+            y_pos = 10
+            print("y_pos set to 10")
+
+        method = self.method.get()
+
+        if method == "Old":
+            self.data =  self.point_at_old(x = x_pos, y = y_pos)
+        elif method == "Meshgrid":
+            self.data =  self.point_at_meshgrid(x = x_pos, y = y_pos)
+        else:
+            print("Undefined Method")
+
+        self.pattern_name = "freq_[%s, %s]_%s.png"%(x_pos, y_pos, method)
 
     def hor_line(self):
-        self.data = np.zeros((2*self.height, 2*self.width))
-        temp_data = np.zeros((2*self.height, 2*self.width))
 
         if int(self.x_entry.get()) or self.x_entry.get() == '0':
             x_pos = int(self.x_entry.get())
@@ -336,41 +426,28 @@ class Pattern_GUI:
             y_pos = 10
             print("y_pos set to 10")
 
-        if int(self.line_width_entry.get()) or self.line_width_entry.get() == '0':
-            line_width = int(self.line_width_entry.get())
+        if int(self.line_len_entry.get()) or self.line_len_entry.get() == '0':
+            line_len = int(self.line_len_entry.get())
         else:
-            line_width = 10
-            print("line_width set to 10")
+            line_len = 10
+            print("line_len set to 10")
 
-        self.pattern_name = "hor_%s_[%s,%s].png"%(line_width, x_pos, y_pos)
+        points = []
+        for i in range(line_len):
+            points.append((x_pos+i, y_pos))
 
-        x = np.linspace(-np.pi, np.pi, 2*self.width)
+        method = self.method.get()
 
-        for i in range(x_pos, x_pos+line_width):
-            print(i)
-            dist = np.floor(np.sqrt( i**2 + y_pos**2))
-            freq = self.get_coefficient(self.width, dist)
+        if method == "Old":
+            self.data =  self.points_of_arr(arr = points, method = 0)
+        elif method == "Meshgrid":
+            self.data =  self.points_of_arr(arr = points, method = 0)
+        else:
+            print("hor_line: Undefined Method")
 
-            if i < 1:
-                angle = 0
-            else:
-                angle = np.degrees(np.arctan(y_pos/i))
-
-
-            for i in range(2*self.height):
-                gray = self.amplitude * (np.sin(x * (freq*2)) + 1)
-                temp_data[i] = gray
-                pdb.set_trace()
-            img = Image.fromarray(temp_data).convert('L')
-            img = img.rotate(angle)
-            temp_data = np.asarray(img, dtype=np.uint16)
-            self.data = temp_data + self.data
-        self.data = self.data / line_width
-        self.data = self.crop_array_center(self.data)
+        self.pattern_name = "hLine_%s_[%s, %s]_%s.png"%(line_len, x_pos, y_pos, method)
 
     def ver_line(self):
-        self.data = np.zeros((2*self.height, 2*self.width), dtype = np.uint16)
-        temp_data = np.zeros((2*self.height, 2*self.width), dtype = np.uint16)
 
         if int(self.x_entry.get()) or self.x_entry.get() == '0':
             x_pos = int(self.x_entry.get())
@@ -384,55 +461,29 @@ class Pattern_GUI:
             y_pos = 10
             print("y_pos set to 10")
 
-        if int(self.line_height_entry.get()) or self.line_height_entry.get() == '0':
-            line_height = int(self.line_height_entry.get())
+        if int(self.line_len_entry.get()) or self.line_len_entry.get() == '0':
+            line_len = int(self.line_len_entry.get())
         else:
-            line_height = 10
-            print("line_width set to 10")
+            line_len = 10
+            print("line_len set to 10")
 
-        self.pattern_name = "ver_%s_[%s,%s].png"%(line_height, x_pos, y_pos)
+        points = []
+        for i in range(line_len):
+            points.append((x_pos, y_pos+i))
 
-        x = np.linspace(-np.pi, np.pi, 2*self.width)
+        method = self.method.get()
 
-        for i in range(y_pos, y_pos+line_height):
-            print(i)
-            dist = np.floor(np.sqrt( i**2 + y_pos**2))
-            freq = self.get_coefficient(self.width, dist)
-
-            if x_pos < 1:
-                angle = 0
-            else:
-                angle = np.degrees(np.arctan(i/x_pos))
-
-
-            for i in range(2*self.height):
-                gray = self.amplitude * (np.sin(x * (freq*2)) + 1)
-                temp_data[i] = gray
-            img = Image.fromarray(temp_data).convert('L')
-            img = img.rotate(angle)
-            temp_data = np.asarray(img, dtype=np.uint16)
-            self.data = temp_data + self.data
-        self.data = self.data / line_height
-        self.data = self.crop_array_center(self.data)
-
-    def single_freq_meshgrid(self):
-        if float(self.freq_entry.get()) or self.freq_entry.get() == '0':
-            freq = float(self.freq_entry.get())
+        if method == "Old":
+            self.data =  self.points_of_arr(arr = points, method = 0)
+        elif method == "Meshgrid":
+            self.data =  self.points_of_arr(arr = points, method = 1)
         else:
-            freq = 10
-            print("freq set to 10")
+            print("hor_line: Undefined Method")
 
-        x = np.linspace(0, 2*np.pi, self.width)
-        y = np.linspace(0, 2*np.pi*(self.height/self.width), self.height)
+        self.pattern_name = "vLine_%s_[%s, %s]_%s.png"%(line_len ,x_pos, y_pos, method)
 
-        self.pattern_name = "freq_%s_meshgrid.png"%(freq)
+    def diagnal_line(self):
 
-        mesh_x, mesh_y = np.meshgrid(x, y)
-        angle = 0
-        angled_mesh = mesh_x*np.cos(angle)+mesh_y*np.sin(angle)
-        self.data = self.amplitude * (np.sin(angled_mesh * freq) + 1)
-
-    def point_at_meshgrid(self):
         if int(self.x_entry.get()) or self.x_entry.get() == '0':
             x_pos = int(self.x_entry.get())
         else:
@@ -445,29 +496,268 @@ class Pattern_GUI:
             y_pos = 10
             print("y_pos set to 10")
 
-        x = np.linspace(0, 2*np.pi, self.width)
-        y = np.linspace(0, 2*np.pi*(self.height/self.width), self.height)
-
-        dist = np.sqrt( x_pos**2 + y_pos**2)
-        freq = self.get_coefficient(self.width, dist)
-        if x_pos < 1:
-            angel = 0
+        if int(self.line_len_entry.get()) or self.line_len_entry.get() == '0':
+            line_len = int(self.line_len_entry.get())
         else:
-            angle = - np.arctan(y_pos/x_pos)
-        # angel = 0
-        # print(dist, freq, coords, angel)
+            line_len = 10
+            print("line_len set to 10")
 
-        self.pattern_name = "point_meshgrid_[%s,%s].png"%(x_pos, y_pos)
+        if int(self.angle_entry.get()) or self.angle_entry.get() == '0':
+                angle = int(self.angle_entry.get())
+        else:
+            angle = 10
+            print("angle set to 10")
 
-        mesh_x, mesh_y = np.meshgrid(x, y)
-        angled_mesh = mesh_x*np.cos(angle)+mesh_y*np.sin(angle)
-        self.data = self.amplitude * (np.sin(angled_mesh * freq) + 1)
+        # pdb.set_trace()
+        points = []
+        slope = np.tan(np.radians(angle))
+
+        for x in range(x_pos, x_pos + line_len):
+            new_x = x_pos + x
+            new_y = slope * (new_x-x_pos)-y_pos
+            points.append((new_x, new_y))
+
+
+
+        method = self.method.get()
+
+        if method == "Old":
+            self.data =  self.points_of_arr(arr = points, method = 0)
+        elif method == "Meshgrid":
+            self.data =  self.points_of_arr(arr = points, method = 1)
+        else:
+            print("diagnal_line: Undefined Method")
+
+        self.pattern_name = "dLine_%s_%s\N{DEGREE SIGN}_[%s, %s]_%s.png"%(line_len, angle,x_pos, y_pos, method)
+
+    # def single_freq(self):
+    #     self.data = np.zeros((self.height, self.width), dtype = np.uint16)
+
+    #     if float(self.freq_entry.get()):
+    #         freq = float(self.freq_entry.get())
+    #     else:
+    #         freq = 1.2
+    #         print("Freq set to 1.2")
+
+    #     self.pattern_name = "freq_%s.png"%(freq)
+
+    #     x = np.linspace(-np.pi, np.pi, self.width)
+
+    #     for i in range(self.height):
+    #         gray = self.amplitude * (np.sin(x * freq) + 1)
+    #         self.data[i] = gray
+
+    # def single_point(self):
+    #     self.data = np.zeros((2*self.height, 2*self.width), dtype = np.uint16)
+    #     # pdb.set_trace()
+    #     if int(self.x_entry.get()) or self.x_entry.get() == '0':
+    #         x_pos = int(self.x_entry.get())
+    #     else:
+    #         x_pos = 10
+    #         print("x_pos set to 10")
+
+    #     if int(self.y_entry.get()) or self.y_entry.get() == '0':
+    #         y_pos = int(self.y_entry.get())
+    #     else:
+    #         y_pos = 10
+    #         print("y_pos set to 10")
+
+    #     dist = np.floor(np.sqrt( x_pos**2 + y_pos**2))
+    #     freq = self.get_coefficient(self.width, dist)
+
+    #     if x_pos < 1:
+    #         angle = 0
+    #     else:
+    #         angle = np.degrees(np.arctan(y_pos/x_pos))
+
+    #     self.pattern_name = "point_at_[%s,%s].png"%(x_pos, y_pos)
+
+    #     x = np.linspace(-np.pi, np.pi, 2*self.width)
+
+    #     for i in range(2*self.height):
+    #         gray = self.amplitude * (np.sin(x * (freq*2)) + 1)
+    #         self.data[i] = gray
+    #     # pdb.set_trace()
+    #     img = Image.fromarray(self.data).convert('L')
+    #     img = img.rotate(angle)
+    #     self.data = np.asarray(img, dtype=np.uint16)
+    #     self.data = self.crop_array_center(self.data)
+
+    # def angle_point(self):
+    #     self.data = np.zeros((2*self.height, 2*self.width), dtype = np.uint16)
+    #     # pdb.set_trace()
+    #     if int(self.freq_entry.get()) or self.freq_entry.get() == '0':
+    #         freq = int(self.freq_entry.get())
+    #     else:
+    #         freq = 10
+    #         print("freq set to 10")
+
+    #     if int(self.angle_entry.get()) or self.angle_entry.get() == '0':
+    #         angle = int(self.angle_entry.get())
+    #     else:
+    #         angle = 10
+    #         print("angle set to 10")
+
+    #     self.pattern_name = "%s_point_of_%s\N{DEGREE SIGN}.png"%(freq, angle)
+
+    #     x = np.linspace(-np.pi, np.pi, 2*self.width)
+
+    #     for i in range(2*self.height):
+    #         gray = self.amplitude * (np.sin(x * (freq*2)) + 1)
+    #         self.data[i] = gray
+    #     # pdb.set_trace()
+    #     img = Image.fromarray(self.data).convert('L')
+    #     img = img.rotate(angle)
+    #     self.data = np.asarray(img, dtype=np.uint16)
+    #     self.data = self.crop_array_center(self.data)
+
+    # def hor_line(self):
+    #     self.data = np.zeros((2*self.height, 2*self.width))
+    #     temp_data = np.zeros((2*self.height, 2*self.width))
+
+    #     if int(self.x_entry.get()) or self.x_entry.get() == '0':
+    #         x_pos = int(self.x_entry.get())
+    #     else:
+    #         x_pos = 10
+    #         print("x_pos set to 10")
+
+    #     if int(self.y_entry.get()) or self.y_entry.get() == '0':
+    #         y_pos = int(self.y_entry.get())
+    #     else:
+    #         y_pos = 10
+    #         print("y_pos set to 10")
+
+    #     if int(self.line_width_entry.get()) or self.line_width_entry.get() == '0':
+    #         line_width = int(self.line_width_entry.get())
+    #     else:
+    #         line_width = 10
+    #         print("line_width set to 10")
+
+    #     self.pattern_name = "hor_%s_[%s,%s].png"%(line_width, x_pos, y_pos)
+
+    #     x = np.linspace(-np.pi, np.pi, 2*self.width)
+
+    #     for i in range(x_pos, x_pos+line_width):
+    #         print(i)
+    #         dist = np.floor(np.sqrt( i**2 + y_pos**2))
+    #         freq = self.get_coefficient(self.width, dist)
+
+    #         if i < 1:
+    #             angle = 0
+    #         else:
+    #             angle = np.degrees(np.arctan(y_pos/i))
+
+
+    #         for i in range(2*self.height):
+    #             gray = self.amplitude * (np.sin(x * (freq*2)) + 1)
+    #             temp_data[i] = gray
+    #             pdb.set_trace()
+    #         img = Image.fromarray(temp_data).convert('L')
+    #         img = img.rotate(angle)
+    #         temp_data = np.asarray(img, dtype=np.uint16)
+    #         self.data = temp_data + self.data
+    #     self.data = self.data / line_width
+    #     self.data = self.crop_array_center(self.data)
+
+    # def ver_line(self):
+    #     self.data = np.zeros((2*self.height, 2*self.width), dtype = np.uint16)
+    #     temp_data = np.zeros((2*self.height, 2*self.width), dtype = np.uint16)
+
+    #     if int(self.x_entry.get()) or self.x_entry.get() == '0':
+    #         x_pos = int(self.x_entry.get())
+    #     else:
+    #         x_pos = 10
+    #         print("x_pos set to 10")
+
+    #     if int(self.y_entry.get()) or self.y_entry.get() == '0':
+    #         y_pos = int(self.y_entry.get())
+    #     else:
+    #         y_pos = 10
+    #         print("y_pos set to 10")
+
+    #     if int(self.line_height_entry.get()) or self.line_height_entry.get() == '0':
+    #         line_height = int(self.line_height_entry.get())
+    #     else:
+    #         line_height = 10
+    #         print("line_width set to 10")
+
+    #     self.pattern_name = "ver_%s_[%s,%s].png"%(line_height, x_pos, y_pos)
+
+    #     x = np.linspace(-np.pi, np.pi, 2*self.width)
+
+    #     for i in range(y_pos, y_pos+line_height):
+    #         print(i)
+    #         dist = np.floor(np.sqrt( i**2 + y_pos**2))
+    #         freq = self.get_coefficient(self.width, dist)
+
+    #         if x_pos < 1:
+    #             angle = 0
+    #         else:
+    #             angle = np.degrees(np.arctan(i/x_pos))
+
+
+    #         for i in range(2*self.height):
+    #             gray = self.amplitude * (np.sin(x * (freq*2)) + 1)
+    #             temp_data[i] = gray
+    #         img = Image.fromarray(temp_data).convert('L')
+    #         img = img.rotate(angle)
+    #         temp_data = np.asarray(img, dtype=np.uint16)
+    #         self.data = temp_data + self.data
+    #     self.data = self.data / line_height
+    #     self.data = self.crop_array_center(self.data)
+
+    # def single_freq_meshgrid(self):
+    #     if float(self.freq_entry.get()) or self.freq_entry.get() == '0':
+    #         freq = float(self.freq_entry.get())
+    #     else:
+    #         freq = 10
+    #         print("freq set to 10")
+
+    #     x = np.linspace(0, 2*np.pi, self.width)
+    #     y = np.linspace(0, 2*np.pi*(self.height/self.width), self.height)
+
+    #     self.pattern_name = "freq_%s_meshgrid.png"%(freq)
+
+    #     mesh_x, mesh_y = np.meshgrid(x, y)
+    #     angle = 0
+    #     angled_mesh = mesh_x*np.cos(angle)+mesh_y*np.sin(angle)
+    #     self.data = self.amplitude * (np.sin(angled_mesh * freq) + 1)
+
+    # def point_at_meshgrid(self):
+    #     if int(self.x_entry.get()) or self.x_entry.get() == '0':
+    #         x_pos = int(self.x_entry.get())
+    #     else:
+    #         x_pos = 10
+    #         print("x_pos set to 10")
+
+    #     if int(self.y_entry.get()) or self.y_entry.get() == '0':
+    #         y_pos = int(self.y_entry.get())
+    #     else:
+    #         y_pos = 10
+    #         print("y_pos set to 10")
+
+    #     x = np.linspace(0, 2*np.pi, self.width)
+    #     y = np.linspace(0, 2*np.pi*(self.height/self.width), self.height)
+
+    #     dist = np.sqrt( x_pos**2 + y_pos**2)
+    #     freq = self.get_coefficient(self.width, dist)
+    #     if x_pos < 1:
+    #         angel = 0
+    #     else:
+    #         angle = - np.arctan(y_pos/x_pos)
+    #     # angel = 0
+    #     # print(dist, freq, coords, angel)
+
+    #     self.pattern_name = "point_meshgrid_[%s,%s].png"%(x_pos, y_pos)
+
+    #     mesh_x, mesh_y = np.meshgrid(x, y)
+    #     angled_mesh = mesh_x*np.cos(angle)+mesh_y*np.sin(angle)
+    #     self.data = self.amplitude * (np.sin(angled_mesh * freq) + 1)
 
 
     def get_coefficient(self, width, dist):
-        scaling_constant = 1600.0
+        scaling_constant = float(self.width)
         return (dist/scaling_constant) * width
-
 
 
 root = Tk()
