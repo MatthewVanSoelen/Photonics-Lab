@@ -2,6 +2,8 @@ from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
 from matplotlib.image import imread
 from matplotlib import cm
+import pdb
+import csv
 
 
 from tkinter import *
@@ -67,19 +69,49 @@ class SimGUI:
         image.save(file_name)
 
     def display_fft_graph(self, mag_spectrum):
-        print("Displays fft graph")
-        fig = plt.figure()
-        ax = fig.gca(projection='3d')
+        lab_file = "/Users/matthewvansoelen/Desktop/Photonics-Lab/src/SLM/Patterns_and_Tools/Graph/DA001_50lpm_w0th_Data - DA001_50lpm_w0th_Data.csv"
+        file_x = []
+        file_y = []
+        row_num = 0
+        with open(lab_file, newline='') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=',')
+            for row in spamreader:
+                if row_num > 1:
+                    file_x.append(float(row[0]))
+                    file_y.append(float(row[1]))
+                row_num += 1
 
-        x = np.arange(0, self.width, 1)
-        y = np.arange(0, self.height, 1)
-        X, Y = np.meshgrid(x, y)
-        Z = mag_spectrum
+            # pdb.set_trace()
+        
 
 
-        surface = ax.plot_surface(X, Y, Z, cmap=cm.cividis)
-        fig.colorbar(surface, shrink=0.5, aspect=5)
-        plt.show()
+        if self.raw_fft is None:
+            print("Please run pattern first.")
+        else:
+            # pdb.set_trace()
+            raw_data = np.fft.fftshift(self.raw_fft)
+            raw_data = np.abs(raw_data)
+            raw_data = np.power(raw_data, 2)
+            height = np.unravel_index(np.argmax(raw_data), raw_data.shape)[0]
+            
+            y_range,x_range = raw_data.shape
+            # x = range(0,x_range)
+            x = np.linspace(0,x_range -1, x_range)
+            x = x/ x[len(x)-1] * file_x[len(file_x)-1]
+
+            with open("/Users/matthewvansoelen/Desktop/Photonics-Lab/src/SLM/Patterns_and_Tools/Graph/matt.csv", mode='w') as out_file:
+                out_file = csv.writer(out_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+
+                out_file.writerow(["LAB Distance (μm)", "LAB Intensity (cnts)","Matt Distance (μm)", "Matt Intensity (cnts)" ])
+                for i in range(len(file_x)):
+                    if i < len(x):
+                        out_file.writerow([file_x[i], file_y[i], x[i], raw_data[height][i]])
+                    else:
+                        out_file.writerow([file_x[i], file_y[i]])
+
+            plt.plot(x, raw_data[height])
+            plt.show()
+
 
     def create_frames(self):
         self.l_frame = Frame(self.root)
@@ -321,12 +353,12 @@ class SimGUI:
 
         self.fft = np.abs(self.fft)
         max_value = np.max(self.fft)
-        temp_index = np.unravel_index(np.argmax(self.fft), self.fft.shape)
-        temp_value = self.fft[temp_index]
-        self.fft[temp_index] = 0
-        max_value = np.max(self.fft)
-        if self.zero_order_state.get():
-            self.fft[temp_index] = temp_value
+        # temp_index = np.unravel_index(np.argmax(self.fft), self.fft.shape)
+        # temp_value = self.fft[temp_index]
+        # self.fft[temp_index] = 0
+        # max_value = np.max(self.fft)
+        # if self.zero_order_state.get():
+        #     self.fft[temp_index] = temp_value
 
         print(max_value, np.unravel_index(np.argmax(self.fft), self.fft.shape))
         if scaling_method == 0:
@@ -480,4 +512,3 @@ class SimGUI:
 root = Tk()
 gui = SimGUI(root)
 root.mainloop()
-

@@ -141,7 +141,7 @@ def line_at(coords, length, amplitutde, folder_path, width, height):
         angled_mesh = mesh_x*np.cos(angel)+mesh_y*np.sin(angel)
         temp = amplitude * (np.sin(angled_mesh * freq) + 1)
         data = temp + data
-    data = data/length
+    data = data/length-2
     img = Image.fromarray(data).convert('L')
     file_name = os.path.join(folder_path, file_name)
     img.save(file_name)
@@ -155,7 +155,7 @@ def get_coefficient(width, dist):
 # height = 1152
 width = 1920
 height = width
-mode = 7
+mode = 6
 temp_data = np.zeros((height,width), dtype=np.uint16)
 data = np.zeros((height,width), dtype=np.uint16)
 
@@ -194,8 +194,8 @@ elif mode == 5:
 
 elif mode == 6:
     # point at defined coords [using a graph transform]
-    x_pos = 10
-    y_pos = 10
+    x_pos = 100
+    y_pos = 100
     coords = [x_pos, y_pos]
 
     point_at_2(coords, amplitude, folder_path, width, height)
