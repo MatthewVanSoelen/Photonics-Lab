@@ -1,0 +1,18 @@
+Shutter Serial Port::
+COM4
+####################
+Shutter Serial Baudrate::
+150
+####################
+Shutter Serial Timeout::
+.1
+####################
+Shutter Serial Stopbits::
+1
+####################
+Shutter Serial Bytesize::
+4
+####################
+Shutter Serial Parity::
+None
+####################
