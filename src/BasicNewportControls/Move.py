@@ -80,20 +80,20 @@ class Motor():
 
 
 def start():
-    motor = Motor('COM7')
+    motor = Motor('COM25')
 
-
-    motor.move_rel(1, 0.5)  # moves axis 1 0.5 units posititve
-    motor.move_rel(1, -0.5)  # moves axis 1 0.5 units negative
-
+    
+    # motor.move_rel(1, 0.01)  # moves axis 1 0.5 units posititve
+    # motor.move_rel(1, -0.5)  # moves axis 1 0.5 units negative
+    '''
     motor.move_rel(0, 0.5)  # moves axis 0 0.5 units posititve
     motor.move_rel(0, -0.5)  # moves axis 0 0.5 units negative
 
     motor.move_home(0)  # moves axis 0 home
-    motor.move_home(1)  # moves axis 1 home
+    motor.move_home(1)  # moves axis 1 home'''
 
-    motor.move_absolute(0, 20) # moves axis 0 to position 20
-    motor.move_absolute(1, 20) # moves axis 1 to position 20
+    motor.move_absolute(1, 0.01) # moves axis 0 to position 20
+    motor.move_absolute(2, 0) # moves axis 1 to position 20
 
 
 start()

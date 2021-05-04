@@ -23,15 +23,15 @@ class SLM_window():
         # Assign the separated digits of the string to a variable
         begin_monitor_horizontal = monitor_values[0]
         begin_monitor_vertical = monitor_values[1]
-        begin_slm_horizontal = monitor_values[4]
-        begin_slm_vertical = monitor_values[5]
+        begin_slm_horizontal = monitor_values[5]
+        begin_slm_vertical = monitor_values[6]
 
         begin_slm_horizontal, begin_slm_vertical = self.display_left_side(begin_monitor_horizontal, begin_slm_horizontal, begin_monitor_vertical, begin_slm_vertical)
         print(begin_slm_horizontal, begin_slm_vertical)
         width = 1920
         height = 1152
 
-        if not grating:
+        if grating is None:
             array = np.zeros((height, width), dtype = np.uint16)
             image = Image.fromarray(array)
             image = image.convert('L')
@@ -44,6 +44,8 @@ class SLM_window():
         # Create a window on the screen of the SLM monitor
         self.window_slm = Toplevel(self.image_window)
         self.window_slm_geometry = str("{:}".format(width) + 'x' + "{:}".format(height) + '+' + "{:}".format(begin_slm_horizontal) + '+' + "{:}".format(begin_slm_vertical))
+        #self.window_slm_geometry = str("{:}".format(width) + 'x' + "{:}".format(height) + '+' + "{:}".format(0) + '+' + "{:}".format(0))
+        
         print(self.window_slm_geometry)
         self.window_slm.geometry(self.window_slm_geometry)
         self.window_slm.overrideredirect(1)
@@ -52,15 +54,18 @@ class SLM_window():
 
         # Load the opened image into the window of the SLM monitor
         
-        self.window_slm_label = Label(self.window_slm, image=grating)
+        self.window_slm_label = Label(self.window_slm,image=grating)
         self.window_slm_label.pack()
-        print(self.window_slm_geometry, "\n", grating.height(), grating.width())
+        #print(self.window_slm_geometry, "\n", grating.height(), grating.width())
         # Termination command for the code
         self.window_slm.bind("<Escape>", lambda e: self.window_slm.destroy())
        
     
     def display(self,grating):
         self.window_slm_label.config(image=grating)
+        
+    def display_text(self,msg):
+        self.window_slm_label.config(text=msg)
 
     def close_window(self):
         print("pressed")

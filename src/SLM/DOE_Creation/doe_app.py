@@ -458,7 +458,7 @@ class DOE_App(HologramCreator):
         self.listbox.selection_set(0)
         self.root.update()
         #Establish and initialize the equipment for experiment.
-        '''
+        
         try:
             #Use simple threading to prevent laggy main window.
             x = threading.Thread(target=self.initialize_equipment)
@@ -484,7 +484,7 @@ class DOE_App(HologramCreator):
             super().error_window(EquipmentError(message, e))
             super().close_ports(self.equipment)
             return
-        '''
+        
         #Conduct the movement and exposure process.
         try:
             #Use simple threading to prevent laggy main window.
@@ -498,10 +498,10 @@ class DOE_App(HologramCreator):
             #self.slm_thread.join()
 
         except UserInterruptError as e:
-            ''' super().close_ports(self.equipment)
-            super().error_window(e) '''
+            super().close_ports(self.equipment)
+            super().error_window(e)
             return
-        ''' except EquipmentError as e:
+        except EquipmentError as e:
             super().close_ports(self.equipment)
             super().error_window(e)
             return
@@ -512,7 +512,7 @@ class DOE_App(HologramCreator):
             return
         #Finally, perform clean up processes.
         self.experiment_finish()
-        '''
+        
 ##############################################################################
 #Run Experiment Worker Functions
 ############################################################################## 
@@ -556,6 +556,7 @@ class DOE_App(HologramCreator):
         e_time = self.experiment_configs['exp_time']
         delta_x = self.experiment_configs['hor_step_size']
         delta_y = self.experiment_configs['ver_step_size']
+        print(self.experiment_configs)
         if e_time < 0:
             e_time = 0
         # prev_powr = powr
@@ -563,13 +564,18 @@ class DOE_App(HologramCreator):
             for y, item in enumerate(row):
                 if item is not None:
                     self.check_pause_abort()
+                    self.update_progress(id_num=item.id_num, time=e_time, powr=powr, i=x, j=y)
                     self.slm.display(item.image_tk)
-                    print("step_x: %s"%(x*delta_x*1000))
-                    # self.motor.move_absolute(1, x*delta_x*1000)
-                    time.sleep(e_time)
-                    # self.shutter.toggle(e_time)
-            print("step_y: %s"%(y*delta_y*1000))
-            # self.motor.move_absolute(2, y*delta_y*1000)
+                    #print("step_x: %s"%(x*delta_x*1000))
+                    self.motor.move_absolute(1, x*delta_x)
+                    #print("step_y: %s"%(y*delta_y*1000))
+                    self.motor.move_absolute(2, y*delta_y)
+                    print("position: [%s, %s]"%(x*delta_x, y*delta_y))
+                    #time.sleep(e_time)
+                    self.shutter.toggle(e_time)
+                else:
+                    print("item is None")
+            
         self.slm.close_window()
 
     def map_items(self, item_list):
@@ -605,15 +611,15 @@ class DOE_App(HologramCreator):
             super().error_window(UserInterruptError(message, None, advice))
             raise UserInterruptError(message, None, advice)
             
-    def update_progress(self, pix:int, time:float, powr:float, i:int, j:int):
+    def update_progress(self, id_num:int, time:float, powr:float, i:int, j:int):
         """
         Update the exposure information for the current pixel on main window.
         """
 
         self.label_position.configure(text='Location (x,y) : (' 
             +str(j)+','+str(i)+')')
-        self.label_details.configure(text='Details (pxl,pwr,time) : ('
-            +str(pix)+','+str(powr)+','+str(time) + ')')
+        self.label_details.configure(text='Details (pattern,pwr,time) : ('
+            +str(id_num)+','+str(powr)+','+str(time) + ')')
         
     def experiment_finish(self):
         """
