@@ -109,7 +109,8 @@ class SimGUI:
                     else:
                         out_file.writerow([file_x[i], file_y[i]])
 
-            plt.plot(x, raw_data[height])
+            plt.plot(x, raw_data[height], color="red")
+
             plt.show()
 
 
