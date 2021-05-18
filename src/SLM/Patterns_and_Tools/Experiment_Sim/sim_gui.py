@@ -69,6 +69,7 @@ class SimGUI:
         image.save(file_name)
 
     def display_fft_graph(self, mag_spectrum):
+    	# Used to create and compare my data with lab data 
         lab_file = "/Users/matthewvansoelen/Desktop/Photonics-Lab/src/SLM/Patterns_and_Tools/Graph/DA001_50lpm_w0th_Data - DA001_50lpm_w0th_Data.csv"
         file_x = []
         file_y = []
@@ -81,8 +82,6 @@ class SimGUI:
                     file_y.append(float(row[1]))
                 row_num += 1
 
-            # pdb.set_trace()
-        
 
 
         if self.raw_fft is None:
@@ -95,7 +94,6 @@ class SimGUI:
             height = np.unravel_index(np.argmax(raw_data), raw_data.shape)[0]
             
             y_range,x_range = raw_data.shape
-            # x = range(0,x_range)
             x = np.linspace(0,x_range -1, x_range)
             x = x/ x[len(x)-1] * file_x[len(file_x)-1]
 
@@ -354,6 +352,7 @@ class SimGUI:
 
         self.fft = np.abs(self.fft)
         max_value = np.max(self.fft)
+        """ Uncomment section below to use second maximum for scaling """
         # temp_index = np.unravel_index(np.argmax(self.fft), self.fft.shape)
         # temp_value = self.fft[temp_index]
         # self.fft[temp_index] = 0
@@ -378,8 +377,6 @@ class SimGUI:
         else:
             print("Unknown scaling method")
         
-        # self.fft = np.where(self.fft > 255, 255, self.fft)
-        # print(type(self.fft))
         self.fft_image = Image.fromarray(self.fft)
         self.fft_image = self.fft_image.convert('L')
         self.thumbnail_fft = self.fft_image.copy()
@@ -397,8 +394,6 @@ class SimGUI:
             i_fft = self.data
 
         
-            # i_fft = np.fft.ifftshift(self.data)
-        # i_fft = np.fft.ifftshift(self.raw_fft)
         i_fft = np.fft.ifft2(i_fft)
         self.i_fft = np.abs(i_fft)
 
@@ -448,7 +443,7 @@ class SimGUI:
         # update_previews the labels and data 
     
         if reason == "Upload":
-            # try:
+           
             self.orig_image = Image.open(self.file_path).convert('L')
             self.data = np.asarray(self.orig_image, dtype=np.uint16)
             self.height, self.width = self.data.shape
@@ -464,8 +459,6 @@ class SimGUI:
             self.create_inverse_fft(self.i_fft_of_state.get(), self.fft_shift_state.get())
             self.display_i_fft_button.config(text="Inverse Fouier Tranform: %s"%(self.pattern_name))
 
-            # except Exception:
-            #     print("Error: \' %s \' can not be opened"%(self.file_path))
             
         elif reason == "Canvas":
             self.orig_image = Image.fromarray(self.data).convert('L')

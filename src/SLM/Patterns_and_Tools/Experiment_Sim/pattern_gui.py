@@ -1,20 +1,25 @@
+"""matplotlib Graphing imports"""
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
 from matplotlib.image import imread
 from matplotlib import cm
-import pdb
 
+"""Tkinter GUI imports"""
 from tkinter import *
 from tkinter import filedialog
 from tkinter import font
 from tkinter.ttk import Progressbar
-from PIL import Image, ImageTk, ImageFilter, ImageDraw
-import numpy as np 
 
+from PIL import Image, ImageTk, ImageFilter, ImageDraw # Image manipulation
+import numpy as np # Array manipulation
+
+"""Pathing imports"""
 import os
-import ntpath
-import sys
-import json
+import ntpath 
+import sys 
+
+import json # reading/writing json files
+import pdb # Debugging
 
 class Pattern_GUI:
     def __init__(self, root: Tk):
@@ -27,6 +32,10 @@ class Pattern_GUI:
         self.create_frames()
 
     def create_defaults(self):
+        """
+        Initialized varible with default values.
+        """
+
         self.width = 1920
         self.height = self.width
         self.pattern_list = np.array([])
@@ -66,7 +75,9 @@ class Pattern_GUI:
         self.bold_font = font.Font(weight="bold")
 
     def create_frames(self):
-
+        """
+        Create left and right GUI frames 
+        """
 
         self.l_frame = Frame(self.root)
         self.l_frame.grid(row = 0, column = 0)
@@ -223,7 +234,10 @@ class Pattern_GUI:
         
 
     def pattern_select(self, file_path=None):
-        
+        """
+        Function called when upload_pattern_button pressed
+        Opens a file dialog propmting used to select a file
+        """
         if file_path is None:
             self.file_path = filedialog.askopenfilename(initialdir='Patterns', 
                                                         title="Select Image", 
@@ -326,6 +340,9 @@ class Pattern_GUI:
         self.fft_image_label.grid(row=1, column=0)
 
     def update_view(self):
+        """
+        Updates the view with the appropriate preview images
+        """
             if self.p_type.get() == self.types[5]:
                 
                 self.thumbnail_upload_image = self.upload_image.copy()
@@ -354,6 +371,10 @@ class Pattern_GUI:
 
 
     def update_color(self, *args):
+        """
+        Updates the colors of the entry boxes, depending on the select pattern type.
+        Makes needed parameters blue, and the others black.
+        """
         self.freq_entry.config(bg= self.entry_colors[0])
         self.angle_entry.config(bg= self.entry_colors[0])
         self.x_entry.config(bg= self.entry_colors[0])
@@ -377,30 +398,52 @@ class Pattern_GUI:
             self.line_len_entry.config(bg= self.entry_colors[1])
 
     def binary_threshold(self, arr, threshold:int=128):
+        """
+        Applies a binary threshold to an array
+        """
+
         arr = np.where(arr < threshold, arr, self.max_amplitude)
         arr = np.where(arr >= threshold, arr, 0)
         return arr
 
     def crop_image_corner(self, image):
+        """
+        Crops image to top left corner
+        """
         return image.crop((0,0,self.width, self.height))
 
     def crop_array_corner(self, arr):
+        """
+        Crops array to top left corner
+        """
         return arr[0:self.height, 0:self.width]
 
     def crop_image_center(self, image, array_width, array_height, width, height):
+        """
+        Crops image to center 
+        """
         x_margin = (array_width - width) //2
         y_margin = (array_height - height) // 2
         return image.crop((x_margin, y_margin, x_margin + width, y_margin + height))
 
     def crop_array_center(self,arr):
+        """
+        Crops array to center 
+        """
         x_margin = self.width//2
         y_margin = self.height//2
         return arr[y_margin:y_margin+self.height, x_margin:x_margin+self.width]
 
     def display_image(self, img: Image):
+        """
+        Opens system view for png image
+        """
         img.show()
 
     def save_image(self, image: Image, folder_path, pattern_name=None):
+        """
+        Saves image in the current to folder path with pattern name as png
+        """
         if pattern_name:
             file_name = pattern_name
         else:
@@ -409,6 +452,9 @@ class Pattern_GUI:
         image.save(file_name)
 
     def CreateToolTip(self, widget, text):
+        """
+        Creates tool tip information hover over parameter
+        """
         toolTip = ToolTip(widget)
         def enter(event):
             toolTip.showtip(text)
@@ -418,11 +464,14 @@ class Pattern_GUI:
         widget.bind('<Leave>', leave)
 
     def process(self):
+        """
+        Uses input parameters to start the progress bar, 
+        manipulate the image and called the appropriate function
+        """
         self.progress_bar['value'] = 0
         self.pattern_list = np.array([])
         self.process_frame.update()
         if self.upload_color_state.get():
-            # self.upload_image = self.upload_image.point(lambda x: 0 if x<128 else 255, '1')
             temp_data = np.asarray(self.upload_image)
             temp_data = self.binary_threshold(temp_data, 128)
             self.upload_image =  Image.fromarray(temp_data).convert('L')
@@ -486,6 +535,9 @@ class Pattern_GUI:
         self.process_frame.update()
 
     def run_sawtooth(self):
+        """
+        Start the process to produce Sawtooth wave pattern images
+        """
         if self.data is not None:
             folder = os.path.splitext(self.pattern_name)[0]
             self.create_sawtooth_folder(folder)
@@ -550,7 +602,6 @@ class Pattern_GUI:
         Method: Meshgrid
             sin pattern produced using the meshgrid of two 1D linspace at specified angle
         """
-        # pdb.set_trace()
         lin_x = np.linspace(0, 2*np.pi, self.width)
         lin_y = np.linspace(0, 2*np.pi, self.height)
 
@@ -562,18 +613,17 @@ class Pattern_GUI:
             else:
                 angle = np.arctan(y/x)
 
-            # print("x: %s, y: %s" %(x, y))
         elif freq is not None and angle is not None:
             angle = np.radians(angle)
             print("freq: %s, angle: %s" %(freq, angle))
         elif freq is None or angle is None:
             print("point_at_meshgrid: Incomplete coords, freq and angle")
         
-        # value = 255 # grayscale value from original image.
         amplitude = value/(self.max_amplitude * 2)
         mesh_x, mesh_y = np.meshgrid(lin_x, lin_y)
         angled_mesh = mesh_x*np.cos(angle)+mesh_y*np.sin(angle)
-        data = amplitude * (np.sin(angled_mesh * freq) + 1)# ratio = (grayscale value from original image / 255)
+        print("freq: ", freq)
+        data = amplitude * (np.sin(angled_mesh * freq) + 1)
         if x is not None:
             x = int(x)
         if y is not None:
@@ -610,7 +660,9 @@ class Pattern_GUI:
         return data
 
     def single_freq(self):
-        # pdb.set_trace()
+        """
+        Produce sine wave pattern for a single with a single frequency
+        """
         if float(self.freq_entry.get()):
             freq = float(self.freq_entry.get())
         else:
@@ -637,6 +689,9 @@ class Pattern_GUI:
         self.pattern_name = "freq_%s_%s\N{DEGREE SIGN}_%s.png"%(freq, angle, method)
 
     def single_point(self):
+        """
+        Produce sine wave pattern for a single with a single frequency at given coordinates
+        """
         if int(self.x_entry.get()) or self.x_entry.get() == '0':
             x_pos = int(self.x_entry.get())
         else:
@@ -663,7 +718,9 @@ class Pattern_GUI:
         self.pattern_name = "freq_[%s, %s]_%s.png"%(x_pos, y_pos, method)
 
     def hor_line(self):
-
+        """
+        Produce sine wave pattern for a series of sine waves that produce a horizontal line of frequencies
+        """
         if int(self.x_entry.get()) or self.x_entry.get() == '0':
             x_pos = int(self.x_entry.get())
         else:
@@ -698,7 +755,9 @@ class Pattern_GUI:
         self.pattern_name = "hLine_%s_[%s, %s]_%s.png"%(line_len, x_pos, y_pos, method)
 
     def ver_line(self):
-
+        """
+        Produce sine wave pattern for a series of sine waves that produce a vertical line of frequencies
+        """
         if int(self.x_entry.get()) or self.x_entry.get() == '0':
             x_pos = int(self.x_entry.get())
         else:
@@ -733,7 +792,9 @@ class Pattern_GUI:
         self.pattern_name = "vLine_%s_[%s, %s]_%s.png"%(line_len ,x_pos, y_pos, method)
 
     def diagnal_line(self):
-
+        """
+        Produce sine wave pattern for a series of sine waves that produce a diagonal line of frequencies
+        """
         if int(self.x_entry.get()) or self.x_entry.get() == '0':
             x_pos = int(self.x_entry.get())
         else:
@@ -758,12 +819,10 @@ class Pattern_GUI:
             angle = 10
             print("angle set to 10")
 
-        # pdb.set_trace()
         points = []
         slope = np.tan(np.radians(angle))
 
         for x in range(x_pos, x_pos + line_len):
-            # new_x = x_pos + x
             new_y = slope * (x-x_pos)+y_pos
             new_y = np.round(new_y)
             points.append((x, new_y))
@@ -780,13 +839,15 @@ class Pattern_GUI:
         self.pattern_name = "dLine_%s_%s\N{DEGREE SIGN}_[%s, %s]_%s.png"%(line_len, angle,x_pos, y_pos, method)
 
     def uploaded_pattern(self):
+        """
+        Produce sine wave pattern for a series of sine waves 
+        that produce the input image drawn with frequencies
+        """
         method = self.method.get()
         data = np.zeros((self.height, self.width))
-        count = 0 #number of sin patterns summed 
+        count = 0 # number of sin patterns summed 
         for column in range(self.width):
             for row in range(self.height):
-                # print("upload: [%s,%s]- %s X %s"%(row, column, self.width, self.height))
-                # pdb.set_trace()
                 color = self.upload_data[row, column]
                 if color != 0:
                     print("upload: [%s,%s]:%s"%(column, row, color))
@@ -803,15 +864,15 @@ class Pattern_GUI:
                     count += 1
                     self.progress_bar['value'] = count
                     self.process_frame.update()
-        # pdb.set_trace()
         self.data = (data / count)
 
         self.pattern_name = "[%s].png"%(self.file_name)
 
     def create_fft(self):
-        # pdb.set_trace()
+        """
+        Takes the fourier transform of the prodcued sum of sine wave pattern
+        """
         self.raw_fft = np.fft.fft2(self.data)
-        # print(self.raw_fft)
         if self.fft_shift_state.get():
             self.fft_data = np.fft.fftshift(self.raw_fft)
         else:
@@ -833,8 +894,6 @@ class Pattern_GUI:
             c = 255/(max_value)
         self.fft_data = c * self.fft_data
         
-        # self.fft = np.where(self.fft > 255, 255, self.fft)
-        # print(type(self.fft))
         self.fft_image = Image.fromarray(self.fft_data)
         self.fft_image = self.fft_image.convert('L')
         self.thumbnail_fft = self.fft_image.copy()
@@ -842,6 +901,9 @@ class Pattern_GUI:
         self.tk_fft = ImageTk.PhotoImage(self.thumbnail_fft)
 
     def graph_fft(self):
+        """
+        produces amplitude vesus frequency graph
+        """
         if self.raw_fft is None:
             print("Please run pattern first.")
         else:
@@ -855,10 +917,14 @@ class Pattern_GUI:
             plt.show(self.pattern_name)
 
     def create_sawtooth_folder(self, folder_name):
+        """
+        Produce sawtooth wave pattern images, in a folder with a json file containing all relevant information
+        """
         full_dict = {}
         file_name = "Default"
         current_path = os.getcwd()
-        folder_path = os.path.join(current_path, folder_name)
+        folder_path = os.path.join(current_path, 'Sawtooth_Pattern_Folder/')
+        folder_path = os.path.join(folder_path, folder_name)
         img = None
         self.progress_bar.config(maximum=len(self.pattern_list))
         self.process_frame.update()
@@ -890,7 +956,6 @@ class Pattern_GUI:
                     file_name = "<%s, %s>.png"%(pattern['angle'], pattern['freq'])
 
 
-                # pdb.set_trace()
                 img = Image.fromarray(angled_mesh).convert('L')
                 self.save_image(image=img, folder_path=folder_path, pattern_name=file_name)
                 pattern.update({'file_name': file_name})
@@ -904,12 +969,11 @@ class Pattern_GUI:
         with open(full_dict_path, "w") as outfile:
             json.dump(full_dict, outfile)
 
-
-            
-
-
 class ToolTip(object):
-
+    """
+    Information hovering over Tkinter widget 
+    Source: https://stackoverflow.com/questions/20399243/display-message-when-hovering-over-something-with-mouse-cursor-in-python
+    """
     def __init__(self, widget):
         self.widget = widget
         self.tipwindow = None
