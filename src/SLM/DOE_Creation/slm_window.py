@@ -44,7 +44,6 @@ class SLM_window():
         # Create a window on the screen of the SLM monitor
         self.window_slm = Toplevel(self.image_window)
         self.window_slm_geometry = str("{:}".format(width) + 'x' + "{:}".format(height) + '+' + "{:}".format(begin_slm_horizontal) + '+' + "{:}".format(begin_slm_vertical))
-        #self.window_slm_geometry = str("{:}".format(width) + 'x' + "{:}".format(height) + '+' + "{:}".format(0) + '+' + "{:}".format(0))
         
         print(self.window_slm_geometry)
         self.window_slm.geometry(self.window_slm_geometry)
@@ -56,7 +55,7 @@ class SLM_window():
         
         self.window_slm_label = Label(self.window_slm,image=grating)
         self.window_slm_label.pack()
-        #print(self.window_slm_geometry, "\n", grating.height(), grating.width())
+        
         # Termination command for the code
         self.window_slm.bind("<Escape>", lambda e: self.window_slm.destroy())
        
@@ -73,7 +72,7 @@ class SLM_window():
         self.window_slm.update()
 
     def display_left_side(self, bmh, bsh, bmv, bsv):
-        # Reverse the monitor pixel order (because, the SLM monitor is located ón the left side of the main monitor)
+        # Reverse the monitor pixel order (because, the SLM monitor is located on the left side of the main monitor)
         begin_slm_horizontal = str(int(bmh) - int(bsh))
         begin_slm_vertical = str(int(bmv) - int(bsv))
         return (begin_slm_horizontal, begin_slm_vertical)
