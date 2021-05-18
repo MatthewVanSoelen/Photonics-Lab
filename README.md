@@ -8,4 +8,4 @@ Main python capstone work:
   * other files in folder were used to test or research ideas
 * Photonics-Lab/src/SLM/DOE_Creation
   * doe_app.py
-  * other files in folder only have minor changes from their orginal state
+  * other files in folder only have minor changes from their original state
