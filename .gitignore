@@ -1,2 +1,5 @@
 **/.DS_Store
 /src/SLM/Patterns_and_Tools/Grating_Images/*
+Photonics-Lab/src/SLM/Patterns_and_Tools/Experiment_Sim/Patterns/*
+Photonics-Lab/src/SLM/Patterns_and_Tools/Experiment_Sim/Pattern_Gui_Data/*
+Photonics-Lab/src/SLM/Patterns_and_Tools/Experiment_Sim/Sawtooth_Pattern_Folder/*
