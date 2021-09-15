@@ -343,31 +343,29 @@ class Pattern_GUI:
         """
         Updates the view with the appropriate preview images
         """
-            if self.p_type.get() == self.types[5]:
-                
-                self.thumbnail_upload_image = self.upload_image.copy()
-                self.thumbnail_upload_image.thumbnail(self.thumbnail_size)
-                self.tk_upload_image = ImageTk.PhotoImage(self.thumbnail_upload_image)
+        if self.p_type.get() == self.types[5]: 
+            self.thumbnail_upload_image = self.upload_image.copy()
+            self.thumbnail_upload_image.thumbnail(self.thumbnail_size)
+            self.tk_upload_image = ImageTk.PhotoImage(self.thumbnail_upload_image)
 
-                self.display_upload_button.config(text="Upload: %s"%(self.pattern_name))
-                self.upload_image_label.config(image=self.tk_upload_image)
+            self.display_upload_button.config(text="Upload: %s"%(self.pattern_name))
+            self.upload_image_label.config(image=self.tk_upload_image)
 
+        self.orig_image = Image.fromarray(self.data).convert('L')
+        self.thumbnail_image = self.orig_image.copy()
+        self.thumbnail_image.thumbnail(self.thumbnail_size)
+        self.tk_image = ImageTk.PhotoImage(self.thumbnail_image)
 
-            self.orig_image = Image.fromarray(self.data).convert('L')
-            self.thumbnail_image = self.orig_image.copy()
-            self.thumbnail_image.thumbnail(self.thumbnail_size)
-            self.tk_image = ImageTk.PhotoImage(self.thumbnail_image)
+        self.display_orig_button.config(text="Produced: %s"%(self.pattern_name))
+        self.orig_image_label.config(image=self.tk_image)
 
-            self.display_orig_button.config(text="Produced: %s"%(self.pattern_name))
-            self.orig_image_label.config(image=self.tk_image)
+        self.fft_image = Image.fromarray(self.fft_data).convert('L')
+        self.thumbnail_fft_image = self.fft_image.copy()
+        self.thumbnail_fft_image.thumbnail(self.thumbnail_size)
+        self.tk_fft_image = ImageTk.PhotoImage(self.thumbnail_fft_image)
 
-            self.fft_image = Image.fromarray(self.fft_data).convert('L')
-            self.thumbnail_fft_image = self.fft_image.copy()
-            self.thumbnail_fft_image.thumbnail(self.thumbnail_size)
-            self.tk_fft_image = ImageTk.PhotoImage(self.thumbnail_fft_image)
-
-            self.display_fft_button.config(text="FFT: %s"%(self.pattern_name))
-            self.fft_image_label.config(image=self.tk_fft_image)
+        self.display_fft_button.config(text="FFT: %s"%(self.pattern_name))
+        self.fft_image_label.config(image=self.tk_fft_image)
 
 
     def update_color(self, *args):
@@ -412,11 +410,11 @@ class Pattern_GUI:
         """
         return image.crop((0,0,self.width, self.height))
 
-    def crop_array_corner(self, arr):
+    def crop_array_corner(self, arr, height, width):
         """
         Crops array to top left corner
         """
-        return arr[0:self.height, 0:self.width]
+        return arr[0:height, 0:width]
 
     def crop_image_center(self, image, array_width, array_height, width, height):
         """
@@ -426,13 +424,13 @@ class Pattern_GUI:
         y_margin = (array_height - height) // 2
         return image.crop((x_margin, y_margin, x_margin + width, y_margin + height))
 
-    def crop_array_center(self,arr):
+    def crop_array_center(self, arr, height, width):
         """
         Crops array to center 
         """
-        x_margin = self.width//2
-        y_margin = self.height//2
-        return arr[y_margin:y_margin+self.height, x_margin:x_margin+self.width]
+        x_margin = width//2
+        y_margin = height//2
+        return arr[y_margin:y_margin+height, x_margin:x_margin+width]
 
     def display_image(self, img: Image):
         """
@@ -581,7 +579,7 @@ class Pattern_GUI:
         img = Image.fromarray(data)
         img = img.rotate(- angle)
         data = np.asarray(img)
-        data = self.crop_array_center(data)
+        data = self.crop_array_center(data, self.height, self.width)
         if x is not None:
             x = int(x)
         if y is not None:
@@ -602,8 +600,10 @@ class Pattern_GUI:
         Method: Meshgrid
             sin pattern produced using the meshgrid of two 1D linspace at specified angle
         """
-        lin_x = np.linspace(0, 2*np.pi, self.width)
-        lin_y = np.linspace(0, 2*np.pi, self.height)
+        side = max(self.height, self.width)
+        diag = int(np.ceil(np.sqrt(side**2 + side**2)))
+        lin_x = np.linspace(0, 2*np.pi, diag)
+        lin_y = np.linspace(0, 2*np.pi, diag)
 
         if x is not None and y is not None:
             dist = np.sqrt( x**2 + y**2)
@@ -634,6 +634,7 @@ class Pattern_GUI:
             freq = float(freq)
         if value is not None:
             value = int(value)
+        # data = self.crop_array_corner(data, self.height, self.width)
         return data, {'x':x, 'y':y, 'angle':angle, 'freq':freq, 'value':value}
 
     def points_of_arr(self, arr, method:int):
@@ -926,6 +927,7 @@ class Pattern_GUI:
         folder_path = os.path.join(current_path, 'Sawtooth_Pattern_Folder/')
         folder_path = os.path.join(folder_path, folder_name)
         img = None
+
         self.progress_bar.config(maximum=len(self.pattern_list))
         self.process_frame.update()
         if not os.path.exists(folder_path):
@@ -937,26 +939,41 @@ class Pattern_GUI:
             if pattern['angle'] is not None and pattern['freq'] is not None:
                 height = 1152
                 width = 1920
-                h_ratio = height/self.height
-                w_ratio = width/self.width
-                lin_x = np.linspace(0, pattern['value']*w_ratio, self.width)
-                lin_y = np.linspace(0, pattern['value']*h_ratio, self.height)
+                y_min = 0
+                y_max = 128
+                x_max = width / pattern['freq']
+                slope = (y_max - y_min) / x_max
+                side = max(height, width)
+                diag = int(np.ceil(np.sqrt(side**2 + side**2)))
+                data = np.zeros((diag,diag))
+                for i in range(diag):
+                    color = slope * (i % x_max + y_min)
+                    data[:, i] = color
+                # pdb.set_trace()
+                img = Image.fromarray(data).convert('L')
+                angle_degrees = np.degrees(pattern['angle'])
+                img = img.rotate(angle_degrees)
+                # data = np.asarray(img)
+                # data = self.crop_array_center(data, height, width)
+                # img = Image.fromarray(data)
+                # lin_x = np.linspace(0, pattern['value'], diag)
+                # lin_y = np.linspace(0, pattern['value'], diag)
 
-                mesh_x, mesh_y = np.meshgrid(lin_x, lin_y)
+                # mesh_x, mesh_y = np.meshgrid(lin_x, lin_y)
 
-                angled_mesh = mesh_x*np.cos(pattern['angle'])+mesh_y*np.sin(pattern['angle'])
-                angled_mesh = (angled_mesh * pattern['freq'] % self.max_amplitude)
+                # angled_mesh = mesh_x*np.cos(pattern['angle'])+mesh_y*np.sin(pattern['angle'])
+                # angled_mesh = (angled_mesh * pattern['freq'] % self.max_amplitude)
 
-                angled_mesh = np.round(angled_mesh)
-        
-                img = Image.fromarray(angled_mesh).convert('L')
+                # angled_mesh = np.round(angled_mesh)
+                # angled_mesh = self.crop_array_corner(angled_mesh, height, width)
+
+                
                 if pattern['x'] is not None and pattern['y'] is not None:
                     file_name = "[%s, %s].png"%(pattern['x'], pattern['y'])
                 else:
                     file_name = "<%s, %s>.png"%(pattern['angle'], pattern['freq'])
 
 
-                img = Image.fromarray(angled_mesh).convert('L')
                 self.save_image(image=img, folder_path=folder_path, pattern_name=file_name)
                 pattern.update({'file_name': file_name})
                 full_dict[count] = pattern 

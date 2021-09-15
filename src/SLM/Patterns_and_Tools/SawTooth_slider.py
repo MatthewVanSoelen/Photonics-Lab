@@ -6,13 +6,15 @@ Created on Tue Jul 14 14:41:43 2020
 """
 
 
-### Python libraries ###
-# Monitor packages
+### Python libraries/Packages ###
+
+# Monitor package
 from screeninfo import get_monitors # Screen Information (screeninfo) is a package to fetch location and size of physical screens.
-# Window packages 
+
+# GUI packages 
 from tkinter import *
-#from tkinter import Toplevel, Tk, Label # Graphical User Interface (GUI) package
 from PIL import Image, ImageTk # Python Imaging Librarier (PIL) package
+
 # Processing packages
 import re # Regular Expression (re) is a package to check, if a string contains the specified search pattern.
 import numpy as np # Scientific computing package (NumPy)
@@ -30,7 +32,7 @@ class SawTooth_Slider:
 
         
         self.master = master
-        ### Monitor controlling 
+        ## Monitor controlling 
         # Finds the resolution of all monitors that are connected.
         active_monitors = get_monitors() # "monitor(screenwidth x screenheight + startpixel x + startpixel y)"
         

@@ -5,7 +5,6 @@ from exceptions import EquipmentError
 from exceptions import MotorError
 
 class Motor():
-
     def __init__(self, port):
         self.ser = serial.Serial()
 

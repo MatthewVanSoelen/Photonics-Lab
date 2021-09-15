@@ -3,6 +3,9 @@ pattern_creator.py : Matthew Van Soelen
 Description : Creates a GUI which handles the creation of DOE patterns
 """
 
+# Import  custom helper classes for views and data controll
+from pattern_helper import Toggled_Frame, ToolTip, Pattern_Data
+
 # Tkinter Imports - GUI creation
 from tkinter import *
 from tkinter import filedialog
@@ -24,86 +27,14 @@ import json
 # Python Debugger - basic debugging tool
 import pdb
 
-class Toggled_Frame(Frame):
-    def __init__(self, parent, text="", state=True, *args, **options):
-        Frame.__init__(self, parent, *args, **options)
-
-        self.toggle_text = ["\u27A4\t"+text, "\u25BC\t"+text]
-
-        self.show = BooleanVar()
-        self.show.set(state)
-
-        self.title_frame = Frame(self)
-        self.title_frame.pack(fill="x", expand=1)
-
-        self.sub_frame = Frame(self, relief="sunken", borderwidth=1)
-
-        self.toggle_button = Button(self.title_frame, text=self.toggle_text[0], 
-                                        anchor="w", command=self.toggle)
-        self.toggle_button.pack(side="left", fill="x", expand=1)
-
-        # self.title_label = Label(self.title_frame, text=text)
-        # self.title_label.pack(side="left", fill="x", expand=1)
-
-        if not self.show.get():
-            self.sub_frame.pack(fill="x", expand=1)
-            self.toggle_button.config(text=self.toggle_text[1])
-            self.show.set(False)
-
-    def toggle(self):
-        print("toggled", self.show.get())
-        if self.show.get():
-            self.sub_frame.pack(fill="x", expand=1)
-            self.toggle_button.config(text=self.toggle_text[1])
-            self.show.set(False)
-        else:
-            self.sub_frame.forget()
-            self.toggle_button.config(text=self.toggle_text[0])
-            self.show.set(True)
-
-    def set_title(self, title=""):
-        self.title_label.config(text=title)
-
-class ToolTip(object):
-    """
-    Information hovering over Tkinter widget 
-    Source: https://stackoverflow.com/questions/20399243/display-message-when-hovering-over-something-with-mouse-cursor-in-python
-    """
-    def __init__(self, widget):
-        self.widget = widget
-        self.tipwindow = None
-        self.id = None
-        self.x = self.y = 0
-
-    def showtip(self, text):
-        "Display text in tooltip window"
-        self.text = text
-        if self.tipwindow or not self.text:
-            return
-        x, y, cx, cy = self.widget.bbox("insert")
-        x = x + self.widget.winfo_rootx() + 57
-        y = y + cy + self.widget.winfo_rooty() +27
-        self.tipwindow = tw = Toplevel(self.widget)
-        tw.wm_overrideredirect(1)
-        tw.wm_geometry("+%d+%d" % (x, y))
-        label = Label(tw, text=self.text, justify=LEFT,
-                      background="#ffffe0", relief=SOLID, borderwidth=1,
-                      font=("tahoma", "12", "normal"))
-        label.pack(ipadx=1)
-
-    def hidetip(self):
-        tw = self.tipwindow
-        self.tipwindow = None
-        if tw:
-            tw.destroy()
-
-
 class Pattern_GUI:
     def __init__(self, root: Tk):
         self.root = root
         self.root.title('Pattern Creator')
-        self.root.minsize(500,500)
+        self.root.minsize(700,500)
         self.thumbnail_size = (450,450)
+
+        self.p_data = Pattern_Data(self.root)
 
         self.create_defaults()
         self.create_frames()
@@ -172,11 +103,8 @@ class Pattern_GUI:
         method_label.grid(row=0, column=0)
         self.create_tool_tip(widget=method_label, 
                                 text="The method used to produce patterns.\nBoth methods are similar but\nmeshgrid should be slightly more accurate.")
-        self.method_arr = ['Old','Meshgrid']
-        self.method_options = set(self.method_arr)
-        self.method = StringVar(self.root)
-        self.method.set(self.method_arr[1])
-        OptionMenu(self.method_frame, self.method, *self.method_options).grid(row=0, column=1)
+        
+        OptionMenu(self.method_frame, self.p_data.get_method(), *self.p_data.method_options).grid(row=0, column=1)
 
         # Upload Frame ----------------------------------------------------------------------
         upload_setting_frame = Toggled_Frame(self.l_frame, text="Upload Settings",relief="raised", borderwidth=1)
@@ -314,11 +242,33 @@ class Pattern_GUI:
         self.gen_saw_button.grid(row=0, column=1)
 
     def fill_right_frame(self):
-        t3 = Toggled_Frame(self.r_frame, text="Right Side", relief="raised", borderwidth=1)
-        t3.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
+        """
+        Create various elements apart of the the right GUI
+        For example displays for the patterns and buttons to open the image using the computer's native 
+        """
+        display_frame = Toggled_Frame(self.r_frame, text="Produced Image", relief="raised", borderwidth=1)
+        display_frame.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
 
-        self.label3 = Label(t3.sub_frame, text="yo! 3")
-        self.label3.pack(side="left")
+        self.cur_image_label = Label(display_frame.sub_frame, image=self.tk_fft_image)
+        self.cur_image_label.pack(side="left")
+
+        image_select_frame = Toggled_Frame(self.r_frame, text="Image Select", relief="raised", borderwidth=1)
+        image_select_frame.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
+
+        select_frame = Frame(image_select_frame.sub_frame)
+        select_frame.pack(side="top", fill="both", expand=True)
+        Label(select_frame,text="Pattern Type:").grid(row=0, column=0)
+        self.images = ['Single Freq','Single Point [x,y]', 'Hor. Line', 'Ver. Line', 'Diagonal Line', 'Upload']
+        self.image_options = set(self.types)
+        self.cur_image = StringVar(self.root)
+        self.cur_image.set('Single Freq')
+        OptionMenu(select_frame, self.cur_image, *self.image_options).grid(row=0, column=1)
+
+        self.cur_image.trace("w", self.display_image)
+        self.display_image()
+
+    def display_image(self, *args ):
+        print(self.cur_image.get())
 
     def pattern_select(self, file_path=None):
         """
@@ -416,10 +366,8 @@ class Pattern_GUI:
         tool_tip = ToolTip(widget)
         def enter(event):
             tool_tip.showtip(text)
-            print("Show tooltip")
         def leave(event):
             tool_tip.hidetip()
-            print("Hide tooltip")
         widget.bind('<Enter>', enter)
         widget.bind('<Leave>', leave)
 
@@ -429,10 +377,4 @@ class Pattern_GUI:
     def process(self):
         print("Process: This method should be apart of a separate class")
 
-# class Pattern_data:
-#   def _init__():
 
-
-root = Tk()
-gui = Pattern_GUI(root=root)
-root.mainloop()
