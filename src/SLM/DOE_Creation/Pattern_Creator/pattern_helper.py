@@ -104,7 +104,7 @@ class Pattern_Data:
         self.root = root
         self.width = 1920
         self.height = self.width
-        self.pattern_list = np.array([])
+        self.pattern_list = np.array([]) # list of patterns that can be displayed(fft/Orgin/etc)
         self.thumbnail_size = (450,450)
         
         self.upload_data = np.zeros((self.height, self.width), dtype = np.uint16)
@@ -143,6 +143,15 @@ class Pattern_Data:
         self.method = StringVar(self.root)
         self.method.set(self.method_arr[1])
         print(self.method)
+
+        self.upload_color_state = IntVar()
+
+        self.square_pattern = BooleanVar(value=True)
+
+        self.types = ['Single Freq','Single Point [x,y]', 'Hor. Line', 'Ver. Line', 'Diagonal Line', 'Upload']
+        self.type_options = set(self.types)
+        self.p_type = StringVar(self.root)
+        self.p_type.set('Single Freq')
 
     def get_method(self):
         return self.method

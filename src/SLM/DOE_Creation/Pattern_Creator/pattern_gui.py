@@ -41,42 +41,8 @@ class Pattern_GUI:
 
     def create_defaults(self):
         """ 
-        Initialized variables with default values
+        Initialized GUI variables with default values
         """
-        self.width = 1920
-        self.height = self.width
-        self.pattern_list = np.array([])
-
-        self.upload_data = np.zeros((self.height, self.width), dtype = np.uint16)
-        self.upload_image = Image.fromarray(self.upload_data).convert('L')
-        self.thumbnail_upload_image = self.upload_image.copy()
-        self.thumbnail_upload_image.thumbnail(self.thumbnail_size)
-        self.tk_upload_image = ImageTk.PhotoImage(self.thumbnail_upload_image)
-
-        self.data = np.zeros((self.height, self.width), dtype = np.uint16)
-        self.orig_image = Image.fromarray(self.data).convert('L')
-        self.thumbnail_image = self.orig_image.copy()
-        self.thumbnail_image.thumbnail(self.thumbnail_size)
-        self.tk_image = ImageTk.PhotoImage(self.thumbnail_image)
-
-        self.fft_data = np.zeros((self.height, self.width), dtype = np.uint16)
-        self.raw_fft = self.fft_data
-        self.fft_image = Image.fromarray(self.fft_data).convert('L')
-        self.thumbnail_fft_image = self.fft_image.copy()
-        self.thumbnail_fft_image.thumbnail(self.thumbnail_size)
-        self.tk_fft_image = ImageTk.PhotoImage(self.thumbnail_fft_image)
-
-        current_path = os.getcwd()
-        self.folder_path = os.path.join(current_path, "Pattern_Gui_Data")
-        if not os.path.exists(self.folder_path):
-            os.makedirs(self.folder_path)
-
-        self.file_path = None
-        self.pattern_name = "Default"
-        self.max_amplitude = 255
-
-        self.entry_box_width = 6
-        self.label_box_width = 8
 
         self.entry_colors = ['black', 'light cyan']
         self.bold_font = font.Font(weight="bold")
@@ -114,40 +80,38 @@ class Pattern_GUI:
                                             text='Select a Pattern', command=self.pattern_select, bg=self.button_color, highlightbackground=self.button_color)
         self.upload_pattern_button.grid(row=0, column=0)
 
-        self.upload_color_state = IntVar()
-        Radiobutton(upload_setting_frame.sub_frame, text="Only B&W", variable=self.upload_color_state, value=0, command=self.upload_color_select).grid(row=1, column=0)
-        Radiobutton(upload_setting_frame.sub_frame, text="Grayscale", variable=self.upload_color_state, value=1, command=self.upload_color_select).grid(row=2, column=0)
+        Radiobutton(upload_setting_frame.sub_frame, text="Only B&W", variable=self.p_data.upload_color_state, value=0, command=self.upload_color_select).grid(row=1, column=0)
+        Radiobutton(upload_setting_frame.sub_frame, text="Grayscale", variable=self.p_data.upload_color_state, value=1, command=self.upload_color_select).grid(row=2, column=0)
+        
         # Uplaod Frame --> grayscale frame --------------------------------------------------
         self.grayscale_frame = Frame(upload_setting_frame.sub_frame, relief="sunken", borderwidth=1)
         Label(self.grayscale_frame,text="Grayscale Range").grid(row=0, column=0, columnspan=2)
         Label(self.grayscale_frame, text="Min:").grid(row=1, column=0)
-        self.gray_min_entry = Entry(self.grayscale_frame, width=self.entry_box_width)
+        self.gray_min_entry = Entry(self.grayscale_frame, width=self.p_data.entry_box_width)
         self.gray_min_entry.grid(row=1, column=1)
         Label(self.grayscale_frame, text="Max:").grid(row=2, column=0)
-        self.gray_max_entry = Entry(self.grayscale_frame, width=self.entry_box_width)
+        self.gray_max_entry = Entry(self.grayscale_frame, width=self.p_data.entry_box_width)
         self.gray_max_entry.grid(row=2, column=1)
 
         # Dimension Frame ----------------------------------------------------------------------
         dimension_frame = Toggled_Frame(self.l_frame, text="Dimensions",relief="raised", borderwidth=1)
         dimension_frame.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
 
-        self.square_pattern = BooleanVar(dimension_frame.sub_frame)
-        self.square_pattern.set(True)
         
         square_check = Checkbutton(dimension_frame.sub_frame,
                     text='Square Pattern',
-                    variable=self.square_pattern)
+                    variable=self.p_data.square_pattern)
         square_check.grid(row=0, column=0, columnspan=2)
         self.create_tool_tip(widget= square_check, 
             text="When pattern is square the dimensions will be [Width, Width].")
 
         Label(dimension_frame.sub_frame, text="Width:").grid(row=1, column=0)
-        self.width_entry = Entry(dimension_frame.sub_frame, width=self.entry_box_width)
-        self.width_entry.grid(row=1, column=1)
+        self.p_data.width_entry = Entry(dimension_frame.sub_frame, width=self.p_data.entry_box_width)
+        self.p_data.width_entry.grid(row=1, column=1)
 
         Label(dimension_frame.sub_frame, text="Height:").grid(row=2, column=0)
-        self.height_entry = Entry(dimension_frame.sub_frame, width=self.entry_box_width)
-        self.height_entry.grid(row=2, column=1)
+        self.p_data.height_entry = Entry(dimension_frame.sub_frame, width=self.p_data.entry_box_width)
+        self.p_data.height_entry.grid(row=2, column=1)
 
 
         # Custom Patterns Frame ----------------------------------------------------------------------
@@ -157,44 +121,41 @@ class Pattern_GUI:
         select_frame = Frame(pattern_frame.sub_frame)
         select_frame.pack(side="top", fill="both", expand=True)
         Label(select_frame,text="Pattern Type:").grid(row=0, column=0)
-        self.types = ['Single Freq','Single Point [x,y]', 'Hor. Line', 'Ver. Line', 'Diagonal Line', 'Upload']
-        self.type_options = set(self.types)
-        self.p_type = StringVar(self.root)
-        self.p_type.set('Single Freq')
-        OptionMenu(select_frame, self.p_type, *self.type_options).grid(row=0, column=1)
+   
+        OptionMenu(select_frame, self.p_data.p_type, *self.p_data.type_options).grid(row=0, column=1)
 
         self.freq_frame = Frame(pattern_frame.sub_frame)
 
-        Label(self.freq_frame, text="Freq:", width=self.label_box_width).grid(row=0, column=0)
-        self.freq_entry = Entry(self.freq_frame, width=self.entry_box_width)
+        Label(self.freq_frame, text="Freq:", width=self.p_data.label_box_width).grid(row=0, column=0)
+        self.freq_entry = Entry(self.freq_frame, width=self.p_data.entry_box_width)
         self.freq_entry.grid(row=0, column=1)
 
         self.angle_frame = Frame(pattern_frame.sub_frame)
 
-        Label(self.angle_frame, text="Angle:", width=self.label_box_width).grid(row=0, column=0)
-        self.angle_entry = Entry(self.angle_frame, width=self.entry_box_width)
+        Label(self.angle_frame, text="Angle:", width=self.p_data.label_box_width).grid(row=0, column=0)
+        self.angle_entry = Entry(self.angle_frame, width=self.p_data.entry_box_width)
         self.angle_entry.grid(row=0, column=1)
 
         self.coords_frame = Frame(pattern_frame.sub_frame)
 
-        Label(self.coords_frame, text="x:", width=self.label_box_width).grid(row=0, column=0)
-        self.x_entry = Entry(self.coords_frame, width=self.entry_box_width)
+        Label(self.coords_frame, text="x:", width=self.p_data.label_box_width).grid(row=0, column=0)
+        self.x_entry = Entry(self.coords_frame, width=self.p_data.entry_box_width)
         self.x_entry.grid(row=0, column=1)
 
-        Label(self.coords_frame, text="y:", width=self.label_box_width).grid(row=1, column=0)
-        self.y_entry = Entry(self.coords_frame, width=self.entry_box_width)
+        Label(self.coords_frame, text="y:", width=self.p_data.label_box_width).grid(row=1, column=0)
+        self.y_entry = Entry(self.coords_frame, width=self.p_data.entry_box_width)
         self.y_entry.grid(row=1, column=1)        
 
         self.line_dim_frame = Frame(pattern_frame.sub_frame)
 
-        Label(self.line_dim_frame, text="Line Length:", width=self.label_box_width).grid(row=0, column=0)
-        self.line_len_entry = Entry(self.line_dim_frame, width=self.entry_box_width)
+        Label(self.line_dim_frame, text="Line Length:", width=self.p_data.label_box_width).grid(row=0, column=0)
+        self.line_len_entry = Entry(self.line_dim_frame, width=self.p_data.entry_box_width)
         self.line_len_entry.grid(row=0, column=1)
 
         self.upload_text_frame = Frame(pattern_frame.sub_frame)
         Label(self.upload_text_frame, text="Images can be uploaded \nusing the Upload Settings Section.").grid(row=0, column=0)
 
-        self.p_type.trace("w", self.update_pattern_entries)
+        self.p_data.p_type.trace("w", self.update_pattern_entries)
         self.update_pattern_entries()
 
         # Extra Options Frame ----------------------------------------------------------------------
@@ -210,8 +171,8 @@ class Pattern_GUI:
         self.create_tool_tip(widget = self.margin_pattern_checkbox, 
             text = "Adds a black margin to the \nright and bottom of the pattern.\nThis improves the defintion of the patterns.")
 
-        Label(extra_frame.sub_frame, text="Margin(px):", width=self.label_box_width).grid(row=1, column=0)
-        self.margin_size_entry = Entry(extra_frame.sub_frame, width=self.entry_box_width)
+        Label(extra_frame.sub_frame, text="Margin(px):", width=self.p_data.label_box_width).grid(row=1, column=0)
+        self.margin_size_entry = Entry(extra_frame.sub_frame, width=self.p_data.entry_box_width)
         self.margin_size_entry.grid(row=1, column=1)
         self.margin_size_entry.insert(0, '2000')
 
@@ -249,7 +210,7 @@ class Pattern_GUI:
         display_frame = Toggled_Frame(self.r_frame, text="Produced Image", relief="raised", borderwidth=1)
         display_frame.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
 
-        self.cur_image_label = Label(display_frame.sub_frame, image=self.tk_fft_image)
+        self.cur_image_label = Label(display_frame.sub_frame, image=self.p_data.tk_fft_image)
         self.cur_image_label.pack(side="left")
 
         image_select_frame = Toggled_Frame(self.r_frame, text="Image Select", relief="raised", borderwidth=1)
@@ -259,7 +220,7 @@ class Pattern_GUI:
         select_frame.pack(side="top", fill="both", expand=True)
         Label(select_frame,text="Pattern Type:").grid(row=0, column=0)
         self.images = ['Single Freq','Single Point [x,y]', 'Hor. Line', 'Ver. Line', 'Diagonal Line', 'Upload']
-        self.image_options = set(self.types)
+        self.image_options = set(self.p_data.types)
         self.cur_image = StringVar(self.root)
         self.cur_image.set('Single Freq')
         OptionMenu(select_frame, self.cur_image, *self.image_options).grid(row=0, column=1)
@@ -288,7 +249,7 @@ class Pattern_GUI:
         path = os.path.splitext(self.file_path)[0] #splits off file extension
         self.file_name = ntpath.basename(path)
 
-        self.p_type.set('Upload')
+        self.p_data.p_type.set('Upload')
         self.upload_image = Image.open(self.file_path).convert('L')
         self.update_view()
 
@@ -296,7 +257,7 @@ class Pattern_GUI:
         """
         Updates the view with the appropriate preview images
         """
-        if self.p_type.get() == self.types[5]: 
+        if self.p_data.p_type.get() == self.p_data.types[5]: 
             self.thumbnail_upload_image = self.upload_image.copy()
             self.thumbnail_upload_image.thumbnail(self.thumbnail_size)
             self.tk_upload_image = ImageTk.PhotoImage(self.thumbnail_upload_image)
@@ -315,13 +276,13 @@ class Pattern_GUI:
         self.fft_image = Image.fromarray(self.fft_data).convert('L')
         self.thumbnail_fft_image = self.fft_image.copy()
         self.thumbnail_fft_image.thumbnail(self.thumbnail_size)
-        self.tk_fft_image = ImageTk.PhotoImage(self.thumbnail_fft_image)
+        self.p_data.tk_fft_image = ImageTk.PhotoImage(self.thumbnail_fft_image)
 
         self.display_fft_button.config(text="FFT: %s"%(self.pattern_name))
-        self.fft_image_label.config(image=self.tk_fft_image)
+        self.fft_image_label.config(image=self.p_data.tk_fft_image)
 
     def upload_color_select(self):
-        if int(self.upload_color_state.get()) == 0:
+        if int(self.p_data.upload_color_state.get()) == 0:
             self.grayscale_frame.grid_forget()
         else:
             self.grayscale_frame.grid(row=3, column=0)
@@ -338,24 +299,24 @@ class Pattern_GUI:
         self.upload_text_frame.forget()
 
 
-        p_type = self.p_type.get()
+        p_type = self.p_data.p_type.get()
 
-        if p_type == self.types[0]: # Single Frequency
+        if p_type == self.p_data.types[0]: # Single Frequency
             self.freq_frame.pack(side="top", fill="both", expand=True)
             self.angle_frame.pack(side="top", fill="both", expand=True)
-        elif p_type == self.types[1]: # Single Point [x,y]
+        elif p_type == self.p_data.types[1]: # Single Point [x,y]
             self.coords_frame.pack(side="top", fill="both", expand=True)
-        elif p_type == self.types[2]: # Horizontal Line
-            self.coords_frame.pack(side="top", fill="both", expand=True)
-            self.line_dim_frame.pack(side="top", fill="both", expand=True)
-        elif p_type == self.types[3]: # Vertical Line
+        elif p_type == self.p_data.types[2]: # Horizontal Line
             self.coords_frame.pack(side="top", fill="both", expand=True)
             self.line_dim_frame.pack(side="top", fill="both", expand=True)
-        elif p_type == self.types[4]: # Diagnol Line
+        elif p_type == self.p_data.types[3]: # Vertical Line
+            self.coords_frame.pack(side="top", fill="both", expand=True)
+            self.line_dim_frame.pack(side="top", fill="both", expand=True)
+        elif p_type == self.p_data.types[4]: # Diagnol Line
             self.angle_frame.pack(side="top", fill="both", expand=True)
             self.coords_frame.pack(side="top", fill="both", expand=True)
             self.line_dim_frame.pack(side="top", fill="both", expand=True)
-        elif p_type == self.types[5]: # Upload
+        elif p_type == self.p_data.types[5]: # Upload
             self.upload_text_frame.pack(side="top", fill="both", expand=True)
 
     def create_tool_tip(self, widget, text):
