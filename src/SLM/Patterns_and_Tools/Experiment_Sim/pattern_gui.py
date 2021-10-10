@@ -620,6 +620,7 @@ class Pattern_GUI:
             print("point_at_meshgrid: Incomplete coords, freq and angle")
         
         amplitude = value/(self.max_amplitude * 2)
+        print("Meshgrid: ", lin_x, lin_y)
         mesh_x, mesh_y = np.meshgrid(lin_x, lin_y)
         angled_mesh = mesh_x*np.cos(angle)+mesh_y*np.sin(angle)
         print("freq: ", freq)
@@ -677,6 +678,7 @@ class Pattern_GUI:
             print("angle set to 10")
 
         method = self.method.get()
+        print(self.data)
 
         if method == "Old":
             self.data, pattern_configs = self.point_at_old(freq = freq, angle = angle)

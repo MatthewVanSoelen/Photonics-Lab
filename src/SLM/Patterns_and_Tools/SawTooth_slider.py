@@ -37,15 +37,11 @@ class SawTooth_Slider:
         active_monitors = get_monitors() # "monitor(screenwidth x screenheight + startpixel x + startpixel y)"
         
         
-        # Separates all numbers from a string
-        monitor_values=re.findall('([0-9]+)', str(active_monitors))
-        print(monitor_values)
-        
-        # Assign the separated digits of the string to a variable
-        begin_monitor_horizontal = monitor_values[0]
-        begin_monitor_vertical = monitor_values[1]
-        begin_slm_horizontal = monitor_values[5]
-        begin_slm_vertical = monitor_values[6]
+        # Assign the separated x and y start values to variables
+        begin_monitor_horizontal = active_monitors[0].x
+        begin_monitor_vertical = active_monitors[0].y
+        begin_slm_horizontal = active_monitors[1].x
+        begin_slm_vertical = active_monitors[1].y
         
         
         # Reverse the monitor pixel order (because, the SLM monitor is located ón the left side of the main monitor)
