@@ -1,8 +1,8 @@
 **/.DS_Store
-/src/SLM/Patterns_and_Tools/Grating_Images/*
-/src/SLM/Patterns_and_Tools/Experiment_Sim/Patterns/*
-/src/SLM/Patterns_and_Tools/Experiment_Sim/Pattern_Gui_Data/*
-/src/SLM/Patterns_and_Tools/Experiment_Sim/Sawtooth_Pattern_Folder/*
-/src/SLM/DOE_Creation/Experiments/*
-/src/SLM/DOE_Creation/Pattern_Creator/Pattern_Gui_Data/*
-/src/SLM/DOE_Creation/Pattern_Creator/Sawtooth_Pattern_Folder/*
+/src/SLM/Patterns_and_Tools/Grating_Images/**
+/src/SLM/Patterns_and_Tools/Experiment_Sim/Patterns/**
+/src/SLM/Patterns_and_Tools/Experiment_Sim/Pattern_Gui_Data/**
+/src/SLM/Patterns_and_Tools/Experiment_Sim/Sawtooth_Pattern_Folder/**
+/src/SLM/DOE_Creation/Experiments/**
+/src/SLM/DOE_Creation/Pattern_Creator/Pattern_Gui_Data/**
+/src/SLM/DOE_Creation/Pattern_Creator/Sawtooth_Pattern_Folder/**
