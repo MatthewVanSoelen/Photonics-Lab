@@ -1,8 +1,7 @@
 # Photonics-Lab
-<<<<<<< HEAD
+
 A collection of programs developed for the use of the TCNJ Photonics lab. Some programs were developed in collaboration with or extending projects worked on by Luke Kurlandski and Daniel Stolz
-=======
-A collection of programs developed for the use of the TCNJ Photonics lab. Programs were developed in in collaboration with or extending projects worked on by Luke Kurlandski and Daniel Stolz
+
 
 Main python capstone work:
 * Photonics-Lab/src/SLM/Patterns_and_Tools/Experiment_Sim
@@ -12,4 +11,3 @@ Main python capstone work:
 * Photonics-Lab/src/SLM/DOE_Creation
   * doe_app.py
   * other files in folder only have minor changes from their original state
->>>>>>> New_Features
