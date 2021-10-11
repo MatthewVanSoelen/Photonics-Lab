@@ -271,20 +271,15 @@ class Pattern_GUI:
 
         if status == "Previews":
             cur_name = self.p_data.cur_image.get()
-            print("update_view:",cur_name, self.p_data.images['names'][0])
             
             if cur_name == self.p_data.images['names'][0]:
                 self.cur_image_label.config(image=self.p_data.images['tk_images'][0])
-                print("0")
-                print(type(self.p_data.images['tk_images'][0]))
 
             if cur_name == self.p_data.images['names'][1]:
                 self.cur_image_label.config(image=self.p_data.images['tk_images'][1])
-                print("1")
 
             if cur_name == self.p_data.images['names'][2]:
                 self.cur_image_label.config(image=self.p_data.images['tk_images'][2])
-                print("2")
         elif status == "Custom_Entries":
 
             self.freq_frame.forget()
@@ -373,12 +368,3 @@ class Pattern_GUI:
             tool_tip.hidetip()
         widget.bind('<Enter>', enter)
         widget.bind('<Leave>', leave)
-
-    def run_sawtooth(self):
-        print("Sawtooth: This method should be apart of a separate class")
-
-    def process(self):
-        print("Process: This method should be apart of a separate class")
-        print(self.p_data.user_width.get())
-
-

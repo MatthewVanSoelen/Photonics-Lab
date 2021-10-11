@@ -53,7 +53,6 @@ class Toggled_Frame(Frame):
             self.show.set(False)
 
     def toggle(self):
-        print("toggled", self.show.get())
         if self.show.get():
             self.sub_frame.pack(fill="x", expand=1)
             self.toggle_button.config(text=self.toggle_text[1])
@@ -116,7 +115,6 @@ class Pattern_Data:
 
         try:
             default_img_path = os.path.join(current_path, "Default_Preview.png")
-            print(default_img_path)
             self.default_img = Image.open(default_img_path)
         except:
             self.default_img = Image.fromarray(np.zeros((self.height, self.width), dtype = np.uint16))
@@ -162,7 +160,6 @@ class Pattern_Data:
         self.method_options = set(self.method_arr)
         self.method = StringVar(self.root)
         self.method.set(self.method_arr[1])
-        print(self.method)
 
         # Upload Settings Data
         self.upload_color_state = IntVar(self.root)
@@ -333,15 +330,12 @@ class Pattern_Data:
 
         elif freq is not None and angle is not None:
             angle = np.radians(angle)
-            print("freq: %s, angle: %s" %(freq, angle))
         elif freq is None or angle is None:
             print("point_at_meshgrid: Incomplete coords, freq and angle")
         
         amplitude = value/(self.max_amplitude * 2)
-        print("Meshgrid: ", lin_x, lin_y)
         mesh_x, mesh_y = np.meshgrid(lin_x, lin_y)
         angled_mesh = mesh_x*np.cos(angle)+mesh_y*np.sin(angle)
-        print("freq: ", freq)
         data = amplitude * (np.sin(angled_mesh * freq) + 1)
         if x is not None:
             x = int(x)
@@ -363,7 +357,6 @@ class Pattern_Data:
         """
         data = np.zeros((self.height, self.width))
         for point in arr:
-            print("[%s, %s]"%(point[0], point[1]))
             if method == 0: # old Method
                 temp_data, pattern_configs = self.point_at_old(x= point[0], y= point[1])
                 data += temp_data
@@ -396,7 +389,6 @@ class Pattern_Data:
             print("angle set to 10")
 
         method = self.method.get()
-        print(self.images['data'][2])
 
         if method == "Old":
             self.images['data'][2], pattern_configs = self.point_at_old(freq = freq, angle = angle)
@@ -426,7 +418,6 @@ class Pattern_Data:
             print("y_pos set to 10")
 
         method = self.method.get()
-        print("[%s, %s]"%(x_pos, y_pos))
         if method == self.method_arr[0]:
             self.images['data'][2], pattern_configs =  self.point_at_old(x = x_pos, y = y_pos)
             self.pattern_list = np.append(self.pattern_list, [pattern_configs], 0)
@@ -571,7 +562,6 @@ class Pattern_Data:
             for row in range(self.height):
                 color = self.images['data'][0][row, column]
                 if color != 0:
-                    print("upload: [%s,%s]:%s"%(column, row, color))
                     if method == self.method_arr[0]: # old Method
                         temp_data, pattern_configs = self.point_at_old(x= column, y= row, value=color)
                         data += temp_data
@@ -608,7 +598,6 @@ class Pattern_Data:
         max_value = np.max(self.images['data'][1])
         self.images['data'][1][temp_index] = temp_value
 
-        print(max_value, np.unravel_index(np.argmax(self.images['data'][1]), self.images['data'][1].shape))
 
         if max_value <= 0:
             c = 0
@@ -682,7 +671,6 @@ class Pattern_Data:
                 self.height = margin_size + self.height
 
         self.grating_count = len(np.transpose(np.nonzero(self.images["data"][0])))
-        print("count: ",self.grating_count)
         self.update_gui.set("Progressbar")
 
         if self.p_type.get() == self.types[0]:
