@@ -62,7 +62,11 @@ class SawTooth_slider:
         begin_monitor_vertical = active_monitors[0].y
         begin_slm_horizontal = active_monitors[1].x
         begin_slm_vertical = active_monitors[1].y
-        
+
+        print("monitor x: ", begin_monitor_horizontal, 
+            "\nmonitor y: ", begin_slm_vertical, 
+            "\nslm x: ", begin_slm_horizontal, 
+            "\nslm y: ", begin_slm_vertical)
         
         # Reverse the monitor pixel order (because, the SLM monitor is located ón the left side of the main monitor)
         begin_slm_horizontal = str(int(begin_monitor_horizontal) - int(begin_slm_horizontal))
@@ -133,8 +137,12 @@ class SawTooth_slider:
         self.pattern_window.update_idletasks()
         self.pattern_window.overrideredirect(1)
         self.pattern_window.bind("<Escape>", lambda e: pattern_window.destroy())
-        self.pattern_window_geometry = str("1920x1152+300+-300")
-        # self.pattern_window_geometry = str("{:}".format(width) + 'x' + "{:}".format(height) + '+' + "{:}".format(begin_slm_horizontal) + '+' + "{:}".format(begin_slm_vertical))
+        # self.pattern_window_geometry = str("1920x1152+300+-300")
+        self.pattern_window_geometry = str("{:}".format(width) +
+                                        'x' + "{:}".format(height) + '+' +
+                                        "{:}".format(begin_slm_horizontal) + '+' +
+                                        "{:}".format(begin_slm_vertical))
+        \
         self.pattern_window.geometry(self.pattern_window_geometry)
         create_grating()
         self.pattern = Label(self.pattern_window,image = self.photo)
