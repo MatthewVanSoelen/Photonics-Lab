@@ -1,0 +1,145 @@
+exp_time::
+5.0
+####################
+laser_power::
+40.0
+####################
+ver_step_size::
+80.0
+####################
+hor_step_size::
+120.0
+####################
+pattern_folder_path::
+C:/Users/mcgeed/Documents/GitHub/Photonics-Lab/src/SLM/Patterns_and_Tools/Experiment_Sim/[pixel_tcnj]
+####################
+Motor Command Pause::
+.1
+####################
+Motor Velocity::
+1
+####################
+Motor Acceleration::
+4
+####################
+Motor Decceleration::
+4
+####################
+Shutter Command Pause::
+.1
+####################
+Shutter Operating Mode::
+1
+####################
+laser_power::
+40.0
+####################
+laser_power ::
+6.0
+####################
+laser_power 1::
+2.3
+####################
+laser_power 2::
+1.2
+####################
+laser_power 3::
+6.4
+####################
+Strings Laser 1::
+[0,100]:10
+[100,256]:.02x
+####################
+Strings Laser 2::
+[0,100]:12
+[100,256]:.02x
+####################
+Strings Laser 3::
+[0,100]:13
+[100,256]:.02x
+####################
+Strings Laser 4::
+[0,100]:14
+[100,256]:.02x
+####################
+strings_laser 1::
+
+####################
+strings_laser 2::
+
+####################
+strings_laser 3::
+
+####################
+strings_laser 4::
+
+####################
+strings_laser 0::
+
+####################
+strings_laser::
+[0,256]:6.72
+####################
+Laser Command Pause::
+.1
+####################
+Laser Max Power::
+22
+####################
+Laser Power Change Pause::
+0
+####################
+Motor Serial Port::
+COM25
+####################
+Motor Serial Baudrate::
+19200
+####################
+Motor Serial Timeout::
+.1
+####################
+Motor Serial Stopbits::
+1
+####################
+Motor Serial Bytesize::
+8
+####################
+Motor Serial Parity::
+None
+####################
+Shutter Serial Port::
+COM24
+####################
+Shutter Serial Baudrate::
+9600
+####################
+Shutter Serial Timeout::
+.1
+####################
+Shutter Serial Stopbits::
+1
+####################
+Shutter Serial Bytesize::
+8
+####################
+Shutter Serial Parity::
+None
+####################
+Laser Serial Port::
+COM30
+####################
+Laser Serial Baudrate::
+19200
+####################
+Laser Serial Timeout::
+.1
+####################
+Laser Serial Stopbits::
+1
+####################
+Laser Serial Bytesize::
+8
+####################
+Laser Serial Parity::
+None
+####################

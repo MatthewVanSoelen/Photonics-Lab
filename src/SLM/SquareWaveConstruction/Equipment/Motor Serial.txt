@@ -1,0 +1,18 @@
+Motor Serial Port::
+COM25
+####################
+Motor Serial Baudrate::
+19200
+####################
+Motor Serial Timeout::
+.1
+####################
+Motor Serial Stopbits::
+1
+####################
+Motor Serial Bytesize::
+8
+####################
+Motor Serial Parity::
+None
+####################

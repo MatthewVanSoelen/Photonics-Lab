@@ -1,0 +1,6 @@
+Shutter Command Pause::
+.1
+####################
+Shutter Operating Mode::
+1
+####################

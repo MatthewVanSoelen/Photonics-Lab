@@ -1,0 +1,108 @@
+Grating File 1::
+C:/Users/Matthew_VS/Desktop/Photonics-Lab/src/SLM/SquareWaveConstruction/Images/Sample_Grating.png
+####################
+grating_type 1::
+SawTooth
+####################
+exposure_time 1::
+6.4
+####################
+laser_power 1::
+10
+####################
+rotation_angle 1::
+30
+####################
+y_min 1::
+15
+####################
+y_max 1::
+215
+####################
+period 1::
+100
+####################
+reverse 1::
+0
+####################
+Motor Command Pause::
+.1
+####################
+Motor Velocity::
+1
+####################
+Motor Acceleration::
+4
+####################
+Motor Decceleration::
+4
+####################
+Shutter Command Pause::
+.1
+####################
+Shutter Operating Mode::
+1
+####################
+Laser Command Pause::
+.1
+####################
+Laser Max Power::
+22
+####################
+Laser Power Change Pause::
+0
+####################
+Motor Serial Port::
+COM25
+####################
+Motor Serial Baudrate::
+19200
+####################
+Motor Serial Timeout::
+.1
+####################
+Motor Serial Stopbits::
+1
+####################
+Motor Serial Bytesize::
+8
+####################
+Motor Serial Parity::
+None
+####################
+Shutter Serial Port::
+COM24
+####################
+Shutter Serial Baudrate::
+9600
+####################
+Shutter Serial Timeout::
+.1
+####################
+Shutter Serial Stopbits::
+1
+####################
+Shutter Serial Bytesize::
+8
+####################
+Shutter Serial Parity::
+None
+####################
+Laser Serial Port::
+COM30
+####################
+Laser Serial Baudrate::
+19200
+####################
+Laser Serial Timeout::
+.1
+####################
+Laser Serial Stopbits::
+1
+####################
+Laser Serial Bytesize::
+8
+####################
+Laser Serial Parity::
+None
+####################

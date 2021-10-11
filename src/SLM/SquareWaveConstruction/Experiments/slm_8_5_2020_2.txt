@@ -1,0 +1,132 @@
+Hologram Width::
+0.02
+####################
+Hologram Height::
+0.0171
+####################
+Spot Size::
+30.0
+####################
+Pixels Horizontal::
+400
+####################
+Pixels Vertical::
+342
+####################
+Cropping::
+
+####################
+strings_exposure::
+[0,256]:.01x
+####################
+strings_ignore::
+[0,1]
+####################
+strings_laser::
+[0,256]:6.72
+####################
+Image File::
+C:/Users/Matthew_VS/Desktop/number_four.png
+####################
+Grating File::
+Images/Sampe_Grating.png
+####################
+grating_type::
+SawTooth
+####################
+rotation_angle::
+90
+####################
+y_min::
+40
+####################
+y_max::
+220
+####################
+period::
+80
+####################
+reverse::
+0
+####################
+Motor Command Pause::
+.1
+####################
+Motor Velocity::
+1
+####################
+Motor Acceleration::
+4
+####################
+Motor Decceleration::
+4
+####################
+Shutter Command Pause::
+.1
+####################
+Shutter Operating Mode::
+1
+####################
+Laser Command Pause::
+.1
+####################
+Laser Max Power::
+22
+####################
+Laser Power Change Pause::
+0
+####################
+Motor Serial Port::
+COM7
+####################
+Motor Serial Baudrate::
+19200
+####################
+Motor Serial Timeout::
+.1
+####################
+Motor Serial Stopbits::
+1
+####################
+Motor Serial Bytesize::
+8
+####################
+Motor Serial Parity::
+None
+####################
+Shutter Serial Port::
+COM6
+####################
+Shutter Serial Baudrate::
+9600
+####################
+Shutter Serial Timeout::
+.1
+####################
+Shutter Serial Stopbits::
+1
+####################
+Shutter Serial Bytesize::
+8
+####################
+Shutter Serial Parity::
+None
+####################
+Laser Serial Port::
+COM4
+####################
+Laser Serial Baudrate::
+19200
+####################
+Laser Serial Timeout::
+.1
+####################
+Laser Serial Stopbits::
+1
+####################
+Laser Serial Bytesize::
+8
+####################
+Laser Serial Parity::
+None
+####################

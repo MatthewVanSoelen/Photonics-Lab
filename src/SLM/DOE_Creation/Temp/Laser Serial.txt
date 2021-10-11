@@ -1,0 +1,18 @@
+Laser Serial Port::
+COM4
+####################
+Laser Serial Baudrate::
+150
+####################
+Laser Serial Timeout::
+.1
+####################
+Laser Serial Stopbits::
+1
+####################
+Laser Serial Bytesize::
+4
+####################
+Laser Serial Parity::
+None
+####################

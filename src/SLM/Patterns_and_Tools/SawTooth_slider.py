@@ -6,13 +6,15 @@ Created on Tue Jul 14 14:41:43 2020
 """
 
 
-### Python libraries ###
-# Monitor packages
+### Python libraries/Packages ###
+
+# Monitor package
 from screeninfo import get_monitors # Screen Information (screeninfo) is a package to fetch location and size of physical screens.
-# Window packages 
+
+# GUI packages 
 from tkinter import *
-#from tkinter import Toplevel, Tk, Label # Graphical User Interface (GUI) package
 from PIL import Image, ImageTk # Python Imaging Librarier (PIL) package
+
 # Processing packages
 import re # Regular Expression (re) is a package to check, if a string contains the specified search pattern.
 import numpy as np # Scientific computing package (NumPy)
@@ -30,20 +32,16 @@ class SawTooth_Slider:
 
         
         self.master = master
-        ### Monitor controlling 
+        ## Monitor controlling 
         # Finds the resolution of all monitors that are connected.
         active_monitors = get_monitors() # "monitor(screenwidth x screenheight + startpixel x + startpixel y)"
         
         
-        # Separates all numbers from a string
-        monitor_values=re.findall('([0-9]+)', str(active_monitors))
-        print(monitor_values)
-        
-        # Assign the separated digits of the string to a variable
-        begin_monitor_horizontal = monitor_values[0]
-        begin_monitor_vertical = monitor_values[1]
-        begin_slm_horizontal = monitor_values[5]
-        begin_slm_vertical = monitor_values[6]
+        # Assign the separated x and y start values to variables
+        begin_monitor_horizontal = active_monitors[0].x
+        begin_monitor_vertical = active_monitors[0].y
+        begin_slm_horizontal = active_monitors[1].x
+        begin_slm_vertical = active_monitors[1].y
         
         
         # Reverse the monitor pixel order (because, the SLM monitor is located ón the left side of the main monitor)

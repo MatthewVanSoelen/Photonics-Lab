@@ -41,8 +41,8 @@ class HologramCreator(App):
         frames_vertical = (configs['Frames Vertical'] if 'Frames Vertical' 
             in configs else 0)
         if 'Window Title' not in configs:
-            configs['Window Title'] = ('Single Image Hologram Creator -- '
-                + 'Copyright 2019, Luke Kurlandski, all rights reserved')
+            configs['Window Title'] = ('Sawtooth Hixel Creator -- '
+                + 'Copyright 2019, Matthew Van Soelen, all rights reserved')
         #Call to parent consructor.
         super().__init__(root, configs)
         #Create the frames for main window.
@@ -53,41 +53,6 @@ class HologramCreator(App):
 ##############################################################################
 #Main Window Set Up Frames
 ##############################################################################
-
-    def setup_film(self, frame:tk.Frame):
-        """
-        Setup film information entry wigits.
-        """
-
-        tk.Label(frame, text='Film Information', font="bold").pack()
-        tk.Label(frame, text='Image Width on Film (mm)').pack()
-        self.entry_width = tk.Entry(frame, width = 10)
-        self.entry_width.pack()
-        tk.Label(frame, text='Image Height on Film (mm)').pack()
-        self.entry_height = tk.Entry(frame, width = 10)
-        self.entry_height.pack()
-        tk.Label(frame, text='Estimate Spot Size (\u03BCm) (opt)').pack()
-        self.entry_spot = tk.Entry(frame, width = 10)
-        self.entry_spot.pack()
-
-    def setup_image_select(self, frame:tk.Frame):
-        """
-        Setup image selection entry wigits.
-        """
-
-        tk.Label(frame, text='Image Selection', font='bold').pack()
-        self.button_image = tk.Button(frame, text='Select an Image', 
-            command=self.image_select)
-        self.button_image.pack()
-        tk.Label(frame, text='Desired Horizontal Gratings (opt)').pack()
-        self.entry_pixel_x = tk.Entry(frame, width = 10)
-        self.entry_pixel_x.pack()
-        tk.Label(frame, text='Desired Vertical Gratings (opt)').pack()
-        self.entry_pixel_y = tk.Entry(frame, width = 10)
-        self.entry_pixel_y.pack()
-        tk.Label(frame, text='Cropping (opt)').pack()
-        self.entry_crop = tk.Entry(frame, width = 15)
-        self.entry_crop.pack()
 
     def setup_initialize_experiment(self, frame:tk.Frame):
         """
@@ -111,19 +76,21 @@ class HologramCreator(App):
 
         tk.Label(frame, text='While Running', font="bold").pack()
         self.listbox = tk.Listbox(frame, height=3, selectmode=tk.SINGLE)
-        self.listbox.pack()
+        self.listbox.config(width=20)
+        self.listbox.pack(fill = tk.BOTH)
         self.listbox.insert(1, "Run")
         self.listbox.insert(2, "Pause")
         self.listbox.insert(3, "Abort")
         self.listbox.activate(1)
+        self.listbox.config(width=80)
         self.label_start_time = tk.Label(frame, text='Start Time: ')
         self.label_start_time.pack()
         self.label_est_time = tk.Label(frame, text='End Time Estimate: ')
         self.label_est_time.pack()
         self.label_end_time = tk.Label(frame, text='True Experiment End Time: ')
-        self.label_end_time.pack()
-        self.label_position = tk.Label(frame, text='Current Location (x,y) : ')
-        self.label_position.pack() 
+        # self.label_end_time.pack()
+        # self.label_position = tk.Label(frame, text='Current Location (x,y) : ')
+        # self.label_position.pack() 
         self.label_details = tk.Label(frame, text='Details (pxl,pwr,time) : ')
         self.label_details.pack()
 
@@ -131,7 +98,7 @@ class HologramCreator(App):
         """
         Set up grating options entry widgets
         """
-        frame.config(borderwidth=2, relief=tk.SUNKEN)
+        frame.config(borderwidth=2, relief=tk.SUNKEN, bg = 'gainsboro')
 
         tk.Label(frame, text='Rotation Angle', font='bold').grid(row=0, column=0)
         self.entry_angle = tk.Entry(frame, width = 15)
@@ -154,50 +121,24 @@ class HologramCreator(App):
         tk.Label(frame, text='Period Width (pixels)', font='bold').grid(row=4, column=0)
         self.entry_period = tk.Entry(frame, width = 15)
         self.entry_period.grid(row=5, column = 0)
+        
+        tk.Label(frame, text='Exposure time (s)', font='bold').grid(row=4, column=1)
+        self.entry_exp_time = tk.Entry(frame, width = 15)
+        self.entry_exp_time.grid(row=5, column = 1)
+        
+        tk.Label(frame, text="Laser Power (?)", font='bold').grid(row=6, column=0)
+        self.entry_laser_power = tk.Entry(frame, width = 15)
+        self.entry_laser_power.grid(row=7, column=0)
 
         self.g_reverse = tk.IntVar()
-        tk.Checkbutton(frame, text = 'Reverse Grating', variable = self.g_reverse).grid(row=5, column=1)
+        tk.Checkbutton(frame, text = 'Reverse Grating', variable = self.g_reverse).grid(row=8, column=0)
         
         selection_frame = tk.Frame(frame, borderwidth=2, relief=tk.SOLID, pady=4)
-        selection_frame.grid(row=6, column=0, columnspan=2)
-        tk.Label(selection_frame, text='Grating Selection', font='bold').grid(row=0, column=0)
+        selection_frame.grid(row=8, column=0)
+        tk.Label(selection_frame, text='Upload Grating', font='bold').grid(row=0, column=0)
         self.button_image = tk.Button(selection_frame, text='Select a Grating', 
             command=self.grating_select)
         self.button_image.grid(row=0, column=1)
-
-    def setup_exposure_details(self, frame:tk.Frame):
-        """
-        Set up the exposure textbox.
-        """
-
-        sub_frame = tk.Frame(frame)
-        sub_frame.pack()
-        tk.Label(sub_frame, text='Exposure Times (s)').grid(row=0, column=0)
-        text_configs = {
-            'Frame':sub_frame,
-            'y Row':1,
-            'x Row':2
-        }
-        self.text_exposure = super().text_apply_scrollbars(sub_frame, text_configs)
-        self.text_exposure.configure(width=20, height=10)
-        self.text_exposure.grid(row=1, column=0)
-
-    def setup_ignore_details(self, frame:tk.Frame):
-        """
-        Set up the ignore textbox.
-        """
-
-        sub_frame = tk.Frame(frame)
-        sub_frame.pack()
-        tk.Label(sub_frame, text='Ignore Values').grid(row=0, column=0)
-        text_configs = {
-            'Frame':sub_frame,
-            'y Row':1,
-            'x Row':2
-        }
-        self.text_ignore = super().text_apply_scrollbars(sub_frame, text_configs)
-        self.text_ignore.configure(width=20, height=10)
-        self.text_ignore.grid(row=1, column=0)
 
     def setup_laser_details(self, frame:tk.Frame):
         """
@@ -216,39 +157,6 @@ class HologramCreator(App):
         self.text_laser.configure(width=20, height=10)
         self.text_laser.grid(row=1, column=0)
         
-    def setup_grating_details(self, frame:tk.Frame):
-        """
-        Set up the exposure textbox.
-        """
-
-        sub_frame = tk.Frame(frame)
-        sub_frame.pack()
-        tk.Label(sub_frame, text='Gratings by Color').grid(row=0, column=0)
-        text_configs = {
-            'Frame':sub_frame,
-            'y Row':1,
-            'x Row':2
-        }
-        self.text_grating_color = super().text_apply_scrollbars(self.root, text_configs)
-        self.text_grating_color.configure(width=20, height=10)
-        self.text_grating_color.grid(row=1, column=0)
-        
-    def setup_image_array(self, frame:tk.Frame):
-        """
-        Set up the textbox that displays the image as an array.
-        """
-        
-        sub_frame = tk.Frame(frame)
-        sub_frame.pack()
-        tk.Label(sub_frame, text='Image as Array').grid(row=0, column=0)
-        text_configs = {
-            'Frame':sub_frame,
-            'y Row':1,
-            'x Row':2
-        }
-        self.text_array = super().text_apply_scrollbars(self.root, text_configs)
-        self.text_array.configure(width=80, height=40)
-        self.text_array.grid(row=1, column=0)
     
     def setup_experiment_details_view(self, frame:tk.Frame):
         '''
@@ -274,6 +182,10 @@ class HologramCreator(App):
         self.period_label.grid(row=3, column=1)
         self.reverse_label = tk.Label(sub_frame, text = "Reverse: ")
         self.reverse_label.grid(row=4, column=1)
+        self.exp_time_label = tk.Label(sub_frame, text="Exposure Time: ")
+        self.exp_time_label.grid(row=5, column=0)
+        self.laser_power_label = tk.Label(sub_frame, text = "Laser Power: ")
+        self.laser_power_label.grid(row=5, column=1)
         
 ##############################################################################
 #Data Processing
@@ -357,6 +269,7 @@ class HologramCreator(App):
         except Exception:
             raise Exception('Error: laser string is improperly formatted.')
         return map_laser_power
+        
     
     def map_gratings(self, configs:dict):
         def cycle_image( j, i):
@@ -447,20 +360,6 @@ class HologramCreator(App):
                 text.insert(tk.END, str(j)+spaces)
             text.insert(tk.END,'\n')
 
-    def generate_plot(self, data:dict):
-        """
-        Create a simple graph to display mappings.
-        """
-        
-        df = DataFrame (data, columns = data.keys())
-        figure = plt.Figure(figsize=(6,5), dpi=100)
-        ax = figure.add_subplot(111)
-        window = tk.Toplevel()
-        window.title('Plot')
-        chart_type = FigureCanvasTkAgg(figure, window)
-        chart_type.get_tk_widget().pack()
-        df.plot(kind='line', legend=True, ax=ax)
-        ax.set_title('Exposure Time vs Gradient Scale')
         
 ##############################################################################
 #Read and Write to Files in Special Format
