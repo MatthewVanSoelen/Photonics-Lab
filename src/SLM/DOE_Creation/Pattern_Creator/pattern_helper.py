@@ -107,6 +107,8 @@ class Pattern_Data:
         self.pattern_list = np.array([]) # list of patterns that can be displayed(fft/Orgin/etc)
         self.thumbnail_size = (450,450)
 
+        current_path = os.getcwd() + "/Pattern_Creator"
+        os.chdir(current_path)
         current_path = os.getcwd()
         self.folder_path = os.path.join(current_path, "Pattern_Gui_Data")
         if not os.path.exists(self.folder_path):
@@ -204,7 +206,15 @@ class Pattern_Data:
         self.grating_count = 0
         self.cur_image.trace("w", self.display_image)
         self.display_image()
-        
+    
+    def crop_array_center(self, arr, height, width):
+        """
+        Crops array to center 
+        """
+        arr_height, arr_width = arr.shape 
+        x_margin = (arr_width - width)//2
+        y_margin = (arr_height - height)//2
+        return arr[y_margin:y_margin+height, x_margin:x_margin+width]
 
     def get_method(self):
         return self.method
@@ -347,7 +357,7 @@ class Pattern_Data:
             freq = float(freq)
         if value is not None:
             value = int(value)
-        # data = self.crop_array_corner(data, self.height, self.width)
+        data = self.crop_array_center(data, self.height, self.width)
         return data, {'x':x, 'y':y, 'angle':angle, 'freq':freq, 'value':value}
 
     def points_of_arr(self, arr, method:int):
@@ -575,10 +585,20 @@ class Pattern_Data:
                     count += 1
                     self.progress_bar_value = count
                     self.update_gui.set("Progressbar")
-                    self.process_frame.update()
         self.images['data'][2] = (data / count)
 
         self.pattern_name = "[%s].png"%(self.file_name)
+
+    def save_image(self, image: Image, folder_path, pattern_name=None):
+        """
+        Saves image in the current to folder path with pattern name as png
+        """
+        if pattern_name:
+            file_name = pattern_name
+        else:
+            file_name = "Default.png"
+        file_name = os.path.join(folder_path, file_name)
+        image.save(file_name)
 
     def create_fft(self):
         """
@@ -695,3 +715,86 @@ class Pattern_Data:
         self.display_image()
         self.progress_bar_value = 0
         self.update_gui.set("Progressbar")
+
+
+    def run_sawtooth(self):
+        """
+        Start the process to produce Sawtooth wave pattern images
+        """
+        if self.data is not None:
+            folder = os.path.splitext(self.pattern_name)[0]
+            self.create_sawtooth_folder(folder)
+        else:
+            print("Error: Must process data before generating Sawtooth")
+
+        self.progress_bar_value = 0
+        self.update_gui.set('Sawtooth')
+
+    def create_sawtooth_folder(self, folder_name):
+        """
+        Produce sawtooth wave pattern images, in a folder with a json file containing all relevant information
+        """
+        full_dict = {}
+        file_name = "Default"
+        current_path = os.getcwd()
+        folder_path = os.path.join(current_path, 'Sawtooth_Pattern_Folder/')
+        folder_path = os.path.join(folder_path, folder_name)
+        img = None
+
+        self.update_gui.set('Sawtooth')
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        for count, pattern in enumerate(self.pattern_list):
+            if pattern['value'] is None:
+                pattern['value'] = self.max_amplitude
+            if pattern['angle'] is not None and pattern['freq'] is not None:
+                height = 1152
+                width = 1920
+                y_min = 0
+                y_max = 128
+                x_max = width / pattern['freq']
+                slope = (y_max - y_min) / x_max
+                side = max(height, width)
+                diag = int(np.ceil(np.sqrt(side**2 + side**2)))
+                data = np.zeros((diag,diag))
+                for i in range(diag):
+                    color = slope * (i % x_max + y_min)
+                    data[:, i] = color
+                # pdb.set_trace()
+                img = Image.fromarray(data).convert('L')
+                angle_degrees = np.degrees(pattern['angle'])
+                img = img.rotate(angle_degrees)
+                data = np.asarray(img)
+                data = self.crop_array_center(data, height, width)
+                img = Image.fromarray(data).convert('L')
+                # img = Image.fromarray(data)
+                # lin_x = np.linspace(0, pattern['value'], diag)
+                # lin_y = np.linspace(0, pattern['value'], diag)
+
+                # mesh_x, mesh_y = np.meshgrid(lin_x, lin_y)
+
+                # angled_mesh = mesh_x*np.cos(pattern['angle'])+mesh_y*np.sin(pattern['angle'])
+                # angled_mesh = (angled_mesh * pattern['freq'] % self.max_amplitude)
+
+                # angled_mesh = np.round(angled_mesh)
+                # angled_mesh = self.crop_array_corner(angled_mesh, height, width)
+
+                
+                if pattern['x'] is not None and pattern['y'] is not None:
+                    file_name = "[%s, %s].png"%(pattern['x'], pattern['y'])
+                else:
+                    file_name = "<%s, %s>.png"%(pattern['angle'], pattern['freq'])
+
+
+                self.save_image(image=img, folder_path=folder_path, pattern_name=file_name)
+                pattern.update({'file_name': file_name})
+                full_dict[count] = pattern 
+            else:
+                print("Sawtooth Error: %s"%(pattern))
+            self.progress_bar_value = count
+            self.update_gui.set('Sawtooth')
+
+        full_dict_path = os.path.join(folder_path, 'data.json')
+        with open(full_dict_path, "w") as outfile:
+            json.dump(full_dict, outfile)

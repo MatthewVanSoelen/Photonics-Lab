@@ -196,7 +196,7 @@ class Pattern_GUI:
 
         self.gen_saw_button = Button(self.process_frame.sub_frame,
                                     text='Generate Sawtooth',
-                                    command= self.run_sawtooth)
+                                    command= self.p_data.run_sawtooth)
         self.gen_saw_button.grid(row=0, column=1)
 
     def fill_right_frame(self):
@@ -280,6 +280,7 @@ class Pattern_GUI:
 
             if cur_name == self.p_data.images['names'][2]:
                 self.cur_image_label.config(image=self.p_data.images['tk_images'][2])
+        
         elif status == "Custom_Entries":
 
             self.freq_frame.forget()
@@ -313,6 +314,11 @@ class Pattern_GUI:
             self.process_frame.update()
             self.progress_bar["value"] = self.p_data.progress_bar_value
             self.progress_bar.config(maximum = self.p_data.grating_count)
+
+        elif status == "Sawtooth":
+            self.process_frame.update()
+            self.progress_bar["value"] = self.p_data.progress_bar_value
+            self.progress_bar.config(maximum = len(self.p_data.pattern_list))
         
         self.update_gui.set("False")
 
