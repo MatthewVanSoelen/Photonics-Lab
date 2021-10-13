@@ -134,12 +134,11 @@ class SawTooth_slider:
         self.pattern_window.update_idletasks()
         self.pattern_window.overrideredirect(1)
         self.pattern_window.bind("<Escape>", lambda e: pattern_window.destroy())
-        # self.pattern_window_geometry = str("1920x1152+300+-300")
         self.pattern_window_geometry = str("{:}".format(width) +
                                         'x' + "{:}".format(height) + '+' +
                                         "{:}".format(begin_slm_horizontal) + '+' +
                                         "{:}".format(begin_slm_vertical))
-        \
+        
         self.pattern_window.geometry(self.pattern_window_geometry)
         create_grating()
         self.pattern = Label(self.pattern_window,image = self.photo)

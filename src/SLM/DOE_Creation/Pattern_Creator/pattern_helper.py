@@ -178,7 +178,7 @@ class Pattern_Data:
 
         # Custom Pattern Data
 
-        self.types = ['Single Freq','Single Point [x,y]', 'Hor. Line', 'Ver. Line', 'Diagonal Line', 'Upload']
+        self.types = ['Single Freq','Single Point [x,y]', 'Hor. Line', 'Ver. Line', 'Diagonal Line', 'Upload', 'Slope']
         self.type_options = set(self.types)
         self.p_type = StringVar(self.root)
         self.p_type.set('Single Freq')
@@ -189,6 +189,10 @@ class Pattern_Data:
         self.user_y = StringVar()
         self.user_coords = StringVar()
         self.user_line_len = StringVar()
+        self.user_y_max = StringVar()
+        self.user_y_min = StringVar()
+        self.user_x_max =  StringVar(value="1")
+        
 
         # Extra Options Data
 
@@ -213,6 +217,12 @@ class Pattern_Data:
         x_margin = (arr_width - width)//2
         y_margin = (arr_height - height)//2
         return arr[y_margin:y_margin+height, x_margin:x_margin+width]
+    
+    def center_crop(self, image, array_width, array_height, width, height):
+        x_margin = (array_width - width) //2
+        y_margin = (array_height - height) // 2
+        return image.crop((x_margin, y_margin, x_margin + width, y_margin + height))
+        
 
     def get_method(self):
         return self.method
@@ -586,6 +596,58 @@ class Pattern_Data:
         self.images['data'][2] = (data / count)
 
         self.pattern_name = "[%s].png"%(self.file_name)
+        
+    def point_slope(self):
+        """
+        Produce a Sawtooth Pattern using point slope form
+        """
+        
+        if int(self.user_angle.get()) or self.user_angle.get() == '0':
+            angle = int(self.user_angle.get())
+        else:
+            angle = 10
+            print("angle set to 10")
+            
+        if int(self.user_y_max.get()) or self.user_y_max.get() == '0':
+            y_max = int(self.user_y_max.get())
+        else:
+            y_max = 255
+            print("y_max set to 255")
+            
+        if int(self.user_y_min.get()) or self.user_y_min.get() == '0':
+            y_min = int(self.user_y_min.get())
+        else:
+            y_min = 20
+            print("y_min set to 20")
+            
+        if int(self.user_x_max.get()) or self.user_x_max.get() == '0':
+            x_max = int(self.user_x_max.get())
+        else:
+            x_max = 80
+            print("x_max set to 80")
+            
+        slope = (y_max-y_min)/x_max
+        array_width = int(np.ceil( np.sqrt(pow(self.width, 2) + pow(self.height, 2))))
+        array_height = array_width
+        data = np.zeros((array_height, array_width), dtype = np.uint16)
+        
+        for i in range(array_width):
+            color = slope * (i % x_max) + y_min
+            data[:,i] = color
+            
+        img = Image.fromarray(data)
+        img = img.convert('L')
+        img = img.rotate(angle)
+        img = self.center_crop(img, array_width, array_height, self.width, self.height)
+        self.images['data'][2] = np.asarray(img)
+        
+
+        x=None 
+        y=None
+        freq=None
+        value=None
+        pattern_configs = {'x':x, 'y':y, 'angle':angle, 'freq': freq, 'value':value}
+        self.pattern_list = np.append(self.pattern_list, [pattern_configs], 0)
 
     def save_image(self, image: Image, folder_path, pattern_name=None):
         """
@@ -703,11 +765,14 @@ class Pattern_Data:
             self.diagnal_line()
         elif self.p_type.get() == self.types[5]:
             self.uploaded_pattern()
+        elif self.p_type.get() == self.types[6]:
+            self.point_slope()
 
 
         
         self.display_image()
-        self.images["data"][2] = np.round( self.images["data"][2]  * self.max_amplitude)
+        if self.p_type.get() != self.types[6]:
+            self.images["data"][2] = np.round( self.images["data"][2]  * self.max_amplitude)
         self.create_fft()
         self.cur_image.set(self.images["names"][2])
         self.display_image()

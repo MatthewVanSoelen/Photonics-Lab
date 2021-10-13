@@ -158,6 +158,20 @@ class Pattern_GUI:
 
         self.p_data.p_type.trace("w", self.update_pattern_entries)
         self.update_pattern_entries()
+        
+        self.slope_frame = Frame(pattern_frame.sub_frame)
+        
+        Label(self.slope_frame, text="y_max:", width=self.p_data.label_box_width).grid(row=0, column=0)
+        self.y_max_entry = Entry(self.slope_frame, textvariable=self.p_data.user_y_max, width=self.p_data.entry_box_width)
+        self.y_max_entry.grid(row=0, column=1)
+        
+        Label(self.slope_frame, text="y_min:", width=self.p_data.label_box_width).grid(row=1, column=0)
+        self.y_min_entry = Entry(self.slope_frame, textvariable=self.p_data.user_y_min, width=self.p_data.entry_box_width)
+        self.y_min_entry.grid(row=1, column=1)
+        
+        Label(self.slope_frame, text="x_max:", width=self.p_data.label_box_width).grid(row=2, column=0)
+        self.x_max_entry = Entry(self.slope_frame, textvariable=self.p_data.user_x_max, width=self.p_data.entry_box_width)
+        self.x_max_entry.grid(row=2, column=1)
 
         # Extra Options Frame ----------------------------------------------------------------------
         extra_frame = Toggled_Frame(self.l_frame, text="Extra Options", relief="raised", borderwidth=1)
@@ -309,6 +323,9 @@ class Pattern_GUI:
                 self.line_dim_frame.pack(side="top", fill="both", expand=True)
             elif p_type == self.p_data.types[5]: # Upload
                 self.upload_text_frame.pack(side="top", fill="both", expand=True)
+            elif p_type == self.p_data.types[6]: # Point Slope Form
+                self.angle_frame.pack(side="top", fill="both", expand=True)
+                self.slope_frame.pack(side="top", fill="both", expand=True)
 
         elif status == "Progressbar":
             self.process_frame.update()
