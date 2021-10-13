@@ -207,6 +207,9 @@ class Pattern_GUI:
 
         self.progress_bar = Progressbar(self.process_frame.sub_frame, orient = HORIZONTAL , length = 200, mode='determinate')
         self.progress_bar.grid(row=1, column=0, columnspan=2)
+        
+        self.progress_label = Label(self.process_frame.sub_frame, text=self.p_data.progress_label)
+        self.progress_label.grid(row=2, column=0, columnspan=2)
 
         self.gen_saw_button = Button(self.process_frame.sub_frame,
                                     text='Generate Sawtooth',
@@ -331,11 +334,13 @@ class Pattern_GUI:
             self.process_frame.update()
             self.progress_bar["value"] = self.p_data.progress_bar_value
             self.progress_bar.config(maximum = self.p_data.grating_count)
+            self.progress_label.config(text=self.p_data.progress_label)
 
         elif status == "Sawtooth":
             self.process_frame.update()
             self.progress_bar["value"] = self.p_data.progress_bar_value
             self.progress_bar.config(maximum = len(self.p_data.pattern_list))
+            self.progress_label.config(text=self.p_data.progress_label)
         
         self.update_gui.set("False")
 

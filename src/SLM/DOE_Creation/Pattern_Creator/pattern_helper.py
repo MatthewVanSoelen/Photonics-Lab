@@ -204,6 +204,7 @@ class Pattern_Data:
         # Process Data
 
         self.progress_bar_value = 0
+        self.progress_label = ""
 
         self.grating_count = 0
         self.cur_image.trace("w", self.display_image)
@@ -592,6 +593,7 @@ class Pattern_Data:
                         print("points_of_arr: Undefined Method")
                     count += 1
                     self.progress_bar_value = count
+                    self.progress_label= "Processing (%d out of %d)"%(count,self.grating_count)
                     self.update_gui.set("Progressbar")
         self.images['data'][2] = (data / count)
 
@@ -751,6 +753,7 @@ class Pattern_Data:
                 self.height = margin_size + self.height
 
         self.grating_count = len(np.transpose(np.nonzero(self.images["data"][0])))
+        self.progress_label= "Processing (%d out of %d)"%(1,self.grating_count)
         self.update_gui.set("Progressbar")
 
         if self.p_type.get() == self.types[0]:
@@ -777,6 +780,7 @@ class Pattern_Data:
         self.cur_image.set(self.images["names"][2])
         self.display_image()
         self.progress_bar_value = 0
+        self.progress_label= ""
         self.update_gui.set("Progressbar")
 
 
@@ -791,6 +795,7 @@ class Pattern_Data:
             print("Error: Must process data before generating Sawtooth")
 
         self.progress_bar_value = 0
+        self.progress_label= ""
         self.update_gui.set('Sawtooth')
 
     def create_sawtooth_folder(self, folder_name):
@@ -856,6 +861,7 @@ class Pattern_Data:
             else:
                 print("Sawtooth Error: %s"%(pattern))
             self.progress_bar_value = count
+            self.progress_label= "Generating Sawtooth Patterns (%d out of %d)"%(count,self.grating_count)
             self.update_gui.set('Sawtooth')
 
         full_dict_path = os.path.join(folder_path, 'data.json')
