@@ -22,7 +22,6 @@ class SLM_window():
         begin_slm_horizontal = active_monitors[1].x
         begin_slm_vertical = active_monitors[1].y
 
-        begin_slm_horizontal, begin_slm_vertical = self.display_left_side(begin_monitor_horizontal, begin_slm_horizontal, begin_monitor_vertical, begin_slm_vertical)
         print(begin_slm_horizontal, begin_slm_vertical)
         width = 1920
         height = 1152
@@ -67,11 +66,6 @@ class SLM_window():
         self.window_slm.destroy()
         self.window_slm.update()
 
-    def display_left_side(self, bmh, bsh, bmv, bsv):
-        # Reverse the monitor pixel order (because, the SLM monitor is located on the left side of the main monitor)
-        begin_slm_horizontal = str(int(bmh) - int(bsh))
-        begin_slm_vertical = str(int(bmv) - int(bsv))
-        return (begin_slm_horizontal, begin_slm_vertical)
 
 
 

@@ -23,12 +23,13 @@ def doe_app():
 
 def pattern_app():
     root.destroy()
-    pattern_folder = os.path.join( sys.path[0],"Pattern_Creator")
-    sys.path.insert(1, pattern_folder)
+    os.chdir(os.path.join(os.getcwd(), 'Pattern_Creator'))
     from pattern_gui import Pattern_GUI
     new_root = tk.Tk()
     app = Pattern_GUI(new_root)
     app.root.mainloop()
+
+    
 
 root = tk.Tk()
 configs = {
@@ -41,7 +42,7 @@ chooser = App(root, configs)
 tk.Label(chooser.root, text='Select an Experiment').pack()
 button_doe_app = tk.Button(chooser.root, text='DOE Creator', 
     command=doe_app)
-button_doe_app.pack()
+button_doe_app.pack(pady=20)
 
 button_pattern_app = tk.Button(chooser.root, text='Pattern Creator', 
     command=pattern_app)

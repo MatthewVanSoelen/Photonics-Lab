@@ -19,3 +19,8 @@ from pattern_helper import Toggled_Frame, ToolTip, Pattern_Data
 root = Tk()
 gui = Pattern_GUI(root=root)
 root.mainloop()
+
+def start_pattern_creator():
+    root = Tk()
+    gui = Pattern_GUI(root=root)
+    root.mainloop()

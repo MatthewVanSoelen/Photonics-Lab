@@ -1,4 +1,5 @@
 **/.DS_Store
+**/.spyproject
 /src/SLM/Patterns_and_Tools/Grating_Images/**
 /src/SLM/Patterns_and_Tools/Experiment_Sim/Patterns/**
 /src/SLM/Patterns_and_Tools/Experiment_Sim/Pattern_Gui_Data/**

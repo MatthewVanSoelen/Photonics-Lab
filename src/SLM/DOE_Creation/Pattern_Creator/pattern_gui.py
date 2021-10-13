@@ -207,7 +207,7 @@ class Pattern_GUI:
         display_frame = Toggled_Frame(self.r_frame, text="Display Image", state=False, relief="raised", borderwidth=1)
         display_frame.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
 
-        self.cur_image_label = Label(display_frame.sub_frame, image=self.p_data.tk_fft_image)
+        self.cur_image_label = Label(display_frame.sub_frame, image=self.p_data.images['tk_images'][1])
         self.cur_image_label.pack(side="left")
 
         image_select_frame = Toggled_Frame(self.r_frame, text="Image Select", relief="raised", borderwidth=1)

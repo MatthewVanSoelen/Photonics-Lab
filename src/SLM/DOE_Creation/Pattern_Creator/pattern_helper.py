@@ -107,8 +107,6 @@ class Pattern_Data:
         self.pattern_list = np.array([]) # list of patterns that can be displayed(fft/Orgin/etc)
         self.thumbnail_size = (450,450)
 
-        current_path = os.getcwd() + "/Pattern_Creator"
-        os.chdir(current_path)
         current_path = os.getcwd()
         self.folder_path = os.path.join(current_path, "Pattern_Gui_Data")
         if not os.path.exists(self.folder_path):
