@@ -8,6 +8,7 @@ Special thanks to Daniel Stolz, Luke Kurlanski, and Dr. David McGee.
 Read the Program Guide for detailed information about this program.
 """
 import sys
+import os
 import tkinter as tk
 
 from app import App
@@ -22,7 +23,7 @@ def doe_app():
 
 def pattern_app():
     root.destroy()
-    pattern_folder = sys.path[0] + "/Pattern_Creator"
+    pattern_folder = os.path.join( sys.path[0],"Pattern_Creator")
     sys.path.insert(1, pattern_folder)
     from pattern_gui import Pattern_GUI
     new_root = tk.Tk()
