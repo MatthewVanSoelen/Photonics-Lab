@@ -305,7 +305,8 @@ class Pattern_GUI:
             self.coords_frame.forget()
             self.line_dim_frame.forget()
             self.upload_text_frame.forget()
-            self.slope_frame.forget()
+            #self.slope_frame.forget()
+            #TODO: fix slope frame
 
 
             p_type = self.p_data.p_type.get()

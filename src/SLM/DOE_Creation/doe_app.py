@@ -272,7 +272,7 @@ class DOE_App(HologramCreator):
         """
         Drives the processes to process data, calls other methods.
         """
-        
+        print("prepare")
         #Read equipment data from non-consolidated files and store in variables.
         try:
             self.equipment_configs_motor = self.read_equipment_data('Motor')
@@ -450,9 +450,10 @@ class DOE_App(HologramCreator):
         """
         Run the experiment by calling methods to handle experiment.
         """
-
+        print("running")
         #Update visuals on the main window.
         start = datetime.now().strftime('%H:%M:%S -- %d/%m/%Y')
+        print(start)
         self.label_start_time.configure(text='Start Time: '+start)
         self.listbox.selection_clear(0, tk.END)
         self.listbox.selection_set(0)
@@ -568,9 +569,9 @@ class DOE_App(HologramCreator):
                     self.slm.display(item.image_tk)
                     
                     #print("step_x: %s"%(x*delta_x*1000))
-                    self.motor.move_absolute(1, x*delta_x)
+                    self.motor.move_absolute(1, x*delta_x*1000)
                     #print("step_y: %s"%(y*delta_y*1000))
-                    self.motor.move_absolute(2, y*delta_y)
+                    self.motor.move_absolute(2, y*delta_y*1000)
                     print("position: [%s, %s]"%(x*delta_x, y*delta_y))
                     #time.sleep(e_time)
                     self.shutter.toggle(e_time)
