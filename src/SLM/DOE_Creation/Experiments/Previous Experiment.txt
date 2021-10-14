@@ -2,16 +2,16 @@ exp_time::
 5.0
 ####################
 laser_power::
-15.0
+40.0
 ####################
 ver_step_size::
-0.08
+8e-05
 ####################
 hor_step_size::
-0.13
+0.00013
 ####################
 pattern_folder_path::
-C:/Users/mcgeed/Documents/GitHub/Photonics-Lab/src/SLM/Patterns_and_Tools/Experiment_Sim/[pixel_tcnj_fixed]
+C:/Users/mcgeelab/Documents/GitHub/Photonics-Lab/src/SLM/DOE_Creation/Pattern_Creator/Sawtooth_Pattern_Folder/[SLM_text]
 ####################
 Motor Command Pause::
 .1

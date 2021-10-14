@@ -2,7 +2,9 @@
 import threading
 from slm_window import SLM_window
 import time
-from PIL import Image, ImageTk
+from tkinter import *
+import PIL.Image, PIL.ImageTk
+import os
 
 
 from tkinter import * # Graphical User Interface (GUI) package
@@ -10,7 +12,6 @@ from tkinter import * # Graphical User Interface (GUI) package
 class SLM_Image():
 
     def __init__(self):
-        self.img = Image.open("/Users/matthewvansoelen/Desktop/Photonics-Lab/src/SLM/DOE_Creation/Images/Sample_Grating.png").convert('L')
         self.master = Tk()
         self.create_gui()
         self.master.mainloop()
@@ -19,6 +20,8 @@ class SLM_Image():
         begin_button = Button(self.master, text='Begin?', command=self.run_experiment)
         begin_button.pack()
         Checkbutton(self.master, text="check").pack()
+        
+        
 
 
     #def initialize_equipment(self):
@@ -26,7 +29,16 @@ class SLM_Image():
       #  self.slm_thread.start()
 
     def create_SLM_window(self):
-        self.slm = SLM_window(self.master)
+        img_path = os.path.join(os.getcwd(),"Images")
+        img_path = os.path.join(img_path, "150.png")
+        img = PIL.Image.open(img_path)
+        img = img.convert('L')
+       
+        grating = PIL.ImageTk.PhotoImage(img)
+        label = Label(self.master, image=grating)
+        label.image = grating
+        label.pack()
+        self.slm = SLM_window(self.master,grating)
         
 
     def run_experiment(self):
@@ -40,14 +52,11 @@ class SLM_Image():
 
     def movement(self):
         self.create_SLM_window()
-        
-        self.slm.display(self.img)
         for x in range(5):
             time.sleep(2)
             print(x)
             # self.slm.change_text("number:%s"%(str(x)))
-    
-            # self.slm.display(image)        
+        
 
 def run():
     a = SLM_Image()

@@ -566,6 +566,7 @@ class DOE_App(HologramCreator):
                     self.check_pause_abort()
                     self.update_progress(id_num=item.id_num, time=e_time, powr=powr, i=x, j=y)
                     self.slm.display(item.image_tk)
+                    '''
                     #print("step_x: %s"%(x*delta_x*1000))
                     self.motor.move_absolute(1, x*delta_x)
                     #print("step_y: %s"%(y*delta_y*1000))
@@ -573,6 +574,8 @@ class DOE_App(HologramCreator):
                     print("position: [%s, %s]"%(x*delta_x, y*delta_y))
                     #time.sleep(e_time)
                     self.shutter.toggle(e_time)
+                    '''
+                    time.sleep(1)
                 else:
                     print("item is None")
             

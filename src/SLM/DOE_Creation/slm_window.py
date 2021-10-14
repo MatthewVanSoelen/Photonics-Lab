@@ -3,7 +3,7 @@
 from screeninfo import get_monitors # Screen Information (screeninfo) is a package to fetch location and size of physical screens.
 # Window packages 
 from tkinter import Toplevel, Tk, Label # Graphical User Interface (GUI) package
-from PIL import Image, ImageTk # Python Imaging Librarier (PIL) package
+import PIL.Image, PIL.ImageTk # Python Imaging Librarier (PIL) package
 # Processing packages
 import re # Regular Expression (re) is a package to check, if a string contains the specified search pattern.
 import numpy as np # Scientific computing package (NumPy)
@@ -28,9 +28,9 @@ class SLM_window():
 
         if grating is None:
             array = np.zeros((height, width), dtype = np.uint16)
-            image = Image.fromarray(array)
+            image = PIL.Image.fromarray(array)
             image = image.convert('L')
-            grating = ImageTk.PhotoImage(image)
+            grating = PIL.ImageTk.PhotoImage(image)
 
         # self.image_window = Tk()
         self.image_window = master
@@ -49,6 +49,7 @@ class SLM_window():
         # Load the opened image into the window of the SLM monitor
         
         self.window_slm_label = Label(self.window_slm,image=grating)
+        self.window_slm_label.image = grating
         self.window_slm_label.pack()
         
         # Termination command for the code
@@ -57,6 +58,7 @@ class SLM_window():
     
     def display(self,grating):
         self.window_slm_label.config(image=grating)
+        self.window_slm_label.image = grating
         
     def display_text(self,msg):
         self.window_slm_label.config(text=msg)
